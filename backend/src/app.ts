@@ -30,7 +30,7 @@ const app = express();
 const mongoUrl = MONGODB_URI;
 mongoose.Promise = bluebird;
 
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true } ).then(
+mongoose.connect(mongoUrl!, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true } ).then(
     () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ },
 ).catch(err => {
     console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
@@ -47,9 +47,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
     resave: true,
     saveUninitialized: true,
-    secret: SESSION_SECRET,
+    secret: SESSION_SECRET!,
     store: new MongoStore({
-        url: mongoUrl,
+        url: mongoUrl!,
         autoReconnect: true
     })
 }));
@@ -69,10 +69,10 @@ app.use((req, res, next) => {
     req.path !== "/signup" &&
     !req.path.match(/^\/auth/) &&
     !req.path.match(/\./)) {
-        req.session.returnTo = req.path;
+        req.session!.returnTo = req.path;
     } else if (req.user &&
     req.path == "/account") {
-        req.session.returnTo = req.path;
+        req.session!.returnTo = req.path;
     }
     next();
 });
@@ -113,7 +113,7 @@ app.get("/api/facebook", passportConfig.isAuthenticated, passportConfig.isAuthor
  */
 app.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email", "public_profile"] }));
 app.get("/auth/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }), (req, res) => {
-    res.redirect(req.session.returnTo || "/");
+    res.redirect(req.session!.returnTo || "/");
 });
 
 export default app;
