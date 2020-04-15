@@ -27,7 +27,7 @@
     "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts*' 'test/**/*.ts*'",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "yarn lint && react-scripts test",
+    "test": "yarn lint && react-scripts test --coverage",
     "eject": "react-scripts eject",
     "type-check": "tsc --noEmit",
     "type-check:watch": "yarn type-check -- --watch"
