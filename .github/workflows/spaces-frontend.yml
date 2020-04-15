@@ -3,6 +3,10 @@
 
 name: Spaces Frontend
 
+defaults:
+  run:
+    working-directory: spaces-frontend
+    
 on:
   push:
     branches: [ master ]
