@@ -43,7 +43,7 @@ git clone --depth=1 https://github.com/Microsoft/TypeScript-Node-Starter.git <pr
 - Install dependencies
 ```
 cd <project_name>
-npm install
+yarn
 ```
 - Configure your mongoDB server
 ```bash
@@ -66,10 +66,10 @@ mongod --dbpath ~/data/db
 ```
 - Build and run the project
 ```
-npm run build
-npm start
+yarn build
+yarn start
 ```
-Or, if you're using VS Code, you can use `cmd + shift + b` to run the default build task (which is mapped to `npm run build`), and then you can use the command palette (`cmd + shift + p`) and select `Tasks: Run Task` > `npm: start` to run `npm start` for you.
+Or, if you're using VS Code, you can use `cmd + shift + b` to run the default build task (which is mapped to `yarn build`), and then you can use the command palette (`cmd + shift + p`) and select `Tasks: Run Task` > `npm: start` to run `npm start` for you.
 
 > **Note on editors!** - TypeScript has great support in [every editor](http://www.typescriptlang.org/index.html#download-links), but this project has been pre-configured for use with [VS Code](https://code.visualstudio.com/).
 Throughout the README We will try to call out specific places where VS Code really shines or where this project has been setup to take advantage of specific features.
@@ -139,7 +139,7 @@ Additionally you should see the email associated with your account listed in the
 Building the app locally is required to generate a zip to deploy because the App Service won't execute build tasks.
 Build the app however you normally would:
 - `ctrl + shift + b` - kicks off default build in VS Code
-- execute `npm run build` from a terminal window
+- execute `yarn build` from a terminal window
 
 ### Zip deploy from VS Code
 1. Make sure your app is built, whatever is currently in your `dist` and `node_modules` folders will be the app that is deployed.
@@ -178,9 +178,9 @@ In the next few sections I will call out everything that changes when adding Typ
 Note that all of this has already been setup for this project, but feel free to use this as a reference for converting other Node.js projects to TypeScript.
 
 ## Getting TypeScript
-TypeScript itself is simple to add to any project with `npm`.
+TypeScript itself is simple to add to any project with `yarn`.
 ```
-npm install -D typescript
+yarn add --dev typescript
 ```
 If you're using VS Code then you're good to go!
 VS Code will detect and use the TypeScript version you have installed in your `node_modules` folder.
@@ -194,7 +194,7 @@ The `test` and `views` folders remain top level as expected.
 
 The full folder structure of this app is explained below:
 
-> **Note!** Make sure you have already built the app using `npm run build`
+> **Note!** Make sure you have already built the app using `yarn build`
 
 | Name | Description |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
