@@ -1,6 +1,8 @@
-import bcrypt from "bcrypt-nodejs";
+import bcrypt from "bcrypt";
 import crypto from "crypto";
 import mongoose from "mongoose";
+
+const saltRounds = 10
 
 export type UserDocument = mongoose.Document & {
     email: string;
@@ -56,9 +58,9 @@ const userSchema = new mongoose.Schema({
 userSchema.pre("save", function save(next) {
     const user = this as UserDocument;
     if (!user.isModified("password")) { return next(); }
-    bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.genSalt(saltRounds, (err, salt) => {
         if (err) { return next(err); }
-        bcrypt.hash(user.password, salt, () => undefined, (err: mongoose.Error, hash) => {
+        bcrypt.hash(user.password, salt, (err: mongoose.Error, hash) => {
             if (err) { return next(err); }
             user.password = hash;
             next();
