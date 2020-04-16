@@ -19,7 +19,7 @@ export const addInfectedRandoms = async (request: Request, response: Response) =
     const random = new Random();
     random.value = value;
     await random.save();          
-  }; 
+  };
 
   response.sendStatus(200);
 };
