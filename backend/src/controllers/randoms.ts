@@ -11,7 +11,7 @@ export const getInfectedRandoms = async (request: Request, response: Response)  
 
 export const addInfectedRandoms = async (request: Request, response: Response) => {
   if (!request.is("application/json")) {
-    response.send(415);
+    response.sendStatus(415);
     return;
   }
   
