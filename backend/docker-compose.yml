@@ -1,0 +1,6 @@
+version: '3'
+services:
+  db:
+    image: 'mongo:4.0.18'
+    ports:
+      - "27017-27019:27017-27019"
