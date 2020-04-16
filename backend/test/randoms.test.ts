@@ -9,3 +9,19 @@ it("returns an empty list of infected randoms", async () => {
             randoms: []
           });
 });
+
+it("accepts a list of infected randoms", async () => {
+  await request(app)
+    .post("/infected-randoms/submit")
+    .set("Content-Type", "application/json")
+    .send([])
+    .expect(200);
+});
+
+it("rejects body that is not json", async () => {
+  await request(app)
+    .post("/infected-randoms/submit")
+    .set("Content-Type", "text/plain")
+    .send("")
+    .expect(415);
+});
