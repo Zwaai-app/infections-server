@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Container, Input, Button } from 'semantic-ui-react'
+import { Form, Container, Input, Button, Step, Icon } from 'semantic-ui-react'
 import { t } from './i18n'
 import { History } from 'history'
 
@@ -11,8 +11,47 @@ export const Register = ({ history }: RegisterProps) => (
   <div className="Register">
     <Container>
       <h1>{t('register.registerNewAccount', 'Nieuw account registreren')}</h1>
+      <Step.Group fluid>
+        <Step>
+          <Icon name="edit" />
+          <Step.Content>
+            <Step.Title>{t('register.stepDataTitle', 'Gegevens')}</Step.Title>
+            <Step.Description>
+              {t('register.stepDataDesc', 'Uw accountgegevens')}
+            </Step.Description>
+          </Step.Content>
+        </Step>
+        <Step disabled>
+          <Icon name="euro" />
+          <Step.Content>
+            <Step.Title>{t('register.stepPayTitle', 'Betaling')}</Step.Title>
+            <Step.Description>
+              {t('register.stepPayDesc', 'Betaal registratiekosten')}
+            </Step.Description>
+          </Step.Content>
+        </Step>
+        <Step disabled>
+          <Icon name="info circle" />
+          <Step.Content>
+            <Step.Title>
+              {t('register.stepConfirmTitle', 'Bevestiging')}
+            </Step.Title>
+          </Step.Content>
+        </Step>
+      </Step.Group>
       <p>
-        {t('register.intro', 'Alle velden moeten verplicht ingevuld worden.')}
+        {t(
+          'register.intro',
+          'Het registreren van een nieuw account kost €25,-. Na het ' +
+            'invullen van onderstaand formulier komt u op een pagina ' +
+            'waar de betaling gedaan kan worden.'
+        )}
+      </p>
+      <p>
+        {t(
+          'register.required',
+          'Alle velden moeten verplicht ingevuld worden.'
+        )}
       </p>
       <Form>
         <Form.Field>
@@ -41,11 +80,11 @@ export const Register = ({ history }: RegisterProps) => (
           />
         </Form.Field>
         <Form.Checkbox
-          label={t('register.agree', 'Ik stem in met de voorwaarden')}
+          label={t('register.agree', 'Ik ga akkoord met de voorwaarden')}
         />
         <Form.Field>
           <Button className="right floated" primary disabled>
-            {t('register.register', 'Registreer')}
+            {t('register.toPay', 'Naar Betaling')}
           </Button>
           <Button
             className="right floated"
