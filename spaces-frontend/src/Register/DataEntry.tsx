@@ -46,16 +46,20 @@ export const DataEntry = ({ history }: DataEntryProps) => (
         label={t('register.agree', 'Ik ga akkoord met de voorwaarden')}
       />
       <Form.Field>
-        <Button className="right floated" primary disabled>
-          {t('register.toPay', 'Naar Betaling')}
-        </Button>
+        <Button
+          className="right floated"
+          icon="chevron right"
+          labelPosition="right"
+          primary
+          disabled
+          content={t('register.toPay', 'Naar Betaling')}
+        />
         <Button
           className="right floated"
           secondary
           onClick={() => history?.push('/')}
-        >
-          {t('register.cancel', 'Annuleer')}
-        </Button>
+          content={t('register.cancel', 'Annuleer')}
+        />
       </Form.Field>
     </Form>
   </div>
