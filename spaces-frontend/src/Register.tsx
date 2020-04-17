@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Container, Input, Button, Icon } from 'semantic-ui-react'
+import { Form, Container, Input, Button } from 'semantic-ui-react'
 import { t } from './i18n'
 import { History } from 'history'
 
