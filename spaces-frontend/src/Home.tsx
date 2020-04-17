@@ -5,10 +5,6 @@ import { Button } from 'semantic-ui-react'
 import { t } from './i18n'
 import { History } from 'history'
 
-interface HomeProps {
-  history?: History
-}
-
 export const Home = ({ history }: HomeProps) => {
   return (
     <div className="Home">
@@ -20,4 +16,8 @@ export const Home = ({ history }: HomeProps) => {
       </header>
     </div>
   )
+}
+
+interface HomeProps {
+  history?: History
 }
