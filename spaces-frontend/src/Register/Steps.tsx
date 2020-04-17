@@ -4,7 +4,7 @@ import { t } from '../i18n'
 
 export const Steps = () => (
   <Step.Group fluid>
-    <Step>
+    <Step active>
       <Icon name="edit" />
       <Step.Content>
         <Step.Title>{t('register.stepDataTitle', 'Gegevens')}</Step.Title>
