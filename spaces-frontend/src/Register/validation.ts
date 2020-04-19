@@ -4,6 +4,20 @@ import { lift, lift2 } from '../EitherUtils'
 import { sequenceT } from 'fp-ts/lib/Apply'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray'
+import emailAddress from 'email-addresses'
+import { toRegistrationData, RegistrationData } from './registerSlice'
+
+const emailValid = (email: string): Either<string, string> =>
+  // tslint:disable-next-line: strict-type-predicates
+  emailAddress.parseOneAddress(email) !== null
+    ? right(email)
+    : left(tInvalidEmail)
+
+const phoneValid = (phone: string): Either<string, string> =>
+  /[0-9]{8}/.test(phone) ? right(phone) : left(tInvalidPhone)
+
+const consentValid = (c: boolean): Either<string, boolean> =>
+  c ? right(true) : left(tConsentRequired)
 
 export const equalPasswords = (
   p1: string,
@@ -19,15 +33,18 @@ const oneCapital = (s: string): Either<string, string> =>
 const oneNumber = (s: string): Either<string, string> =>
   /[0-9]/g.test(s) ? right(s) : left(tPasswordOneNumber)
 
+const emailValidV = lift(emailValid)
+const phoneValidV = lift(phoneValid)
 const minLengthV = lift(minLength)
 const oneCapitalV = lift(oneCapital)
 const oneNumberV = lift(oneNumber)
 const equalPasswordsV = lift2(equalPasswords)
+const consentValidV = lift(consentValid)
 
-export function validatePassword(
+function passwordValid(
   p1: string,
   p2: string
-): Either<NonEmptyArray<string>, string[]> {
+): Either<NonEmptyArray<string>, string> {
   return pipe(
     sequenceT(getValidation(getSemigroup<string>()))(
       minLengthV(p1),
@@ -35,9 +52,34 @@ export function validatePassword(
       oneNumberV(p1),
       equalPasswordsV(p1, p2)
     ),
-    map(() => [])
+    map(() => p1)
   )
 }
+
+export function validateRegistrationData(
+  email: string,
+  phone: string,
+  p1: string,
+  p2: string,
+  consent: boolean
+): Either<NonEmptyArray<string>, RegistrationData> {
+  return pipe(
+    sequenceT(getValidation(getSemigroup<string>()))(
+      emailValidV(email),
+      phoneValidV(phone),
+      passwordValid(p1, p2),
+      consentValidV(consent)
+    ),
+    map(toRegistrationData)
+  )
+}
+
+const tInvalidEmail = t('registration.emailInvalid', 'Geen geldig email adres')
+
+const tInvalidPhone = t(
+  'registration.phoneInvalid',
+  'Mobiel nummer is 8 cijfers'
+)
 
 const tPasswordsDiffer = t(
   'registration.passwordsDiffer',
@@ -46,15 +88,20 @@ const tPasswordsDiffer = t(
 
 const tPasswordLength = t(
   'registration.passwordMinimalLength',
-  'tenminste 8 karakters'
+  'Wachtwoord heeft tenminste 8 karakters'
 )
 
 const tPasswordOneCapital = t(
   'registration.passwordOneCapital',
-  'tenminste een hoofdletter'
+  'Wachtwoord heeft tenminste een hoofdletter'
 )
 
 const tPasswordOneNumber = t(
   'registration.passwordOneNumber',
-  'tenminste een cijfer'
+  'Wachtwoord heeft tenminste een cijfer'
+)
+
+const tConsentRequired = t(
+  'registration.consentRequired',
+  'U moet met de voorwaarden akkoord gaan'
 )
