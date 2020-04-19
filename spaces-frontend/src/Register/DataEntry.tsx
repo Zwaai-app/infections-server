@@ -6,9 +6,11 @@ import { useHistory } from 'react-router-dom'
 import { Either, isLeft, fold } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { equalPasswords, validateRegistrationData } from './validation'
-import { RegistrationData } from './registerSlice'
+import { RegistrationData, setRegistrationData, setStep } from './registerSlice'
+import { useDispatch } from 'react-redux'
 
 export const DataEntry = () => {
+  const dispatch = useDispatch()
   const history = useHistory()
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -102,6 +104,10 @@ export const DataEntry = () => {
             primary
             disabled={!registrationData}
             content={t('register.toPay', 'Naar Betaling')}
+            onClick={() => {
+              dispatch(setRegistrationData(registrationData!))
+              dispatch(setStep('payment'))
+            }}
           />
           <Button
             className="right floated"
