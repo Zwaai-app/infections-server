@@ -8,7 +8,6 @@ import {
   left,
   right,
   isLeft,
-  mapLeft,
   map,
   getValidation,
   getOrElse,
@@ -17,26 +16,7 @@ import * as NEA from 'fp-ts/lib/NonEmptyArray'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { sequenceT } from 'fp-ts/lib/Apply'
 import { identity } from 'fp-ts/lib/function'
-
-function lift<E, A>(
-  check: (a: A) => Either<E, A>
-): (a: A) => Either<NEA.NonEmptyArray<E>, A> {
-  return (a) =>
-    pipe(
-      check(a),
-      mapLeft((a) => [a])
-    )
-}
-
-function lift2<E, A>(
-  check: (a: A, b: A) => Either<E, A>
-): (a: A, b: A) => Either<NEA.NonEmptyArray<E>, A> {
-  return (a, b) =>
-    pipe(
-      check(a, b),
-      mapLeft((a) => [a])
-    )
-}
+import { lift, lift2 } from '../EitherUtils'
 
 const tPasswordsDiffer = t(
   'registration.passwordsDiffer',
