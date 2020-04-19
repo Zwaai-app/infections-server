@@ -1,10 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface RegistrationData {
+export interface RegistrationData {
   email: string
   phone: string
-  password1: string
-  password2: string
+  password: string
 }
 
 type RegistrationStep = 'data' | 'payment' | 'confirmation'
@@ -16,8 +15,7 @@ type RegistrationState = {
 let initialState: RegistrationState = {
   email: '',
   phone: '',
-  password1: '',
-  password2: '',
+  password: '',
   step: 'data',
 }
 
@@ -31,20 +29,12 @@ const registerSlice = createSlice({
     setPhone(state, action: PayloadAction<string>) {
       state.phone = action.payload
     },
-    setPassword1(state, action: PayloadAction<string>) {
-      state.password1 = action.payload
-    },
-    setPassword2(state, action: PayloadAction<string>) {
-      state.password2 = action.payload
+    setPassword(state, action: PayloadAction<string>) {
+      state.password = action.payload
     },
   },
 })
 
-export const {
-  setEmail,
-  setPhone,
-  setPassword1,
-  setPassword2,
-} = registerSlice.actions
+export const { setEmail, setPhone, setPassword } = registerSlice.actions
 
 export default registerSlice.reducer
