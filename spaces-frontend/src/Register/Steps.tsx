@@ -1,10 +1,11 @@
 import React from 'react'
 import { Step, Icon } from 'semantic-ui-react'
 import { t } from '../i18n'
+import { RegistrationStep } from './registerSlice'
 
-export const Steps = () => (
+export const Steps = (prop: { current: RegistrationStep }) => (
   <Step.Group fluid>
-    <Step active>
+    <Step active={prop.current === 'data'}>
       <Icon name="edit" />
       <Step.Content>
         <Step.Title>{t('register.stepDataTitle', 'Gegevens')}</Step.Title>
@@ -13,7 +14,10 @@ export const Steps = () => (
         </Step.Description>
       </Step.Content>
     </Step>
-    <Step disabled>
+    <Step
+      active={prop.current === 'payment'}
+      disabled={prop.current === 'data'}
+    >
       <Icon name="euro" />
       <Step.Content>
         <Step.Title>{t('register.stepPayTitle', 'Betaling')}</Step.Title>
@@ -22,7 +26,10 @@ export const Steps = () => (
         </Step.Description>
       </Step.Content>
     </Step>
-    <Step disabled>
+    <Step
+      active={prop.current === 'confirmation'}
+      disabled={prop.current !== 'confirmation'}
+    >
       <Icon name="info circle" />
       <Step.Content>
         <Step.Title>{t('register.stepConfirmTitle', 'Bevestiging')}</Step.Title>
