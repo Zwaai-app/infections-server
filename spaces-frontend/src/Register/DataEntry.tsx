@@ -7,6 +7,7 @@ import { Either, isLeft, getOrElse } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { identity } from 'fp-ts/lib/function'
 import { equalPasswords, validatePassword } from './validation'
+import emailAddrs from 'email-addresses'
 
 export const DataEntry = () => {
   const history = useHistory()
@@ -20,6 +21,8 @@ export const DataEntry = () => {
     password2
   )
   const errors: string[] = getOrElse(identity)(pwdValid)
+  // tslint:disable-next-line: strict-type-predicates
+  const emailValid = emailAddrs.parseOneAddress(email) !== null
   return (
     <div>
       <p>
@@ -37,7 +40,7 @@ export const DataEntry = () => {
         )}
       </p>
       <Form error={errors.length > 0}>
-        <Form.Field>
+        <Form.Field error={!emailValid}>
           <label>{t('register.email', 'E-mail adres')}</label>
           <Input
             label="@"
