@@ -4,18 +4,30 @@ export interface RegistrationData {
   email: string
   phone: string
   password: string
+  consented: boolean
 }
+
+export const toRegistrationData = ([email, phone, password, consented]: [
+  string,
+  string,
+  string,
+  boolean
+]): RegistrationData => ({ email, phone, password, consented })
 
 type RegistrationStep = 'data' | 'payment' | 'confirmation'
 
 type RegistrationState = {
+  data: RegistrationData
   step: RegistrationStep
-} & RegistrationData
+}
 
 let initialState: RegistrationState = {
-  email: '',
-  phone: '',
-  password: '',
+  data: {
+    email: '',
+    phone: '',
+    password: '',
+    consented: false,
+  },
   step: 'data',
 }
 
@@ -23,18 +35,12 @@ const registerSlice = createSlice({
   name: 'register',
   initialState,
   reducers: {
-    setEmail(state, action: PayloadAction<string>) {
-      state.email = action.payload
-    },
-    setPhone(state, action: PayloadAction<string>) {
-      state.phone = action.payload
-    },
-    setPassword(state, action: PayloadAction<string>) {
-      state.password = action.payload
+    setRegistrationData(state, action: PayloadAction<RegistrationData>) {
+      state.data = action.payload
     },
   },
 })
 
-export const { setEmail, setPhone, setPassword } = registerSlice.actions
+export const { setRegistrationData } = registerSlice.actions
 
 export default registerSlice.reducer

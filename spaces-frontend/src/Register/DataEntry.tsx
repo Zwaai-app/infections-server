@@ -3,11 +3,10 @@ import { Form, Input, Button, Message } from 'semantic-ui-react'
 import { t } from '../i18n'
 import { History } from 'history'
 import { useHistory } from 'react-router-dom'
-import { Either, isLeft, getOrElse } from 'fp-ts/lib/Either'
+import { Either, isLeft, fold } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import { identity } from 'fp-ts/lib/function'
-import { equalPasswords, validatePassword } from './validation'
-import emailAddrs from 'email-addresses'
+import { equalPasswords, validateRegistrationData } from './validation'
+import { RegistrationData } from './registerSlice'
 
 export const DataEntry = () => {
   const history = useHistory()
@@ -15,14 +14,22 @@ export const DataEntry = () => {
   const [phone, setPhone] = useState('')
   const [password1, setPassword1] = useState('')
   const [password2, setPassword2] = useState('')
+  const [consent, setConsent] = useState(false)
   const passwordsSame = equalPasswords(password1, password2)
-  const pwdValid: Either<NonEmptyArray<string>, string[]> = validatePassword(
-    password1,
-    password2
-  )
-  const errors: string[] = getOrElse(identity)(pwdValid)
-  // tslint:disable-next-line: strict-type-predicates
-  const emailValid = emailAddrs.parseOneAddress(email) !== null
+  const validationResult: Either<
+    NonEmptyArray<string>,
+    RegistrationData
+  > = validateRegistrationData(email, phone, password1, password2, consent)
+  let errors: string[] = []
+  let registrationData: RegistrationData | null = null
+  fold(
+    (ers: string[]) => {
+      errors = ers
+    },
+    (reg: RegistrationData) => {
+      registrationData = reg
+    }
+  )(validationResult)
   return (
     <div>
       <p>
@@ -40,13 +47,13 @@ export const DataEntry = () => {
         )}
       </p>
       <Form error={errors.length > 0}>
-        <Form.Field error={!emailValid}>
+        <Form.Field>
           <label>{t('register.email', 'E-mail adres')}</label>
           <Input
             label="@"
             placeholder={t('register.email', 'E-mail adres')}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(_, { value }) => setEmail(value)}
           />
         </Form.Field>
         <Form.Field>
@@ -55,7 +62,7 @@ export const DataEntry = () => {
             label="+31 (0)6"
             placeholder={t('register.phonePlaceholder', '12345678')}
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(_, { value }) => setPhone(value)}
           />
         </Form.Field>
         <Form.Input
@@ -63,7 +70,7 @@ export const DataEntry = () => {
           type="password"
           placeholder={t('register.password1', 'Wachtwoord')}
           value={password1}
-          onChange={(e) => setPassword1(e.target.value)}
+          onChange={(_, { value }) => setPassword1(value)}
           error={isLeft(passwordsSame)}
         />
         <Form.Input
@@ -71,16 +78,21 @@ export const DataEntry = () => {
           type="password"
           placeholder={t('register.password2', 'Wachtwoord nogmaals')}
           value={password2}
-          onChange={(e) => setPassword2(e.target.value)}
+          onChange={(_, { value }) => setPassword2(value)}
           error={isLeft(passwordsSame)}
-        />
-        <Message
-          error
-          header={t('registration.passwordInvalid', 'Wachtwoord is ongeldig')}
-          list={errors}
         />
         <Form.Checkbox
           label={t('register.agree', 'Ik ga akkoord met de voorwaarden')}
+          checked={consent}
+          onChange={(_, { checked }) => setConsent(checked || false)}
+        />
+        <Message
+          error
+          header={t(
+            'registration.formErrors',
+            'Het formulier is niet goed ingevuld'
+          )}
+          list={errors}
         />
         <Form.Field>
           <Button
@@ -88,7 +100,7 @@ export const DataEntry = () => {
             icon="chevron right"
             labelPosition="right"
             primary
-            disabled
+            disabled={!registrationData}
             content={t('register.toPay', 'Naar Betaling')}
           />
           <Button
