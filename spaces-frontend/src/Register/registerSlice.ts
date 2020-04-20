@@ -14,11 +14,8 @@ export const toRegistrationData = ([email, phone, password, consented]: [
   boolean
 ]): RegistrationData => ({ email, phone, password, consented })
 
-export type RegistrationStep = 'data' | 'payment' | 'confirmation'
-
 type RegistrationState = {
   data: RegistrationData
-  step: RegistrationStep
 }
 
 let initialState: RegistrationState = {
@@ -28,7 +25,6 @@ let initialState: RegistrationState = {
     password: '',
     consented: false,
   },
-  step: 'data',
 }
 
 const registerSlice = createSlice({
@@ -38,12 +34,9 @@ const registerSlice = createSlice({
     setRegistrationData(state, action: PayloadAction<RegistrationData>) {
       state.data = action.payload
     },
-    setStep(state, action: PayloadAction<RegistrationStep>) {
-      state.step = action.payload
-    },
   },
 })
 
-export const { setRegistrationData, setStep } = registerSlice.actions
+export const { setRegistrationData } = registerSlice.actions
 
 export default registerSlice.reducer
