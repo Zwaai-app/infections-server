@@ -6,6 +6,7 @@ export const getInfectedRandoms = async (
   response: Response
 ) => {
   const values: string[] = []
+  // tslint:disable-next-line: await-promise
   for (const random of await Random.find({})) {
     values.push(random.value)
   }
