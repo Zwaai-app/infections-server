@@ -1,61 +1,61 @@
-import request from "supertest";
-import { Random } from "../src/models/Random";
-import app from "../src/app";
+import request from 'supertest'
+import { Random } from '../src/models/Random'
+import app from '../src/app'
 
 afterEach(async () => {
   if (await Random.exists({})) {
-    await Random.collection.drop();
+    await Random.collection.drop()
   }
-});
+})
 
-it("returns an empty list of infected randoms", async () => {
+it('returns an empty list of infected randoms', async () => {
   await request(app)
-    .get("/infected-randoms")
-    .expect("Content-Type", /json/)
+    .get('/infected-randoms')
+    .expect('Content-Type', /json/)
     .expect(200, {
-      randoms: []
-    });
-});
+      randoms: [],
+    })
+})
 
-it("accepts a list of infected randoms", async () => {
+it('accepts a list of infected randoms', async () => {
   await request(app)
-    .post("/infected-randoms/submit")
-    .set("Content-Type", "application/json")
+    .post('/infected-randoms/submit')
+    .set('Content-Type', 'application/json')
     .send([])
-    .expect(200);
-});
+    .expect(200)
+})
 
-it("rejects body that is not json", async () => {
+it('rejects body that is not json', async () => {
   await request(app)
-    .post("/infected-randoms/submit")
-    .set("Content-Type", "text/plain")
-    .send("")
-    .expect(415);
-});
+    .post('/infected-randoms/submit')
+    .set('Content-Type', 'text/plain')
+    .send('')
+    .expect(415)
+})
 
-it("saves submitted randoms to list of infected randoms", async () => {
-  const randoms = ["one", "two"];
+it('saves submitted randoms to list of infected randoms', async () => {
+  const randoms = ['one', 'two']
   await request(app)
-    .post("/infected-randoms/submit")
-    .set("Content-Type", "application/json")
-    .send(randoms);
+    .post('/infected-randoms/submit')
+    .set('Content-Type', 'application/json')
+    .send(randoms)
   await request(app)
-    .get("/infected-randoms")
-    .expect("Content-Type", /json/)
-    .expect(200, { randoms });  
-});
+    .get('/infected-randoms')
+    .expect('Content-Type', /json/)
+    .expect(200, { randoms })
+})
 
-it("appends submitted randoms to list of infected randoms", async () => {
+it('appends submitted randoms to list of infected randoms', async () => {
   await request(app)
-    .post("/infected-randoms/submit")
-    .set("Content-Type", "application/json")
-    .send(["one", "two"]);
-   await request(app)
-    .post("/infected-randoms/submit")
-    .set("Content-Type", "application/json")
-    .send(["three", "four"]);
+    .post('/infected-randoms/submit')
+    .set('Content-Type', 'application/json')
+    .send(['one', 'two'])
   await request(app)
-    .get("/infected-randoms")
-    .expect("Content-Type", /json/)
-    .expect(200, { randoms: ["one", "two", "three", "four"] });  
-});
+    .post('/infected-randoms/submit')
+    .set('Content-Type', 'application/json')
+    .send(['three', 'four'])
+  await request(app)
+    .get('/infected-randoms')
+    .expect('Content-Type', /json/)
+    .expect(200, { randoms: ['one', 'two', 'three', 'four'] })
+})
