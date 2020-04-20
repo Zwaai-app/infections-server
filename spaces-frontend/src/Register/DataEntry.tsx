@@ -3,11 +3,12 @@ import { Form, Input, Button, Message } from 'semantic-ui-react'
 import { t } from '../i18n'
 import { History } from 'history'
 import { useHistory } from 'react-router-dom'
-import { Either, isLeft, fold } from 'fp-ts/lib/Either'
+import { Either, isLeft, map, swap, getOrElse } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { equalPasswords, validateRegistrationData } from './validation'
-import { RegistrationData, setRegistrationData, setStep } from './registerSlice'
+import { RegistrationData, setRegistrationData } from './registerSlice'
 import { useDispatch } from 'react-redux'
+import { constant } from 'fp-ts/lib/function'
 
 export const DataEntry = () => {
   const dispatch = useDispatch()
@@ -22,24 +23,14 @@ export const DataEntry = () => {
     NonEmptyArray<string>,
     RegistrationData
   > = validateRegistrationData(email, phone, password1, password2, consent)
-  let errors: string[] = []
-  let registrationData: RegistrationData | null = null
-  fold(
-    (ers: string[]) => {
-      errors = ers
-    },
-    (reg: RegistrationData) => {
-      registrationData = reg
-    }
-  )(validationResult)
   return (
     <div>
       <p>
         {t(
           'register.intro',
-          'Het registreren van een nieuw account kost €25,-. Na het ' +
-            'invullen van onderstaand formulier komt u op een pagina ' +
-            'waar de betaling gedaan kan worden.'
+          'Na het invullen van onderstaand formulier krijgt u een bevestigingsemail' +
+            ' op het opgegeven adres. Klik op de link in de mail om uw account' +
+            ' te activeren.'
         )}
       </p>
       <p>
@@ -48,7 +39,7 @@ export const DataEntry = () => {
           'Alle velden moeten verplicht ingevuld worden.'
         )}
       </p>
-      <Form error={errors.length > 0}>
+      <Form error={isLeft(validationResult)}>
         <Form.Field>
           <label>{t('register.email', 'E-mail adres')}</label>
           <Input
@@ -94,19 +85,18 @@ export const DataEntry = () => {
             'registration.formErrors',
             'Het formulier is niet goed ingevuld'
           )}
-          list={errors}
+          list={getOrElse(constant([] as string[]))(swap(validationResult))}
         />
         <Form.Field>
           <Button
             className="right floated"
-            icon="chevron right"
-            labelPosition="right"
             primary
-            disabled={!registrationData}
-            content={t('register.toPay', 'Naar Betaling')}
+            disabled={isLeft(validationResult)}
+            content={t('register.finish', 'Registreer')}
             onClick={() => {
-              dispatch(setRegistrationData(registrationData!))
-              dispatch(setStep('payment'))
+              map((reg: RegistrationData) =>
+                dispatch(setRegistrationData(reg))
+              )(validationResult)
             }}
           />
           <Button
