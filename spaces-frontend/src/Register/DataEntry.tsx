@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Form, Input, Button, Message } from 'semantic-ui-react'
 import { t } from '../i18n'
-import { History } from 'history'
 import { useHistory } from 'react-router-dom'
 import { Either, isLeft, map, swap, getOrElse } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
@@ -109,8 +108,4 @@ export const DataEntry = () => {
       </Form>
     </div>
   )
-}
-
-interface DataEntryProps {
-  history?: History
 }
