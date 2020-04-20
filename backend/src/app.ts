@@ -10,6 +10,7 @@ import mongoose from 'mongoose'
 import passport from 'passport'
 import bluebird from 'bluebird'
 import { MONGODB_URI, SESSION_SECRET } from './util/secrets'
+import cors from 'cors'
 
 const MongoStore = mongo(session)
 
@@ -25,6 +26,11 @@ import * as passportConfig from './config/passport'
 
 // Create Express server
 const app = express()
+
+if (process.env.NODE_ENV === 'production') {
+  throw new Error('CORS is not yet configured for production!')
+}
+app.use(cors())
 
 // Connect to MongoDB
 const mongoUrl = MONGODB_URI
