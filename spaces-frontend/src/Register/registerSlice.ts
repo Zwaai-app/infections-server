@@ -7,13 +7,6 @@ export interface RegistrationData {
   consented: boolean
 }
 
-export const toRegistrationData = ([email, phone, password, consented]: [
-  string,
-  string,
-  string,
-  boolean
-]): RegistrationData => ({ email, phone, password, consented })
-
 type RegistrationState = {
   data: RegistrationData
 }
