@@ -1,11 +1,11 @@
 import { Either, left, right, map, getValidation } from 'fp-ts/lib/Either'
 import { t } from '../i18n'
 import { lift, lift2 } from '../EitherUtils'
-import { sequenceT } from 'fp-ts/lib/Apply'
+import { sequenceT, sequenceS } from 'fp-ts/lib/Apply'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray'
 import emailAddress from 'email-addresses'
-import { toRegistrationData, RegistrationData } from './registerSlice'
+import { RegistrationData } from './registerSlice'
 
 const emailValid = (email: string): Either<string, string> =>
   // tslint:disable-next-line: strict-type-predicates
@@ -65,15 +65,12 @@ export function validateRegistrationData(
   p2: string,
   consent: boolean
 ): Either<NonEmptyArray<string>, RegistrationData> {
-  return pipe(
-    sequenceT(applicativeValidation())(
-      emailValidV(email),
-      phoneValidV(phone),
-      passwordValid(p1, p2),
-      consentValidV(consent)
-    ),
-    map(toRegistrationData)
-  )
+  return sequenceS(applicativeValidation())({
+    email: emailValidV(email),
+    phone: phoneValidV(phone),
+    password: passwordValid(p1, p2),
+    consented: consentValidV(consent)
+  })
 }
 
 const tInvalidEmail = t('registration.emailInvalid', 'Geen geldig email adres')
