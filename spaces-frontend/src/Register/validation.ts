@@ -41,12 +41,14 @@ const oneNumberV = lift(oneNumber)
 const equalPasswordsV = lift2(equalPasswords)
 const consentValidV = lift(consentValid)
 
+const applicativeValidation = () => getValidation(getSemigroup<string>())
+
 function passwordValid(
   p1: string,
   p2: string
 ): Either<NonEmptyArray<string>, string> {
   return pipe(
-    sequenceT(getValidation(getSemigroup<string>()))(
+    sequenceT(applicativeValidation())(
       minLengthV(p1),
       oneCapitalV(p1),
       oneNumberV(p1),
@@ -64,7 +66,7 @@ export function validateRegistrationData(
   consent: boolean
 ): Either<NonEmptyArray<string>, RegistrationData> {
   return pipe(
-    sequenceT(getValidation(getSemigroup<string>()))(
+    sequenceT(applicativeValidation())(
       emailValidV(email),
       phoneValidV(phone),
       passwordValid(p1, p2),
