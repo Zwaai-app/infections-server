@@ -27,6 +27,11 @@ let initialState: RegistrationState = {
   },
 }
 
+export interface SignupError {
+  message: string
+  errors: any
+}
+
 const registerSlice = createSlice({
   name: 'register',
   initialState,
@@ -34,9 +39,19 @@ const registerSlice = createSlice({
     setRegistrationData(state, action: PayloadAction<RegistrationData>) {
       state.data = action.payload
     },
+    signupSucceeded(state, action: PayloadAction<any>) {
+      console.debug('signup succeeded', action.payload)
+    },
+    signupFailed(state, action: PayloadAction<SignupError>) {
+      console.debug('signupFailed', action.payload)
+    },
   },
 })
 
-export const { setRegistrationData } = registerSlice.actions
+export const {
+  setRegistrationData,
+  signupSucceeded,
+  signupFailed,
+} = registerSlice.actions
 
 export default registerSlice.reducer

@@ -143,6 +143,55 @@ export const postSignup = async (
   })
 }
 
+export const postSignupApi = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  res.setHeader('Content-Type', 'application/json')
+  await check('email', 'Email is not valid').isEmail().run(req)
+  await check('password', 'Password must be at least 4 characters long')
+    .isLength({ min: 4 })
+    .run(req)
+  await check('confirmPassword', 'Passwords do not match')
+    .equals(req.body.password)
+    .run(req)
+  // eslint-disable-next-line @typescript-eslint/camelcase
+  await sanitize('email').normalizeEmail({ gmail_remove_dots: false }).run(req)
+
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    console.debug('postSignupApi validation errors:', errors.array())
+    return res.status(400).json({ errors: errors.array() })
+  }
+
+  const user = new User({
+    email: req.body.email,
+    password: req.body.password,
+  })
+
+  User.findOne({ email: req.body.email }, (err, existingUser) => {
+    if (err) {
+      return next(err)
+    }
+    if (existingUser) {
+      return res.status(400).json({ error: 'email address already in use' })
+    }
+    user.save((err) => {
+      if (err) {
+        return next(err)
+      }
+      req.logIn(user, (err) => {
+        if (err) {
+          return next(err)
+        }
+        res.end(JSON.stringify({}))
+      })
+    })
+  })
+}
+
 /**
  * GET /account
  * Profile page.
