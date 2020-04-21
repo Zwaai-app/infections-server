@@ -43,6 +43,8 @@ export const DataEntry = () => {
           <label>{t('register.email', 'E-mail adres')}</label>
           <Input
             label="@"
+            name="email"
+            autoComplete="username"
             placeholder={t('register.email', 'E-mail adres')}
             value={email}
             onChange={(_, { value }) => setEmail(value)}
@@ -52,6 +54,8 @@ export const DataEntry = () => {
           <label>{t('register.phone', 'Mobiel nummer')}</label>
           <Input
             label="+31 (0)6"
+            name="mobile"
+            autoComplete="tel"
             placeholder={t('register.phonePlaceholder', '12345678')}
             value={phone}
             onChange={(_, { value }) => setPhone(value)}
@@ -60,19 +64,25 @@ export const DataEntry = () => {
         <Form.Input
           label={t('register.password1', 'Wachtwoord')}
           type="password"
+          autocomplete="new-password"
           placeholder={t('register.password1', 'Wachtwoord')}
           value={password1}
           onChange={(_, { value }) => setPassword1(value)}
           error={isLeft(passwordsSame)}
-        />
+        >
+          <input autoComplete="new-password" />
+        </Form.Input>
         <Form.Input
           label={t('register.password2', 'Wachtwoord nogmaals')}
           type="password"
+          autocomplete="new-password"
           placeholder={t('register.password2', 'Wachtwoord nogmaals')}
           value={password2}
           onChange={(_, { value }) => setPassword2(value)}
           error={isLeft(passwordsSame)}
-        />
+        >
+          <input autoComplete="new-password" />
+        </Form.Input>
         <Form.Checkbox
           label={t('register.agree', 'Ik ga akkoord met de voorwaarden')}
           checked={consent}
