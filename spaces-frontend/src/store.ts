@@ -7,7 +7,7 @@ import rootReducer, { RootState } from './rootReducer'
 import logger from 'redux-logger'
 import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import { ActionType } from 'typesafe-actions'
-import { RegisterUser } from './Register/epic'
+import * as RegisterUser from './Register/epic'
 
 type SystemActionsWithPayload = RegisterUser.Actions
 type SystemActions = ActionType<SystemActionsWithPayload>
