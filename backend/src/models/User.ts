@@ -52,8 +52,8 @@ const userSchema = new mongoose.Schema(
       gender: String,
       location: String,
       website: String,
-      picture: String,
-    },
+      picture: String
+    }
   },
   { timestamps: true }
 )
@@ -61,15 +61,17 @@ const userSchema = new mongoose.Schema(
 /**
  * Password hash middleware.
  */
-userSchema.pre('save', function save(next) {
+userSchema.pre('save', function save (next) {
   const user = this as UserDocument
   if (!user.isModified('password')) {
     return next()
   }
+  // tslint:disable-next-line: no-floating-promises
   bcrypt.genSalt(saltRounds, (err, salt) => {
     if (err) {
       return next(err)
     }
+    // tslint:disable-next-line: no-floating-promises
     bcrypt.hash(user.password, salt, (err: mongoose.Error, hash) => {
       if (err) {
         return next(err)
@@ -84,6 +86,7 @@ userSchema.methods.comparePassword = function (
   candidatePassword: string,
   cb: (err: any, isMatch: any) => {}
 ) {
+  // tslint:disable-next-line: no-floating-promises
   bcrypt.compare(
     candidatePassword,
     this.password,
@@ -100,7 +103,10 @@ userSchema.methods.gravatar = function (size: number = 200) {
   if (!this.email) {
     return `https://gravatar.com/avatar/?s=${size}&d=retro`
   }
-  const md5 = crypto.createHash('md5').update(this.email).digest('hex')
+  const md5 = crypto
+    .createHash('md5')
+    .update(this.email)
+    .digest('hex')
   return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`
 }
 
