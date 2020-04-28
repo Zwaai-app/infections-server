@@ -5,12 +5,17 @@ import { useHistory } from 'react-router-dom'
 import { Either, isLeft, map, swap, getOrElse } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { equalPasswords, validateRegistrationData } from './validation'
-import { RegistrationData, setRegistrationData } from './registerSlice'
-import { useDispatch } from 'react-redux'
+import { RegistrationData, setRegistrationData, RegistrationStatus, signupStarted } from './registerSlice'
 import { constant } from 'fp-ts/lib/function'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../rootReducer'
 
 export const DataEntry = () => {
   const dispatch = useDispatch()
+  const status = useSelector(
+    (state: RootState) => state.register.status
+  )
+  const isInProgress = status === RegistrationStatus.InProgress
   const history = useHistory()
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -100,17 +105,20 @@ export const DataEntry = () => {
           <Button
             className="right floated"
             primary
-            disabled={isLeft(validationResult)}
+            disabled={isLeft(validationResult) || isInProgress}
+            loading={isInProgress}
             content={t('register.finish', 'Registreer')}
             onClick={() => {
-              map((reg: RegistrationData) =>
+              map((reg: RegistrationData) => {
+                dispatch(signupStarted())
                 dispatch(setRegistrationData(reg))
-              )(validationResult)
+              })(validationResult)
             }}
           />
           <Button
             className="right floated"
             secondary
+            disabled={status === RegistrationStatus.InProgress}
             onClick={() => history?.push('/')}
             content={t('register.cancel', 'Annuleer')}
           />

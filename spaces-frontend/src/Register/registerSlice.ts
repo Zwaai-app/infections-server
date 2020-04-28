@@ -7,8 +7,14 @@ export interface RegistrationData {
   consented: boolean
 }
 
+export enum RegistrationStatus {
+  Idle,
+  InProgress
+}
+
 type RegistrationState = {
   data: RegistrationData
+  status: RegistrationStatus
 }
 
 let initialState: RegistrationState = {
@@ -16,8 +22,9 @@ let initialState: RegistrationState = {
     email: '',
     phone: '',
     password: '',
-    consented: false,
+    consented: false
   },
+  status: RegistrationStatus.Idle
 }
 
 export interface SignupError {
@@ -29,22 +36,28 @@ const registerSlice = createSlice({
   name: 'register',
   initialState,
   reducers: {
-    setRegistrationData(state, action: PayloadAction<RegistrationData>) {
+    setRegistrationData (state, action: PayloadAction<RegistrationData>) {
       state.data = action.payload
     },
-    signupSucceeded(state, action: PayloadAction<any>) {
-      console.debug('signup succeeded', action.payload)
+    signupStarted (state, action: PayloadAction<void>) {
+      state.status = RegistrationStatus.InProgress
     },
-    signupFailed(state, action: PayloadAction<SignupError>) {
+    signupSucceeded (state, action: PayloadAction<any>) {
+      console.debug('signupSucceeded', action.payload)
+      state.status = RegistrationStatus.Idle
+    },
+    signupFailed (state, action: PayloadAction<SignupError>) {
       console.debug('signupFailed', action.payload)
-    },
-  },
+      state.status = RegistrationStatus.Idle
+    }
+  }
 })
 
 export const {
   setRegistrationData,
+  signupStarted,
   signupSucceeded,
-  signupFailed,
+  signupFailed
 } = registerSlice.actions
 
 export default registerSlice.reducer
