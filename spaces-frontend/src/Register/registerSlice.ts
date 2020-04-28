@@ -53,6 +53,8 @@ const registerSlice = createSlice({
   }
 })
 
+export type SetRegistrationDataAction = ReturnType<typeof setRegistrationData>
+
 export const {
   setRegistrationData,
   signupStarted,
