@@ -1,24 +1,29 @@
-import { map, flatMap, filter, catchError } from 'rxjs/operators'
-import { ajax, AjaxError, AjaxResponse } from 'rxjs/ajax'
+import { map, flatMap, catchError } from 'rxjs/operators'
+import { ajax, AjaxError } from 'rxjs/ajax'
 import { of, Observable } from 'rxjs'
-import { Epic } from 'redux-observable'
+import { Epic, ofType } from 'redux-observable'
 import { ActionType } from 'typesafe-actions'
 import {
   setRegistrationData,
   signupFailed,
   signupSucceeded,
-  RegistrationData
+  SetRegistrationDataAction,
+  signupStarted
 } from './registerSlice'
 import { RootState } from '../rootReducer'
-import { PayloadAction } from '@reduxjs/toolkit'
 
 export type Actions = ActionType<
-  typeof setRegistrationData | typeof signupSucceeded | typeof signupFailed
+  | typeof setRegistrationData
+  | typeof signupSucceeded
+  | typeof signupFailed
+  | typeof signupStarted
 >
 
-function postSignup (
-  action: PayloadAction<RegistrationData>
-): Observable<AjaxResponse> {
+export type PostSignupFn = (
+  action: SetRegistrationDataAction
+) => Observable<any>
+
+const postSignup: PostSignupFn = action => {
   return ajax({
     url: 'http://localhost:3000/api/v1/signup',
     method: 'POST',
@@ -28,11 +33,10 @@ function postSignup (
       password: action.payload.password,
       confirmPassword: action.payload.password
     }
-  })
+  }).pipe(map(r => r.response))
 }
 
-const success = (ajaxResponse: AjaxResponse) =>
-  signupSucceeded(ajaxResponse.response)
+const success = (response: any) => signupSucceeded(response)
 
 const failed = (error: AjaxError) =>
   of(
@@ -42,8 +46,14 @@ const failed = (error: AjaxError) =>
     })
   )
 
-export const epic: Epic<Actions, Actions, RootState> = action$ =>
+export const epic: Epic<Actions, Actions, RootState> = (
+  action$,
+  _state$,
+  { postSignupFn = postSignup }: { postSignupFn: PostSignupFn }
+) =>
   action$.pipe(
-    filter(setRegistrationData.match),
-    flatMap(action => postSignup(action).pipe(map(success), catchError(failed)))
+    ofType<Actions, SetRegistrationDataAction>(setRegistrationData.type),
+    flatMap(action =>
+      postSignupFn(action).pipe(map(success), catchError(failed))
+    )
   )
