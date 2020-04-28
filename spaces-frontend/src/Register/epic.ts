@@ -7,7 +7,7 @@ import {
   setRegistrationData,
   signupFailed,
   signupSucceeded,
-  RegistrationData,
+  RegistrationData
 } from './registerSlice'
 import { RootState } from '../rootReducer'
 import { PayloadAction } from '@reduxjs/toolkit'
@@ -16,7 +16,7 @@ export type Actions = ActionType<
   typeof setRegistrationData | typeof signupSucceeded | typeof signupFailed
 >
 
-function postSignup(
+function postSignup (
   action: PayloadAction<RegistrationData>
 ): Observable<AjaxResponse> {
   return ajax({
@@ -26,8 +26,8 @@ function postSignup(
     body: {
       email: action.payload.email,
       password: action.payload.password,
-      confirmPassword: action.payload.password,
-    },
+      confirmPassword: action.payload.password
+    }
   })
 }
 
@@ -38,14 +38,12 @@ const failed = (error: AjaxError) =>
   of(
     signupFailed({
       message: error.message,
-      errors: error.response.errors,
+      errors: error.response.errors
     })
   )
 
-export const epic: Epic<Actions, Actions, RootState> = (action$) =>
+export const epic: Epic<Actions, Actions, RootState> = action$ =>
   action$.pipe(
     filter(setRegistrationData.match),
-    flatMap((action) =>
-      postSignup(action).pipe(map(success), catchError(failed))
-    )
+    flatMap(action => postSignup(action).pipe(map(success), catchError(failed)))
   )
