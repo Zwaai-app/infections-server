@@ -28,8 +28,8 @@ export const DataEntry = () => {
         {t(
           'register.intro',
           'Na het invullen van onderstaand formulier krijgt u een bevestigingsemail' +
-            ' op het opgegeven adres. Klik op de link in de mail om uw account' +
-            ' te activeren.'
+          ' op het opgegeven adres. Klik op de link in de mail om uw account' +
+          ' te activeren.'
         )}
       </p>
       <p>
@@ -64,7 +64,7 @@ export const DataEntry = () => {
         <Form.Input
           label={t('register.password1', 'Wachtwoord')}
           type="password"
-          autocomplete="new-password"
+          autoComplete="new-password"
           placeholder={t('register.password1', 'Wachtwoord')}
           value={password1}
           onChange={(_, { value }) => setPassword1(value)}
@@ -75,7 +75,7 @@ export const DataEntry = () => {
         <Form.Input
           label={t('register.password2', 'Wachtwoord nogmaals')}
           type="password"
-          autocomplete="new-password"
+          autoComplete="new-password"
           placeholder={t('register.password2', 'Wachtwoord nogmaals')}
           value={password2}
           onChange={(_, { value }) => setPassword2(value)}
