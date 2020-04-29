@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Input, Button, Message } from 'semantic-ui-react'
 import { t } from '../i18n'
 import { useHistory } from 'react-router-dom'
@@ -27,6 +27,13 @@ export const DataEntry = () => {
     NonEmptyArray<string>,
     RegistrationData
   > = validateRegistrationData(email, phone, password1, password2, consent)
+
+  useEffect(() => {
+    if (status === RegistrationStatus.Success) {
+      history.replace('/')
+    }
+  })
+
   return (
     <div>
       <p>
@@ -126,4 +133,5 @@ export const DataEntry = () => {
       </Form>
     </div>
   )
+
 }

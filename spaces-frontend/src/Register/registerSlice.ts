@@ -9,7 +9,9 @@ export interface RegistrationData {
 
 export enum RegistrationStatus {
   Idle,
-  InProgress
+  InProgress,
+  Success,
+  Failed
 }
 
 type RegistrationState = {
@@ -44,11 +46,11 @@ const registerSlice = createSlice({
     },
     signupSucceeded (state, action: PayloadAction<any>) {
       console.debug('signupSucceeded', action.payload)
-      state.status = RegistrationStatus.Idle
+      state.status = RegistrationStatus.Success
     },
     signupFailed (state, action: PayloadAction<SignupError>) {
       console.debug('signupFailed', action.payload)
-      state.status = RegistrationStatus.Idle
+      state.status = RegistrationStatus.Failed
     }
   }
 })
