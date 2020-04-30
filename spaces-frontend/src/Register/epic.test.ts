@@ -6,13 +6,9 @@ import {
   signupFailed
 } from './registerSlice'
 import { RootState } from '../rootReducer'
-import { StateObservable } from 'redux-observable'
+import { StateObservable, ActionsObservable } from 'redux-observable'
 import store from '../store'
-import { Subject, throwError } from 'rxjs'
-
-const deepEqual = (actual: any, expected: any) => {
-  expect(actual).toEqual(expected)
-}
+import { Observable, Subject, throwError, of } from 'rxjs'
 
 const initialStateObservable = () =>
   new StateObservable<RootState>(new Subject(), store.getState())
@@ -25,35 +21,28 @@ const validRegistrationDataAction = setRegistrationData({
 })
 
 describe('Register epic', () => {
-  let testScheduler: TestScheduler
-
-  beforeEach(() => {
-    testScheduler = new TestScheduler(deepEqual)
-  })
-
-  test('happy path', () => {
-    const actionToTest = validRegistrationDataAction
+  test('happy path', done => {
+    expect.assertions(1)
     const response = 'some response'
-    testScheduler.run(({ hot, cold, expectObservable }) => {
-      const state$ = initialStateObservable()
-      const action$ = hot('-i', { i: actionToTest }) as any
-      const postSignupSpy: PostSignupFn = () => cold('--r', { r: { response } })
-      const output$ = epic(action$, state$, { postSignupFn: postSignupSpy })
-      expectObservable(output$).toBe('---o', { o: signupSucceeded(response) })
+    const postSignupFn = () => of({ response })
+    const action$ = ActionsObservable.of(validRegistrationDataAction)
+    const state$ = initialStateObservable()
+    epic(action$, state$, { postSignupFn }).subscribe(action => {
+      expect(action).toEqual(signupSucceeded(response))
+      done()
     })
   })
 
-  test('server returns error', () => {
+  test('server returns error', done => {
+    expect.assertions(1)
     const errors = [{ value: 'bar', msg: 'Email is not valid', param: 'email' }]
     const error = new MockError('test error', errors)
-    testScheduler.run(({ hot, expectObservable }) => {
-      const postSignup = () => throwError(error)
-      const state$ = initialStateObservable()
-      const action$ = hot('-i', { i: validRegistrationDataAction }) as any
-      const output$ = epic(action$, state$, { postSignupFn: postSignup })
-      expectObservable(output$).toBe('-o', {
-        o: signupFailed({ message: error.message, errors })
-      })
+    const postSignupFn = () => throwError(error)
+    const action$ = ActionsObservable.of(validRegistrationDataAction)
+    const state$ = initialStateObservable()
+    epic(action$, state$, { postSignupFn }).subscribe(action => {
+      expect(action).toEqual(signupFailed({ message: error.message, errors }))
+      done()
     })
   })
 })
