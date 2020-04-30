@@ -2,7 +2,7 @@ import React from 'react'
 import logo from './logo.png'
 import './Home.css'
 import { Button } from 'semantic-ui-react'
-import { t } from './i18n'
+import { t } from '../i18n'
 import { History } from 'history'
 
 export const Home = ({ history }: HomeProps) => {
