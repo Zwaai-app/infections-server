@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+export type LoginCredentials = {
+  username: string
+  password: string
+}
+
 export type UserState = {
   token: string | null
 }
@@ -12,6 +17,9 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    login (state, action: PayloadAction<LoginCredentials>) {
+      state.token = null
+    },
     loginSucceeded (state, action: PayloadAction<string>) {
       state.token = action.payload
     },
@@ -24,6 +32,6 @@ const userSlice = createSlice({
   }
 })
 
-export const { loginSucceeded, loginFailed, logout } = userSlice.actions
+export const { login, loginSucceeded, loginFailed, logout } = userSlice.actions
 
 export default userSlice.reducer

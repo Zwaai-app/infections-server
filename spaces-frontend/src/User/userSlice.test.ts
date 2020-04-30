@@ -2,8 +2,18 @@ import reducer, {
   UserState,
   logout,
   loginSucceeded,
-  loginFailed
+  loginFailed,
+  LoginCredentials,
+  login
 } from './userSlice'
+
+const credentials = { username: 'foo', password: 'bar' }
+
+it('clears token when starting new login', () => {
+  const state: UserState = { token: 'some token' }
+  const newState = reducer(state, login(credentials))
+  expect(newState.token).toBeNull()
+})
 
 it('stores the token when login succeeds', () => {
   const state: UserState = { token: null }
