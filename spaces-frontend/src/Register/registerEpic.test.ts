@@ -1,4 +1,4 @@
-import { epic } from './epic'
+import { epic } from './registerEpic'
 import {
   setRegistrationData,
   signupSucceeded,
