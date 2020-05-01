@@ -15,7 +15,7 @@ export function Topbar() {
         <Menu.Menu position='right'>
             {token
                 ? <Menu.Item>{token}</Menu.Item>
-                : <Menu.Item>{t('topbar.login', 'Inloggen')}</Menu.Item>
+                : <Menu.Item><Link to='/login'>{t('topbar.login', 'Inloggen')}</Link></Menu.Item>
             }
             <Menu.Item>{t('topbar.register', 'Registreren')}</Menu.Item>
         </Menu.Menu>
