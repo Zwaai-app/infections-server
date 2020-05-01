@@ -22,3 +22,17 @@ it('renders no login link when already logged in', () => {
     </Provider>)
     expect(queryByText(/topbar\.login/i)).not.toBeInTheDocument()
 })
+
+it('renders register link when not logged in', () => {
+    const { getByText } = render(<Provider store={loggedOutStore}>
+        <MemoryRouter><Topbar /></MemoryRouter>
+    </Provider>)
+    expect(getByText(/topbar\.register/i)).toBeInTheDocument()
+})
+
+it('renders no register link when already logged in', () => {
+    const { queryByText } = render(<Provider store={loggedInStore}>
+        <MemoryRouter><Topbar /></MemoryRouter>
+    </Provider>)
+    expect(queryByText(/topbar\.register/i)).not.toBeInTheDocument()
+})
