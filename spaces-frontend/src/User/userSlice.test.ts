@@ -9,25 +9,25 @@ import reducer, {
 const credentials = { username: 'foo', password: 'bar' }
 
 it('clears loggedIn when starting new login', () => {
-  const state: UserState = { loggedIn: true }
+  const state: UserState = { status: 'loggedIn' }
   const newState = reducer(state, login(credentials))
-  expect(newState.loggedIn).toBeFalsy()
+  expect(newState.status).toBe('loggedOut')
 })
 
 it('sets loggedIn when login succeeds', () => {
-  const state: UserState = { loggedIn: false }
+  const state: UserState = { status: 'loggedOut' }
   const newState = reducer(state, loginSucceeded())
-  expect(newState.loggedIn).toBeTruthy()
+  expect(newState.status).toBe('loggedIn')
 })
 
 it('clears loggedIn on login error', () => {
-  const state: UserState = { loggedIn: true }
+  const state: UserState = { status: 'loggedIn' }
   const newState = reducer(state, loginFailed('some error message'))
-  expect(newState.loggedIn).toBeFalsy()
+  expect(newState.status).toBe('loggedOut')
 })
 
 it('clears loggedIn on logout', () => {
-  const state: UserState = { loggedIn: true }
+  const state: UserState = { status: 'loggedIn' }
   const newState = reducer(state, logout())
-  expect(newState.loggedIn).toBeFalsy()
+  expect(newState.status).toBe('loggedOut')
 })

@@ -7,7 +7,7 @@ import { RootState } from '../rootReducer'
 import { logout } from '../User/userSlice'
 
 export function Topbar() {
-    const loggedIn = useSelector((state: RootState) => state.user.loggedIn)
+    const loggedIn = useSelector((state: RootState) => state.user.status === 'loggedIn')
     const dispatch = useDispatch()
 
     return (<Menu id='topbar' fixed='top' inverted>
