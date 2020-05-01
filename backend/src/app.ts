@@ -139,6 +139,7 @@ app.post('/infected-randoms/submit', randomsController.addInfectedRandoms)
 /**
  * API routes.
  */
+app.post('/api/v1/login', userController.postLoginApi)
 app.post('/api/v1/signup', userController.postSignupApi)
 
 /**
