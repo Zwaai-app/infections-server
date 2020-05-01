@@ -9,8 +9,12 @@ import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import { ActionType } from 'typesafe-actions'
 import * as RegisterUser from './Register/epic'
 import * as User from './User/userEpic'
+import * as Profile from './Profile/profileEpic'
 
-type SystemActionsWithPayload = RegisterUser.Actions | User.Actions
+type SystemActionsWithPayload =
+  | RegisterUser.Actions
+  | User.Actions
+  | Profile.Actions
 type SystemActions = ActionType<SystemActionsWithPayload>
 type finalActions = SystemActions
 
@@ -19,7 +23,11 @@ const epicMiddleware = createEpicMiddleware<
   finalActions,
   RootState
 >()
-const rootEpic = combineEpics(RegisterUser.epic, ...User.allEpics)
+const rootEpic = combineEpics(
+  RegisterUser.epic,
+  ...User.allEpics,
+  ...Profile.allEpics
+)
 
 const store = configureStore({
   reducer: rootReducer,
