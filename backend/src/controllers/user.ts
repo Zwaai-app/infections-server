@@ -124,6 +124,12 @@ export const logout = (req: Request, res: Response) => {
   res.redirect('/')
 }
 
+export const postLogoutApi = (req: Request, res: Response) => {
+  console.debug('logged out')
+  req.logout()
+  res.status(200).end()
+}
+
 /**
  * GET /signup
  * Signup page.
