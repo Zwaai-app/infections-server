@@ -31,7 +31,7 @@ it('handles failing login', done => {
   expect.assertions(1)
   const action$ = ActionsObservable.of(loginAction)
   const state$ = initialStateObservable()
-  const error = new MockAjaxError('invalid username or password', [])
+  const error = new MockAjaxError('invalid username or password')
   const postLoginFn = () => throwError(error)
   loginEpic(action$, state$, { postLoginFn }).subscribe(action => {
     expect(action).toEqual(loginFailed(error.message))
@@ -43,7 +43,7 @@ it('handles logout even when it throws', async () => {
   expect.assertions(1)
   const action$ = ActionsObservable.of(logout())
   const state$ = initialStateObservable()
-  const error = new MockAjaxError('some server error', [])
+  const error = new MockAjaxError('some server error')
   const postLoginFn = () => throwError(error)
   await expect(
     loginEpic(action$, state$, { postLoginFn }).toPromise()
