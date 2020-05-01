@@ -6,11 +6,13 @@ import { Register } from '../Register/Register'
 import { Login } from '../User/Login'
 import { Topbar } from '../Topbar/Topbar'
 import './App.css'
+import { ScrollToTop } from '../utils/ScrollToTop'
 
 function App() {
   return (
     <div className="App">
       <Router>
+        <ScrollToTop />
         <Topbar />
         <Switch>
           <Route exact path="/" component={Home} />
