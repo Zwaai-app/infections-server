@@ -11,10 +11,9 @@ import { RootState } from '../rootReducer'
 import { Subject, of, throwError } from 'rxjs'
 import store from '../store'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
+import { initialStateObservable } from '../testUtils/stateObservable'
 
 const loginAction = login({ username: 'foo@example.com', password: 'bar' })
-const initialStateObservable = () =>
-  new StateObservable<RootState>(new Subject(), store.getState())
 
 it('performs login successfully', done => {
   expect.assertions(1)
