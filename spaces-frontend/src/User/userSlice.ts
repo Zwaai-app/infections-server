@@ -6,11 +6,11 @@ export type LoginCredentials = {
 }
 
 export type UserState = {
-  token: string | null
+  loggedIn: boolean
 }
 
 const initialState: UserState = {
-  token: null
+  loggedIn: false
 }
 
 const userSlice = createSlice({
@@ -18,16 +18,16 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     login (state, action: PayloadAction<LoginCredentials>) {
-      state.token = null
+      state.loggedIn = false
     },
-    loginSucceeded (state, action: PayloadAction<string>) {
-      state.token = action.payload
+    loginSucceeded (state, action: PayloadAction<void>) {
+      state.loggedIn = true
     },
     loginFailed (state, action: PayloadAction<Error>) {
-      state.token = null
+      state.loggedIn = false
     },
     logout (state, action: PayloadAction<void>) {
-      state.token = null
+      state.loggedIn = false
     }
   }
 })
