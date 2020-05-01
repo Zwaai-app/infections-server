@@ -3,6 +3,7 @@ import 'semantic-ui-css/semantic.min.css'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { Home } from '../Home/Home'
 import { Register } from '../Register/Register'
+import { Login } from '../User/Login'
 import { Topbar } from '../Topbar/Topbar'
 import './App.css'
 
@@ -13,6 +14,7 @@ function App() {
         <Topbar />
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route path='/login' component={Login} />
           <Route path="/register" component={Register} />
         </Switch>
       </Router>
