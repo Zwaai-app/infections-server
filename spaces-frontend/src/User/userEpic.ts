@@ -10,12 +10,23 @@ import {
 import { ActionType } from 'typesafe-actions'
 import { Epic, ofType } from 'redux-observable'
 import { RootState } from '../rootReducer'
-import { flatMap, map, catchError, ignoreElements } from 'rxjs/operators'
+import {
+  flatMap,
+  map,
+  catchError,
+  ignoreElements,
+  endWith
+} from 'rxjs/operators'
 import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax'
 import { of, Observable } from 'rxjs'
+import { loadProfile } from '../Profile/profileSlice'
 
 export type Actions = ActionType<
-  typeof login | typeof loginSucceeded | typeof loginFailed | typeof logout
+  | typeof login
+  | typeof loginSucceeded
+  | typeof loginFailed
+  | typeof logout
+  | typeof loadProfile
 >
 
 type PostLoginFn = (creds: LoginCredentials) => Observable<any>
@@ -26,6 +37,7 @@ const postLogin: PostLoginFn = creds =>
     method: 'POST',
     crossDomain: true,
     responseType: 'json',
+    withCredentials: true,
     body: { email: creds.username, password: creds.password }
   })
 
@@ -40,7 +52,11 @@ export const loginEpic: Epic<Actions, Actions, RootState> = (
   action$.pipe(
     ofType<Actions, LoginAction>(login.type),
     flatMap(action =>
-      postLoginFn(action.payload).pipe(map(success), catchError(failed))
+      postLoginFn(action.payload).pipe(
+        map(success),
+        endWith(loadProfile()),
+        catchError(failed)
+      )
     )
   )
 

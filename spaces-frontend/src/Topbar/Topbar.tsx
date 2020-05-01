@@ -20,7 +20,7 @@ export function Topbar() {
         <Menu.Menu position='right'>
             {loggedIn
                 ? <>
-                    <Dropdown item text={organizationName} loading>
+                    <Dropdown item text={organizationName} loading={!profileData}>
                         <Dropdown.Menu>
                             <Dropdown.Divider />
                             <Dropdown.Item onClick={() => {

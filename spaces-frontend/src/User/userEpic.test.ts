@@ -12,18 +12,25 @@ import { Subject, of, throwError } from 'rxjs'
 import store from '../store'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
 import { initialStateObservable } from '../testUtils/stateObservable'
+import { loadProfile } from '../Profile/profileSlice'
+import { Action } from 'redux'
 
 const loginAction = login({ username: 'foo@example.com', password: 'bar' })
 
 it('performs login successfully', done => {
-  expect.assertions(1)
+  expect.assertions(2)
   const action$ = ActionsObservable.of(loginAction)
   const state$ = initialStateObservable()
   const token = 'some token'
   const postLoginFn = () => of({ response: {} })
+  let actions: Action[] = []
   loginEpic(action$, state$, { postLoginFn }).subscribe(action => {
-    expect(action).toEqual(loginSucceeded())
-    done()
+    actions.push(action)
+    if (actions.length === 2) {
+      expect(actions[0]).toEqual(loginSucceeded())
+      expect(actions[1]).toEqual(loadProfile())
+      done()
+    }
   })
 })
 
