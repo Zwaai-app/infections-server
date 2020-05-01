@@ -1,14 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Button, Input } from 'semantic-ui-react'
 import { t } from '../i18n'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { login } from './userSlice'
+import { RootState } from '../rootReducer'
+import { useHistory } from 'react-router-dom'
 
 export const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
+  const loggedIn = useSelector((state: RootState) => state.user.loggedIn)
+  const history = useHistory()
 
+  useEffect(() => {
+    if (loggedIn) {
+      history.replace('/')
+    }
+  })
   return <div id='Login'>
     <h1>{t('login.header', 'Inloggen')}</h1>
     <Form>
