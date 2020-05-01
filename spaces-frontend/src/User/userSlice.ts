@@ -8,7 +8,12 @@ export type LoginCredentials = {
 type LoggedOut = 'loggedOut'
 type LoggingIn = 'loggingIn'
 type LoggedIn = 'loggedIn'
-export type UserState = { status: LoggedOut | LoggingIn | LoggedIn }
+interface LoginError {
+  error: string
+}
+export type UserState = {
+  status: LoggedOut | LoggingIn | LoggedIn | LoginError
+}
 
 const initialState: UserState = { status: 'loggedOut' }
 
@@ -23,7 +28,7 @@ const userSlice = createSlice({
       state.status = 'loggedIn'
     },
     loginFailed (state, action: PayloadAction<string>) {
-      state.status = 'loggedOut'
+      state.status = { error: action.payload }
     },
     logout (state, action: PayloadAction<void>) {
       state.status = 'loggedOut'
