@@ -1,15 +1,16 @@
 import {
   configureStore,
   getDefaultMiddleware,
-  Middleware,
+  Middleware
 } from '@reduxjs/toolkit'
 import rootReducer, { RootState } from './rootReducer'
 import logger from 'redux-logger'
 import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import { ActionType } from 'typesafe-actions'
 import * as RegisterUser from './Register/epic'
+import * as User from './User/userEpic'
 
-type SystemActionsWithPayload = RegisterUser.Actions
+type SystemActionsWithPayload = RegisterUser.Actions | User.Actions
 type SystemActions = ActionType<SystemActionsWithPayload>
 type finalActions = SystemActions
 
@@ -18,15 +19,15 @@ const epicMiddleware = createEpicMiddleware<
   finalActions,
   RootState
 >()
-const rootEpic = combineEpics(RegisterUser.epic)
+const rootEpic = combineEpics(RegisterUser.epic, User.loginEpic)
 
 const store = configureStore({
   reducer: rootReducer,
   middleware: [
     epicMiddleware,
     ...getDefaultMiddleware<RootState>(),
-    logger as Middleware,
-  ],
+    logger as Middleware
+  ]
 })
 
 epicMiddleware.run(rootEpic)
