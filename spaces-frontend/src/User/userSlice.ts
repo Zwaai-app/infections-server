@@ -11,8 +11,15 @@ type LoggedIn = 'loggedIn'
 interface LoginError {
   error: string
 }
+type LoginStatus = LoggedOut | LoggingIn | LoggedIn | LoginError
+
 export type UserState = {
-  status: LoggedOut | LoggingIn | LoggedIn | LoginError
+  status: LoginStatus
+}
+
+export function isLoginError (status: LoginStatus) {
+  // tslint:disable-next-line: strict-type-predicates
+  return (status as LoginError).error !== undefined
 }
 
 const initialState: UserState = { status: 'loggedOut' }
@@ -22,7 +29,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     login (state, action: PayloadAction<LoginCredentials>) {
-      state.status = 'loggedOut'
+      state.status = 'loggingIn'
     },
     loginSucceeded (state, action: PayloadAction<void>) {
       state.status = 'loggedIn'
