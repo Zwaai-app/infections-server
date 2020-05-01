@@ -30,7 +30,7 @@ const postLogin: PostLoginFn = creds =>
   })
 
 const success = (r: AjaxResponse) => loginSucceeded()
-const failed = (e: AjaxError) => of(loginFailed(e))
+const failed = (e: AjaxError) => of(loginFailed(e.message))
 
 export const loginEpic: Epic<Actions, Actions, RootState> = (
   action$,
@@ -60,8 +60,7 @@ export const logoutEpic: Epic<Actions, Actions, RootState> = (
 ) =>
   action$.pipe(
     ofType<Actions, LogoutAction>(logout.type),
-    flatMap(() => postLogoutFn()),
-    ignoreElements()
+    flatMap(() => postLogoutFn().pipe(ignoreElements()))
   )
 
 export const allEpics = [loginEpic, logoutEpic]

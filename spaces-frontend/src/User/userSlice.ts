@@ -23,7 +23,7 @@ const userSlice = createSlice({
     loginSucceeded (state, action: PayloadAction<void>) {
       state.loggedIn = true
     },
-    loginFailed (state, action: PayloadAction<Error>) {
+    loginFailed (state, action: PayloadAction<string>) {
       state.loggedIn = false
     },
     logout (state, action: PayloadAction<void>) {
