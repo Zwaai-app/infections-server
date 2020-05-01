@@ -110,7 +110,6 @@ app.get('/reset/:token', userController.getReset)
 app.post('/reset/:token', userController.postReset)
 app.get('/signup', userController.getSignup)
 app.post('/signup', userController.postSignup)
-app.post('/api/v1/signup', userController.postSignupApi)
 app.get('/contact', contactController.getContact)
 app.post('/contact', contactController.postContact)
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount)
@@ -138,8 +137,9 @@ app.get('/infected-randoms', randomsController.getInfectedRandoms)
 app.post('/infected-randoms/submit', randomsController.addInfectedRandoms)
 
 /**
- * API examples routes.
+ * API routes.
  */
+app.post('/api/v1/signup', userController.postSignupApi)
 
 /**
  * OAuth authentication routes. (Sign in)
