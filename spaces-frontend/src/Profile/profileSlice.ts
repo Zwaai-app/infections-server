@@ -5,6 +5,18 @@ interface ProfileData {
   organizationUrl: string
 }
 
+export const isProfileComplete = (data: unknown): boolean => {
+  if (!data) return false
+
+  const profileData = data as ProfileData
+  return (
+    // tslint:disable: strict-type-predicates
+    profileData.organizationName !== undefined &&
+    profileData.organizationUrl !== undefined
+    // tslint:enable: strict-type-predicates
+  )
+}
+
 export type ProfileState = {
   data: ProfileData | null
   loadError: string | null
