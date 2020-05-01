@@ -8,20 +8,20 @@ import reducer, {
 
 const credentials = { username: 'foo', password: 'bar' }
 
-it('clears loggedIn when starting new login', () => {
-  const state: UserState = { status: 'loggedIn' }
+it('sets in progress when starting new login', () => {
+  const state: UserState = { status: 'loggedOut' }
   const newState = reducer(state, login(credentials))
-  expect(newState.status).toEqual('loggedOut')
+  expect(newState.status).toEqual('loggingIn')
 })
 
 it('sets loggedIn when login succeeds', () => {
-  const state: UserState = { status: 'loggedOut' }
+  const state: UserState = { status: 'loggingIn' }
   const newState = reducer(state, loginSucceeded())
   expect(newState.status).toEqual('loggedIn')
 })
 
 it('clears loggedIn on login error', () => {
-  const state: UserState = { status: 'loggedIn' }
+  const state: UserState = { status: 'loggingIn' }
   const errorMessage = 'some error message'
   const newState = reducer(state, loginFailed(errorMessage))
   expect(newState.status).toEqual({ error: 'some error message' })
