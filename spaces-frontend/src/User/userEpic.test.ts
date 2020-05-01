@@ -35,7 +35,7 @@ it('handles failing login', done => {
   const error = new MockAjaxError('invalid username or password', [])
   const postLoginFn = () => throwError(error)
   loginEpic(action$, state$, { postLoginFn }).subscribe(action => {
-    expect(action).toEqual(loginFailed(error))
+    expect(action).toEqual(loginFailed(error.message))
     done()
   })
 })

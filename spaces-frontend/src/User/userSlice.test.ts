@@ -22,7 +22,7 @@ it('sets loggedIn when login succeeds', () => {
 
 it('clears loggedIn on login error', () => {
   const state: UserState = { loggedIn: true }
-  const newState = reducer(state, loginFailed(new Error()))
+  const newState = reducer(state, loginFailed('some error message'))
   expect(newState.loggedIn).toBeFalsy()
 })
 
