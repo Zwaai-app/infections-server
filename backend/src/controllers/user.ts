@@ -262,6 +262,12 @@ export const getAccount = (req: Request, res: Response) => {
   })
 }
 
+export const getProfileApi = (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'application/json')
+  const user = req.user as UserDocument
+  res.status(200).json(user.profile)
+}
+
 /**
  * POST /account/profile
  * Update profile information.

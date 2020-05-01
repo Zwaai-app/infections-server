@@ -148,6 +148,11 @@ app.post('/infected-randoms/submit', randomsController.addInfectedRandoms)
 app.post('/api/v1/login', userController.postLoginApi)
 app.post('/api/v1/logout', userController.postLogoutApi)
 app.post('/api/v1/signup', userController.postSignupApi)
+app.get(
+  '/api/v1/account/profile',
+  passportConfig.isAuthenticated,
+  userController.getProfileApi
+)
 
 /**
  * OAuth authentication routes. (Sign in)
