@@ -22,6 +22,9 @@ export function Topbar() {
                 ? <>
                     <Dropdown item text={organizationName} loading={!profileData}>
                         <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => {
+                                history.push('/profile')
+                            }}>{t('topbar.profile', 'Profiel')}</Dropdown.Item>
                             <Dropdown.Divider />
                             <Dropdown.Item onClick={() => {
                                 dispatch(logout())
