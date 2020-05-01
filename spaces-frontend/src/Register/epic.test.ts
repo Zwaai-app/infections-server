@@ -9,9 +9,7 @@ import { StateObservable, ActionsObservable } from 'redux-observable'
 import store from '../store'
 import { Subject, throwError, of } from 'rxjs'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
-
-const initialStateObservable = () =>
-  new StateObservable<RootState>(new Subject(), store.getState())
+import { initialStateObservable } from '../testUtils/stateObservable'
 
 const validRegistrationDataAction = setRegistrationData({
   email: 'foo@bar.com',
