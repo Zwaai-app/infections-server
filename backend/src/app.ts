@@ -30,7 +30,13 @@ const app = express()
 if (process.env.NODE_ENV === 'production') {
   throw new Error('CORS is not yet configured for production!')
 }
-app.use(cors())
+app.use(
+  cors({
+    origin: 'http://localhost:3001',
+    optionsSuccessStatus: 200,
+    credentials: true
+  })
+)
 
 // Connect to MongoDB
 const mongoUrl = MONGODB_URI
