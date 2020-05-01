@@ -3,17 +3,19 @@ import {
   LoginAction,
   LoginCredentials,
   loginSucceeded,
-  loginFailed
+  loginFailed,
+  logout,
+  LogoutAction
 } from './userSlice'
 import { ActionType } from 'typesafe-actions'
 import { Epic, ofType } from 'redux-observable'
 import { RootState } from '../rootReducer'
-import { flatMap, map, catchError } from 'rxjs/operators'
+import { flatMap, map, catchError, ignoreElements } from 'rxjs/operators'
 import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax'
 import { of, Observable } from 'rxjs'
 
 export type Actions = ActionType<
-  typeof login | typeof loginSucceeded | typeof loginFailed
+  typeof login | typeof loginSucceeded | typeof loginFailed | typeof logout
 >
 
 type PostLoginFn = (creds: LoginCredentials) => Observable<any>
@@ -23,6 +25,7 @@ const postLogin: PostLoginFn = creds =>
     url: 'http://localhost:3000/api/v1/login',
     method: 'POST',
     crossDomain: true,
+    responseType: 'json',
     body: { email: creds.username, password: creds.password }
   })
 
@@ -40,3 +43,29 @@ export const loginEpic: Epic<Actions, Actions, RootState> = (
       postLoginFn(action.payload).pipe(map(success), catchError(failed))
     )
   )
+
+type PostLogoutFn = () => Observable<any>
+const postLogout: PostLogoutFn = () =>
+  ajax({
+    url: 'http://localhost:3000/api/v1/logout',
+    method: 'POST',
+    crossDomain: true,
+    withCredentials: true,
+    responseType: 'json'
+  })
+const logoutDone = () => {
+  console.debug('logout done')
+  return
+}
+export const logoutEpic: Epic<Actions, Actions, RootState> = (
+  action$,
+  _state$,
+  { postLogoutFn = postLogout }: { postLogoutFn?: PostLogoutFn } = {}
+) =>
+  action$.pipe(
+    ofType<Actions, LogoutAction>(logout.type),
+    flatMap(() => postLogoutFn()),
+    ignoreElements()
+  )
+
+export const allEpics = [loginEpic, logoutEpic]

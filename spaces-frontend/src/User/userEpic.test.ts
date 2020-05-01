@@ -4,7 +4,8 @@ import {
   login,
   loginSucceeded,
   LoginSucceededAction,
-  loginFailed
+  loginFailed,
+  logout
 } from './userSlice'
 import { RootState } from '../rootReducer'
 import { Subject, of, throwError } from 'rxjs'
@@ -37,4 +38,15 @@ it('handles failing login', done => {
     expect(action).toEqual(loginFailed(error))
     done()
   })
+})
+
+it('handles logout even when it throws', async () => {
+  expect.assertions(1)
+  const action$ = ActionsObservable.of(logout())
+  const state$ = initialStateObservable()
+  const error = new MockAjaxError('some server error', [])
+  const postLoginFn = () => throwError(error)
+  await expect(
+    loginEpic(action$, state$, { postLoginFn }).toPromise()
+  ).resolves.toBeUndefined()
 })
