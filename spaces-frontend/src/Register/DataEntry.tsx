@@ -21,12 +21,12 @@ export const DataEntry = () => {
   const [phone, setPhone] = useState('')
   const [password1, setPassword1] = useState('')
   const [password2, setPassword2] = useState('')
-  const [consent, setConsent] = useState(false)
+  const [consented, setConsented] = useState(false)
   const passwordsSame = equalPasswords(password1, password2)
   const validationResult: Either<
     NonEmptyArray<string>,
     RegistrationData
-  > = validateRegistrationData(email, phone, password1, password2, consent)
+  > = validateRegistrationData(email, phone, password1, password2, consented)
 
   useEffect(() => {
     if (status === RegistrationStatus.Success) {
@@ -97,8 +97,8 @@ export const DataEntry = () => {
         </Form.Input>
         <Form.Checkbox
           label={t('register.agree', 'Ik ga akkoord met de voorwaarden')}
-          checked={consent}
-          onChange={(_, { checked }) => setConsent(checked || false)}
+          checked={consented}
+          onChange={(_, { checked }) => setConsented(checked || false)}
         />
         <Message
           error
