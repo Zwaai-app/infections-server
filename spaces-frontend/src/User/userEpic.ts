@@ -26,7 +26,7 @@ const postLogin: PostLoginFn = creds =>
     body: { email: creds.username, password: creds.password }
   })
 
-const success = (r: AjaxResponse) => loginSucceeded(r.response.token)
+const success = (r: AjaxResponse) => loginSucceeded()
 const failed = (e: AjaxError) => of(loginFailed(e))
 
 export const loginEpic: Epic<Actions, Actions, RootState> = (

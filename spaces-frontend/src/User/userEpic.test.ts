@@ -20,9 +20,9 @@ it('performs login successfully', done => {
   const action$ = ActionsObservable.of(loginAction)
   const state$ = initialStateObservable()
   const token = 'some token'
-  const postLoginFn = () => of({ response: { token } })
+  const postLoginFn = () => of({ response: {} })
   loginEpic(action$, state$, { postLoginFn }).subscribe(action => {
-    expect(action).toEqual(loginSucceeded(token))
+    expect(action).toEqual(loginSucceeded())
     done()
   })
 })

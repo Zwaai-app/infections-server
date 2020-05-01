@@ -6,8 +6,8 @@ import { createStore } from 'redux'
 import rootReducer from '../rootReducer'
 import { Provider } from 'react-redux'
 
-const loggedOutStore = createStore(rootReducer, { user: { token: null } })
-const loggedInStore = createStore(rootReducer, { user: { token: 'some tomen' } })
+const loggedOutStore = createStore(rootReducer, { user: { loggedIn: false } })
+const loggedInStore = createStore(rootReducer, { user: { loggedIn: true } })
 
 it('renders login link when not logged in', () => {
     const { getByText } = render(<Provider store={loggedOutStore}>

@@ -3,32 +3,31 @@ import reducer, {
   logout,
   loginSucceeded,
   loginFailed,
-  LoginCredentials,
   login
 } from './userSlice'
 
 const credentials = { username: 'foo', password: 'bar' }
 
-it('clears token when starting new login', () => {
-  const state: UserState = { token: 'some token' }
+it('clears loggedIn when starting new login', () => {
+  const state: UserState = { loggedIn: true }
   const newState = reducer(state, login(credentials))
-  expect(newState.token).toBeNull()
+  expect(newState.loggedIn).toBeFalsy()
 })
 
-it('stores the token when login succeeds', () => {
-  const state: UserState = { token: null }
-  const newState = reducer(state, loginSucceeded('some token'))
-  expect(newState.token).toBe('some token')
+it('sets loggedIn when login succeeds', () => {
+  const state: UserState = { loggedIn: false }
+  const newState = reducer(state, loginSucceeded())
+  expect(newState.loggedIn).toBeTruthy()
 })
 
-it('clears the token on login error', () => {
-  const state: UserState = { token: 'some token' }
+it('clears loggedIn on login error', () => {
+  const state: UserState = { loggedIn: true }
   const newState = reducer(state, loginFailed(new Error()))
-  expect(newState.token).toBeNull()
+  expect(newState.loggedIn).toBeFalsy()
 })
 
-it('clears token on logout', () => {
-  const state: UserState = { token: 'some token' }
+it('clears loggedIn on logout', () => {
+  const state: UserState = { loggedIn: true }
   const newState = reducer(state, logout())
-  expect(newState.token).toBeNull()
+  expect(newState.loggedIn).toBeFalsy()
 })
