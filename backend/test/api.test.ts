@@ -1,8 +1,10 @@
 import request from 'supertest'
 import app from '../src/app'
 
-describe('GET /api', () => {
+describe('POST /api/v1/logout', () => {
   it('should return 200 OK', () => {
-    return request(app).get('/api').expect(200)
+    return request(app)
+      .post('/api/v1/logout')
+      .expect(200)
   })
 })
