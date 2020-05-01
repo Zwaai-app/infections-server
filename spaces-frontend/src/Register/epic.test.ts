@@ -1,5 +1,4 @@
-import { epic, PostSignupFn } from './epic'
-import { TestScheduler } from 'rxjs/testing'
+import { epic } from './epic'
 import {
   setRegistrationData,
   signupSucceeded,
@@ -8,7 +7,8 @@ import {
 import { RootState } from '../rootReducer'
 import { StateObservable, ActionsObservable } from 'redux-observable'
 import store from '../store'
-import { Observable, Subject, throwError, of } from 'rxjs'
+import { Subject, throwError, of } from 'rxjs'
+import { MockAjaxError } from '../testUtils/MockAjaxError'
 
 const initialStateObservable = () =>
   new StateObservable<RootState>(new Subject(), store.getState())
@@ -36,7 +36,7 @@ describe('Register epic', () => {
   test('server returns error', done => {
     expect.assertions(1)
     const errors = [{ value: 'bar', msg: 'Email is not valid', param: 'email' }]
-    const error = new MockError('test error', errors)
+    const error = new MockAjaxError('test error', errors)
     const postSignupFn = () => throwError(error)
     const action$ = ActionsObservable.of(validRegistrationDataAction)
     const state$ = initialStateObservable()
@@ -46,12 +46,3 @@ describe('Register epic', () => {
     })
   })
 })
-
-class MockError extends Error {
-  response: any
-
-  constructor (message: string, errors: any[]) {
-    super(message)
-    this.response = { errors }
-  }
-}
