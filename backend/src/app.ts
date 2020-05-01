@@ -40,12 +40,12 @@ mongoose
   .connect(mongoUrl!, {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useUnifiedTopology: true,
+    useUnifiedTopology: true
   })
   .then(() => {
     /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
   })
-  .catch((err) => {
+  .catch(err => {
     console.log(
       'MongoDB connection error. Please make sure MongoDB is running. ' + err
     )
@@ -66,8 +66,8 @@ app.use(
     secret: SESSION_SECRET!,
     store: new MongoStore({
       url: mongoUrl!,
-      autoReconnect: true,
-    }),
+      autoReconnect: true
+    })
   })
 )
 app.use(passport.initialize())
