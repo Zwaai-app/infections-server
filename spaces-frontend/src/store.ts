@@ -19,7 +19,7 @@ const epicMiddleware = createEpicMiddleware<
   finalActions,
   RootState
 >()
-const rootEpic = combineEpics(RegisterUser.epic, User.loginEpic)
+const rootEpic = combineEpics(RegisterUser.epic, ...User.allEpics)
 
 const store = configureStore({
   reducer: rootReducer,
