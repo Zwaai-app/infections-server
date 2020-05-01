@@ -10,7 +10,7 @@ export const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
-  const loggedIn = useSelector((state: RootState) => state.user.loggedIn)
+  const loggedIn = useSelector((state: RootState) => state.user.status === 'loggedIn')
   const history = useHistory()
 
   useEffect(() => {

@@ -5,29 +5,28 @@ export type LoginCredentials = {
   password: string
 }
 
-export type UserState = {
-  loggedIn: boolean
-}
+type LoggedOut = 'loggedOut'
+type LoggingIn = 'loggingIn'
+type LoggedIn = 'loggedIn'
+export type UserState = { status: LoggedOut | LoggingIn | LoggedIn }
 
-const initialState: UserState = {
-  loggedIn: false
-}
+const initialState: UserState = { status: 'loggedOut' }
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
     login (state, action: PayloadAction<LoginCredentials>) {
-      state.loggedIn = false
+      state.status = 'loggedOut'
     },
     loginSucceeded (state, action: PayloadAction<void>) {
-      state.loggedIn = true
+      state.status = 'loggedIn'
     },
     loginFailed (state, action: PayloadAction<string>) {
-      state.loggedIn = false
+      state.status = 'loggedOut'
     },
     logout (state, action: PayloadAction<void>) {
-      state.loggedIn = false
+      state.status = 'loggedOut'
     }
   }
 })
