@@ -32,6 +32,10 @@ const userSlice = createSlice({
   }
 })
 
+export type LoginAction = ReturnType<typeof login>
+export type LoginSucceededAction = ReturnType<typeof loginSucceeded>
+export type LoginFailedAction = ReturnType<typeof loginFailed>
+
 export const { login, loginSucceeded, loginFailed, logout } = userSlice.actions
 
 export default userSlice.reducer
