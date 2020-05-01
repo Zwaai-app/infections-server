@@ -53,10 +53,6 @@ const postLogout: PostLogoutFn = () =>
     withCredentials: true,
     responseType: 'json'
   })
-const logoutDone = () => {
-  console.debug('logout done')
-  return
-}
 export const logoutEpic: Epic<Actions, Actions, RootState> = (
   action$,
   _state$,
