@@ -91,7 +91,6 @@ export const postLoginApi = async (
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    console.debug('postSignupApi validation errors:', errors.array())
     return res.status(401).json({ errors: errors.array() })
   }
 
@@ -108,7 +107,6 @@ export const postLoginApi = async (
         if (err) {
           return next(err)
         }
-        console.debug('successful login attempt')
         return res.status(200).end()
       })
     }
@@ -125,7 +123,6 @@ export const logout = (req: Request, res: Response) => {
 }
 
 export const postLogoutApi = (req: Request, res: Response) => {
-  console.debug('logged out')
   req.logout()
   res.status(200).end()
 }
@@ -225,7 +222,6 @@ export const postSignupApi = async (
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    console.debug('postSignupApi validation errors:', errors.array())
     return res.status(400).json({ errors: errors.array() })
   }
 
