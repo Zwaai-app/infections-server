@@ -110,7 +110,7 @@ export const DataEntry = () => {
         />
         <Form.Field>
           <Button
-            className="right floated"
+            floated='right'
             primary
             disabled={isLeft(validationResult) || isInProgress}
             loading={isInProgress}
@@ -123,7 +123,7 @@ export const DataEntry = () => {
             }}
           />
           <Button
-            className="right floated"
+            floated='right'
             secondary
             disabled={status === RegistrationStatus.InProgress}
             onClick={() => history?.push('/')}
