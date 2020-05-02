@@ -9,7 +9,8 @@ import { MockAjaxError } from '../testUtils/MockAjaxError'
 
 const orgData = {
   organizationName: 'my org',
-  organizationUrl: 'http://example.com'
+  organizationUrl: 'http://example.com',
+  phone: '088-1234567'
 }
 
 it('can load a profile', done => {

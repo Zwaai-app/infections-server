@@ -4,7 +4,7 @@ import { RootState } from '../rootReducer'
 import { Message } from 'semantic-ui-react'
 import { t } from '../i18n'
 import { Link } from 'react-router-dom'
-import { isProfileComplete } from './profileSlice'
+import { isCompleteProfile } from './profileSlice'
 
 const tCompleteProfile = t('profile.completeWarning', 'Uw gebruikersprofiel is niet volledig ingevuld. Vul alstublieft eerst uw profiel volledig in op uw ')
 const tProfilePage = t('profile.profilePage', 'profielpagina')
@@ -16,7 +16,7 @@ export const CheckProfile = () => {
     }))
 
     return <div id='CheckProfile'>
-        {isProfileComplete(profileData) || !userLoggedIn
+        {isCompleteProfile(profileData) || !userLoggedIn
             ? <></>
             : <Message warning>{tCompleteProfile}
                 <Link to='/profile'>{tProfilePage}</Link>.

@@ -19,7 +19,8 @@ const loggedInWithProfileStore = createStore(rootReducer, {
     profile: {
         data: {
             organizationName: 'foo',
-            organizationUrl: 'bar'
+            organizationUrl: 'bar',
+            phone: 'baz'
         }, loadError: null
     }
 })
