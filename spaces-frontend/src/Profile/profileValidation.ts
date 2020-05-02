@@ -4,6 +4,7 @@ import { parseURL, URLRecord } from 'whatwg-url'
 import { t } from '../i18n'
 import { parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js'
 import { constant, flow } from 'fp-ts/lib/function'
+import { curry } from 'rambda'
 
 const tInvalidOrgName = t(
   'profile.invalidOrganizationName',
@@ -12,8 +13,10 @@ const tInvalidOrgName = t(
 const tInvalidUrl = t('profile.invalidUrl', 'Ongeldige URL')
 const tInvalidPhone = t('profile.invalidPhone', 'Ongeldig telefoonnummer')
 
+const minLength = curry((minLength: number, s: string) => s.length >= minLength)
+
 export const validOrganizationName = (name: string): E.Either<string, string> =>
-  E.fromPredicate((n: string) => n.length >= 2, constant(tInvalidOrgName))(name)
+  E.fromPredicate(minLength(2), constant(tInvalidOrgName))(name)
 
 const validScheme = (url: URLRecord): boolean =>
   !!url && (url.scheme === 'http' || url.scheme === 'https')
