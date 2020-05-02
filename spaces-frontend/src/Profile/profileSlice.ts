@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import * as R from 'ramda'
 
-interface ProfileData {
+export interface ProfileData {
   organizationName: string
   organizationUrl: string
+  phone: string
 }
 
 export const isCompleteProfile = (data: object | null): boolean => {
@@ -12,6 +13,7 @@ export const isCompleteProfile = (data: object | null): boolean => {
   const dummyProfile: ProfileData = {
     organizationName: 'dummy',
     organizationUrl: 'dummy',
+    phone: 'dummy'
   }
 
   // Verify that data overwrites all properties of `dummyProfile`.
