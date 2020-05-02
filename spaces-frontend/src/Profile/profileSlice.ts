@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import * as R from 'ramda'
+import * as R from 'rambda'
 
 export interface ProfileData {
   organizationName: string
