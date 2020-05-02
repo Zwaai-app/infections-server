@@ -1,20 +1,23 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import * as R from 'ramda'
 
 interface ProfileData {
   organizationName: string
   organizationUrl: string
 }
 
-export const isProfileComplete = (data: unknown): boolean => {
+export const isCompleteProfile = (data: object | null): boolean => {
   if (!data) return false
 
-  const profileData = data as ProfileData
-  return (
-    // tslint:disable: strict-type-predicates
-    profileData.organizationName !== undefined &&
-    profileData.organizationUrl !== undefined
-    // tslint:enable: strict-type-predicates
-  )
+  const dummyProfile: ProfileData = {
+    organizationName: 'dummy',
+    organizationUrl: 'dummy',
+  }
+
+  // Verify that data overwrites all properties of `dummyProfile`.
+  // This way the compiler will tell us when we add new fields to
+  // `ProfileData` and forget to add them in this function.
+  return R.equals({ ...dummyProfile, ...data }, data)
 }
 
 export type ProfileState = {
