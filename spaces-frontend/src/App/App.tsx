@@ -7,6 +7,7 @@ import { Login } from '../User/Login'
 import { Topbar } from '../Topbar/Topbar'
 import './App.css'
 import { ScrollToTop } from '../utils/ScrollToTop'
+import { Profile } from '../Profile/Profile'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route path='/login' component={Login} />
           <Route path="/register" component={Register} />
+          <Route path='/profile' component={Profile} />
         </Switch>
       </Router>
     </div>
