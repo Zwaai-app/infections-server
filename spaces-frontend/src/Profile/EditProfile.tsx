@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Button, Image } from 'semantic-ui-react'
+import { Form, Button, Image, Message } from 'semantic-ui-react'
 import { t } from '../i18n'
 import { useSelector } from 'react-redux'
 import { RootState } from '../rootReducer'
-import { maxLogoSizeKB } from './profileValidation'
+import { maxLogoSizeKB, validLogo } from './profileValidation'
+import * as E from 'fp-ts/lib/Either'
+import { flow } from 'fp-ts/lib/function'
 
 export const EditProfile = () => {
     const profileData = useSelector((state: RootState) => state.profile.data)
@@ -13,6 +15,7 @@ export const EditProfile = () => {
     const [phone, setPhone] = useState(profileData?.phone || '')
     const [iconFile, setIconFile] = useState(null as File | null)
     const [iconData, setIconData] = useState('')
+    const iconDataValid = iconData ? validLogo(iconData) : E.right(iconData)
 
     useEffect(() => {
         if (iconFile) {
@@ -26,7 +29,7 @@ export const EditProfile = () => {
 
     return <div id='EditProfile'>
         <h1>{t('editProfile.header', 'Profiel bewerken')}</h1>
-        <Form>
+        <Form error={E.isLeft(iconDataValid)}>
             <Form.Input
                 label={t('editProfile.organizationNameLabel', 'Organisatienaam')}
                 placeholder={t('editProfile.organizationNamePlaceholder', 'Naam van uw organisatie')}
@@ -48,12 +51,19 @@ export const EditProfile = () => {
                 type='file'
                 accept="image/*"
                 onChange={e => { setIconFile(e.target.files?.item(0) || null) }} />
-            {iconData &&
+            {(iconData && !E.isLeft(iconDataValid)) &&
                 <Form.Field>
                     <label>{t('editProfile.logoPreviewLabel', 'Voorvertoning')}</label>
                     <Image bordered style={{ padding: '1em' }} src={iconData} />
                 </Form.Field>
             }
+            <Message error
+                list={flow(
+                    (e: E.Either<string, string>) => E.swap(e),
+                    E.map((s: string) => [s]),
+                    E.getOrElse(() => [] as string[])
+                )(iconDataValid)}
+            />
             <Form.Field>
                 <Button floated='right' disabled primary>{t('editProfile.saveButton', 'Opslaan')}</Button>
             </Form.Field>
