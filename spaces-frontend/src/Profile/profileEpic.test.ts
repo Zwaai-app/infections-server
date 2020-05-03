@@ -1,16 +1,16 @@
 import { loadProfileEpic } from './profileEpic'
 import { ActionsObservable, StateObservable } from 'redux-observable'
 import { loadProfile, profileLoaded, profileLoadFailed } from './profileSlice'
-import { RootState } from '../rootReducer'
-import { Subject, of, throwError } from 'rxjs'
-import store from '../store'
+import { of, throwError } from 'rxjs'
 import { initialStateObservable } from '../testUtils/stateObservable'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
+import { parseURL } from 'whatwg-url'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 const orgData = {
   organizationName: 'my org',
-  organizationUrl: 'http://example.com',
-  phone: '088-1234567'
+  organizationUrl: parseURL('http://example.com')!,
+  phone: parsePhoneNumberFromString('088-1234567', 'NL')!
 }
 
 it('can load a profile', done => {
