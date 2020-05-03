@@ -5,11 +5,13 @@ import profileReducer, {
   isCompleteProfile,
   ProfileData
 } from './profileSlice'
+import { parseURL, URLRecord } from 'whatwg-url'
+import { parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js'
 
 const orgData = {
   organizationName: 'my org',
-  organizationUrl: 'http://example.com',
-  phone: '088-1234567'
+  organizationUrl: parseURL('http://example.com')!,
+  phone: parsePhoneNumberFromString('088-1234567', 'NL')!
 }
 const filledState: ProfileState = { data: orgData, loadError: null }
 
@@ -26,11 +28,6 @@ it('knows whether a data structure forms a complete profile', () => {
   const incomplete = {
     organizationName: 'my org',
     phone: '088-1234567'
-  }
-  const dummyProfile: ProfileData = {
-    organizationName: 'dummy',
-    organizationUrl: 'dummy',
-    phone: 'dummy'
   }
   expect(isCompleteProfile(orgData)).toBeTruthy()
   expect(isCompleteProfile(incomplete)).toBeFalsy()

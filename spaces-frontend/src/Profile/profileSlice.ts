@@ -1,19 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { parseURL, URLRecord } from 'whatwg-url'
+import { parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js'
 import * as R from 'rambda'
 
 export interface ProfileData {
   organizationName: string
-  organizationUrl: string
-  phone: string
+  organizationUrl: URLRecord
+  phone: PhoneNumber
 }
+
+const dummyUrl = parseURL('https://example.com')!
+const dummyPhoneNumber = parsePhoneNumberFromString('999-9999999', 'NL')!
 
 export const isCompleteProfile = (data: object | null): boolean => {
   if (!data) return false
 
   const dummyProfile: ProfileData = {
     organizationName: 'dummy',
-    organizationUrl: 'dummy',
-    phone: 'dummy'
+    organizationUrl: dummyUrl,
+    phone: dummyPhoneNumber
   }
 
   // Verify that data overwrites all properties of `dummyProfile`.
