@@ -3,6 +3,7 @@ import { Form, Button, Image } from 'semantic-ui-react'
 import { t } from '../i18n'
 import { useSelector } from 'react-redux'
 import { RootState } from '../rootReducer'
+import { maxLogoSizeKB } from './profileValidation'
 
 export const EditProfile = () => {
     const profileData = useSelector((state: RootState) => state.profile.data)
@@ -22,6 +23,7 @@ export const EditProfile = () => {
             })
         }
     })
+
     return <div id='EditProfile'>
         <h1>{t('editProfile.header', 'Profiel bewerken')}</h1>
         <Form>
@@ -42,7 +44,7 @@ export const EditProfile = () => {
                 value={phone}
                 onChange={(_, { value }) => setPhone(value)} />
             <Form.Input
-                label={t('editProfile.logoLabel', 'Logo')}
+                label={t('editProfile.logoLabel', 'Logo (max {{maxSize}})', new Map([['maxSize', `${maxLogoSizeKB}KB`]]))}
                 type='file'
                 accept="image/*"
                 onChange={e => { setIconFile(e.target.files?.item(0) || null) }} />
