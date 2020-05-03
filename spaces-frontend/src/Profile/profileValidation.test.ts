@@ -35,12 +35,12 @@ it('validates phone numbers', () => {
 })
 
 it('validates logo', () => {
-  const largeString = new String(Buffer.alloc(101e3, 'a'))
+  const largeString = new String(Buffer.alloc(101e3, 'a')).toString()
   expect(validLogo('logo')).toBeLeft(tInvalidLogo)
   expect(validLogo('data:image/png;base64:ABC')).toBeRight()
-  expect(validLogo('data:image/png;base64:' + largeString)).toBeLeft(
-    tLogoTooLarge
-  )
+  expect(
+    validLogo('data:image/png;base64:' + window.btoa(largeString))
+  ).toBeLeft(tLogoTooLarge)
 })
 
 it('validates profile data', () => {
