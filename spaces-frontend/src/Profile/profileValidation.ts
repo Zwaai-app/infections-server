@@ -1,5 +1,4 @@
 import * as E from 'fp-ts/lib/Either'
-import * as O from 'fp-ts/lib/Option'
 import { parseURL, URLRecord } from 'whatwg-url'
 import { parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js'
 import { t } from '../i18n'
@@ -49,10 +48,14 @@ export const validUrl: (url: string) => E.Either<string, URLRecord> = flow(
 export const validPhone = (phone: string): E.Either<string, PhoneNumber> =>
   E.fromNullable(tInvalidPhone)(parsePhoneNumberFromString(phone, 'NL'))
 
+const base64factor = 4 / 3
 export const validLogo = (logo: string): E.Either<string, string> =>
   flow(
     E.fromPredicate(minLength(5), constant(tInvalidLogo)),
-    E.filterOrElse(maxLength(maxLogoSizeKB * 1e3), constant(tLogoTooLarge))
+    E.filterOrElse(
+      maxLength(maxLogoSizeKB * 1e3 * base64factor),
+      constant(tLogoTooLarge)
+    )
   )(logo)
 
 const applicativeValidation = () => E.getValidation(getSemigroup<string>())
