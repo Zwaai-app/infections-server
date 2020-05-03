@@ -24,8 +24,13 @@ export const tInvalidPhone = t(
   'Ongeldig telefoonnummer'
 )
 export const tInvalidLogo = t('profile.invalidLogo', 'Ongeldig logo')
+export const tLogoTooLarge = t(
+  'profile.logoTooLarge',
+  'Logo is te groot, maximaal 100KB'
+)
 
 const minLength = curry((minLength: number, s: string) => s.length >= minLength)
+const maxLength = curry((maxLength: number, s: string) => s.length < maxLength)
 
 export const validOrganizationName = (name: string): E.Either<string, string> =>
   E.fromPredicate(minLength(2), constant(tInvalidOrgName))(name)
@@ -43,7 +48,10 @@ export const validPhone = (phone: string): E.Either<string, PhoneNumber> =>
   E.fromNullable(tInvalidPhone)(parsePhoneNumberFromString(phone, 'NL'))
 
 export const validLogo = (logo: string): E.Either<string, string> =>
-  E.fromPredicate(minLength(5), constant(tInvalidLogo))(logo)
+  flow(
+    E.fromPredicate(minLength(5), constant(tInvalidLogo)),
+    E.filterOrElse(maxLength(100e3), constant(tLogoTooLarge))
+  )(logo)
 
 const applicativeValidation = () => E.getValidation(getSemigroup<string>())
 

@@ -7,9 +7,12 @@ import {
   tInvalidUrl,
   tInvalidPhone,
   tInvalidLogo,
-  tInvalidScheme
+  tInvalidScheme,
+  validLogo,
+  tLogoTooLarge
 } from './profileValidation'
 import * as E from 'fp-ts/lib/Either'
+import { buffer } from 'rxjs/operators'
 
 it('validates organization names', () => {
   expect(validOrganizationName('')).toBeLeft()
@@ -29,6 +32,15 @@ it('validates phone numbers', () => {
   expect(validPhone('A')).toBeLeft()
   expect(validPhone('A1')).toBeLeft()
   expect(validPhone('012-3456789')).toBeRight()
+})
+
+it('validates logo', () => {
+  const largeString = new String(Buffer.alloc(101e3, 'a'))
+  expect(validLogo('logo')).toBeLeft(tInvalidLogo)
+  expect(validLogo('data:image/png;base64:ABC')).toBeRight()
+  expect(validLogo('data:image/png;base64:' + largeString)).toBeLeft(
+    tLogoTooLarge
+  )
 })
 
 it('validates profile data', () => {
