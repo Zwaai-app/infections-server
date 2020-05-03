@@ -15,6 +15,10 @@ export const tInvalidOrgName = t(
   'Organisatienaam moet minstens twee letters bevatten'
 )
 export const tInvalidUrl = t('profile.invalidUrl', 'Ongeldige URL')
+export const tInvalidScheme = t(
+  'profile.invalidScheme',
+  'Alleen http en https zijn toegestaan'
+)
 export const tInvalidPhone = t(
   'profile.invalidPhone',
   'Ongeldig telefoonnummer'
@@ -31,9 +35,8 @@ const validScheme = (url: URLRecord): boolean =>
 
 export const validUrl: (url: string) => E.Either<string, URLRecord> = flow(
   parseURL,
-  O.fromNullable,
-  O.filter(validScheme),
-  E.fromOption(constant(tInvalidUrl))
+  E.fromNullable(tInvalidUrl),
+  E.filterOrElse(validScheme, constant(tInvalidScheme))
 )
 
 export const validPhone = (phone: string): E.Either<string, PhoneNumber> =>
