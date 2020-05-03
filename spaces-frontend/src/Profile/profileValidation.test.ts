@@ -5,7 +5,8 @@ import {
   validateProfile,
   tInvalidOrgName,
   tInvalidUrl,
-  tInvalidPhone
+  tInvalidPhone,
+  tInvalidLogo
 } from './profileValidation'
 import * as E from 'fp-ts/lib/Either'
 
@@ -30,10 +31,11 @@ it('validates phone numbers', () => {
 })
 
 it('validates profile data', () => {
-  const result = validateProfile('a', 'ftp://example.com', '')
+  const result = validateProfile('a', 'ftp://example.com', '', '')
   E.mapLeft(errs => {
     expect(errs).toContain(tInvalidOrgName)
     expect(errs).toContain(tInvalidUrl)
     expect(errs).toContain(tInvalidPhone)
+    expect(errs).toContain(tInvalidLogo)
   })(result)
 })

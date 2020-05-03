@@ -3,10 +3,13 @@ import { parseURL, URLRecord } from 'whatwg-url'
 import { parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js'
 import * as R from 'rambda'
 
+type DataUrl = string
+
 export interface ProfileData {
   organizationName: string
   organizationUrl: URLRecord
   phone: PhoneNumber
+  logo: DataUrl
 }
 
 const dummyUrl = parseURL('https://example.com')!
@@ -18,7 +21,8 @@ export const isCompleteProfile = (data: object | null): boolean => {
   const dummyProfile: ProfileData = {
     organizationName: 'dummy',
     organizationUrl: dummyUrl,
-    phone: dummyPhoneNumber
+    phone: dummyPhoneNumber,
+    logo: ''
   }
 
   // Verify that data overwrites all properties of `dummyProfile`.

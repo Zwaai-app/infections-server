@@ -10,7 +10,8 @@ import { parsePhoneNumberFromString } from 'libphonenumber-js'
 const orgData = {
   organizationName: 'my org',
   organizationUrl: parseURL('http://example.com')!,
-  phone: parsePhoneNumberFromString('088-1234567', 'NL')!
+  phone: parsePhoneNumberFromString('088-1234567', 'NL')!,
+  logo: 'data:image/png;base64,...'
 }
 
 it('can load a profile', done => {

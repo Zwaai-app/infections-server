@@ -22,7 +22,8 @@ const loggedInWithProfileStore = createStore(rootReducer, {
         data: {
             organizationName: 'foo',
             organizationUrl: parseURL('http://example.foo')!,
-            phone: parsePhoneNumberFromString('888-8888888', 'NL')!
+            phone: parsePhoneNumberFromString('888-8888888', 'NL')!,
+            logo: 'data:image/png;base64,...'
         }, loadError: null
     }
 })
