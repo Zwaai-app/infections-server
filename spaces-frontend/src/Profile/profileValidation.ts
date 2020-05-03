@@ -19,6 +19,7 @@ export const tInvalidPhone = t(
   'profile.invalidPhone',
   'Ongeldig telefoonnummer'
 )
+export const tInvalidLogo = t('profile.invalidLogo', 'Ongeldig logo')
 
 const minLength = curry((minLength: number, s: string) => s.length >= minLength)
 
@@ -38,16 +39,21 @@ export const validUrl: (url: string) => E.Either<string, URLRecord> = flow(
 export const validPhone = (phone: string): E.Either<string, PhoneNumber> =>
   E.fromNullable(tInvalidPhone)(parsePhoneNumberFromString(phone, 'NL'))
 
+export const validLogo = (logo: string): E.Either<string, string> =>
+  E.fromPredicate(minLength(5), constant(tInvalidLogo))(logo)
+
 const applicativeValidation = () => E.getValidation(getSemigroup<string>())
 
 export function validateProfile (
   organizationName: string,
   organizationUrl: string,
-  phone: string
+  phone: string,
+  logo: string
 ): E.Either<NonEmptyArray<string>, ProfileData> {
   return sequenceS(applicativeValidation())({
     organizationName: lift(validOrganizationName)(organizationName),
     organizationUrl: lift(validUrl)(organizationUrl),
-    phone: lift(validPhone)(phone)
+    phone: lift(validPhone)(phone),
+    logo: lift(validLogo)(logo)
   })
 }

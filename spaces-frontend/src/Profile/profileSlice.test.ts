@@ -2,16 +2,16 @@ import profileReducer, {
   ProfileState,
   loadProfile,
   profileLoaded,
-  isCompleteProfile,
-  ProfileData
+  isCompleteProfile
 } from './profileSlice'
-import { parseURL, URLRecord } from 'whatwg-url'
-import { parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js'
+import { parseURL } from 'whatwg-url'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 const orgData = {
   organizationName: 'my org',
   organizationUrl: parseURL('http://example.com')!,
-  phone: parsePhoneNumberFromString('088-1234567', 'NL')!
+  phone: parsePhoneNumberFromString('088-1234567', 'NL')!,
+  logo: 'data:image/png;base64,...'
 }
 const filledState: ProfileState = { data: orgData, loadError: null }
 
