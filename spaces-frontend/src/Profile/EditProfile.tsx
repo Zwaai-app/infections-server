@@ -11,8 +11,8 @@ export const EditProfile = () => {
     const profileData = useSelector((state: RootState) => state.profile.data)
 
     const [orgName, setOrgName] = useState(profileData?.organizationName || '')
-    const [orgUrl, setOrgUrl] = useState(profileData?.organizationUrl || '')
-    const [phone, setPhone] = useState(profileData?.phone || '')
+    const [orgUrl, setOrgUrl] = useState(profileData?.organizationUrl.toString() || '')
+    const [phone, setPhone] = useState(profileData?.phone.formatInternational() || '')
     const [logoFile, setLogoFile] = useState(null as File | null)
     const [logoData, setLogoData] = useState('')
     const logoDataValid = logoData ? validLogo(logoData) : E.right('')
