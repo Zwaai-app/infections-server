@@ -13,15 +13,15 @@ export const EditProfile = () => {
     const [orgName, setOrgName] = useState(profileData?.organizationName || '')
     const [orgUrl, setOrgUrl] = useState(profileData?.organizationUrl || '')
     const [phone, setPhone] = useState(profileData?.phone || '')
-    const [iconFile, setIconFile] = useState(null as File | null)
-    const [iconData, setIconData] = useState('')
-    const iconDataValid = iconData ? validLogo(iconData) : E.right(iconData)
+    const [logoFile, setLogoFile] = useState(null as File | null)
+    const [logoData, setLogoData] = useState('')
+    const logoDataValid = logoData ? validLogo(logoData) : E.right(logoData)
 
     useEffect(() => {
-        if (iconFile) {
-            readImageData(iconFile, buf => {
+        if (logoFile) {
+            readImageData(logoFile, buf => {
                 if (buf) {
-                    setIconData(`data:${iconFile.type};base64,` + window.btoa(buf))
+                    setLogoData(`data:${logoFile.type};base64,` + window.btoa(buf))
                 }
             })
         }
@@ -29,7 +29,7 @@ export const EditProfile = () => {
 
     return <div id='EditProfile'>
         <h1>{t('editProfile.header', 'Profiel bewerken')}</h1>
-        <Form error={E.isLeft(iconDataValid)}>
+        <Form error={E.isLeft(logoDataValid)}>
             <Form.Input
                 label={t('editProfile.organizationNameLabel', 'Organisatienaam')}
                 placeholder={t('editProfile.organizationNamePlaceholder', 'Naam van uw organisatie')}
@@ -50,11 +50,11 @@ export const EditProfile = () => {
                 label={t('editProfile.logoLabel', 'Logo (max {{maxSize}})', new Map([['maxSize', `${maxLogoSizeKB}KB`]]))}
                 type='file'
                 accept="image/*"
-                onChange={e => { setIconFile(e.target.files?.item(0) || null) }} />
-            {(iconData && !E.isLeft(iconDataValid)) &&
+                onChange={e => { setLogoFile(e.target.files?.item(0) || null) }} />
+            {(logoData && !E.isLeft(logoDataValid)) &&
                 <Form.Field>
                     <label>{t('editProfile.logoPreviewLabel', 'Voorvertoning')}</label>
-                    <Image bordered style={{ padding: '1em' }} src={iconData} />
+                    <Image bordered style={{ padding: '1em' }} src={logoData} />
                 </Form.Field>
             }
             <Message error
@@ -62,7 +62,7 @@ export const EditProfile = () => {
                     (e: E.Either<string, string>) => E.swap(e),
                     E.map((s: string) => [s]),
                     E.getOrElse(() => [] as string[])
-                )(iconDataValid)}
+                )(logoDataValid)}
             />
             <Form.Field>
                 <Button floated='right' disabled primary>{t('editProfile.saveButton', 'Opslaan')}</Button>
