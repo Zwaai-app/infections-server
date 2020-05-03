@@ -2,7 +2,8 @@ import profileReducer, {
   ProfileState,
   loadProfile,
   profileLoaded,
-  isCompleteProfile
+  isCompleteProfile,
+  updateProfile
 } from './profileSlice'
 import { parseURL } from 'whatwg-url'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
@@ -31,4 +32,9 @@ it('knows whether a data structure forms a complete profile', () => {
   }
   expect(isCompleteProfile(orgData)).toBeTruthy()
   expect(isCompleteProfile(incomplete)).toBeFalsy()
+})
+
+it('can update a profile', () => {
+  const state: ProfileState = { data: null, loadError: null }
+  expect(profileReducer(state, updateProfile(orgData)).data).toEqual(orgData)
 })
