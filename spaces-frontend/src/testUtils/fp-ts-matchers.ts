@@ -13,10 +13,21 @@ declare global {
 }
 
 expect.extend({
-  toBeLeft<E, A> (received: E.Either<E, A>) {
+  toBeLeft<E, A> (received: E.Either<E, A>, expected?: E) {
     return {
-      pass: E.isLeft(received),
-      message: () => `Either expected to be left, but was right`
+      pass: expected
+        ? E.exists(v => v === expected)(E.swap(received))
+        : E.isLeft(received),
+      message: () => {
+        if (!expected) {
+          return `Either expected to be left, but was right`
+        } else {
+          return determineDiff(
+            { expand: !!this.expand },
+            expected
+          )(E.swap(received))
+        }
+      }
     }
   },
   toBeRight<E, A> (received: E.Either<E, A>, expected?: A) {
@@ -28,24 +39,27 @@ expect.extend({
         if (!expected) {
           return 'Either expected to be right, but was left'
         } else {
-          return flow(
-            E.map(v => {
-              const diffString = diff(expected, v, { expand: !!this.expand })
-              return (
-                matcherHint('toBeRight', undefined, undefined) +
-                '\n\n' +
-                (diffString && diffString.includes('- Expect')
-                  ? `Difference:\n\n${diffString}`
-                  : `Expected: right(${printExpected(expected)})\n` +
-                    `Received: right(${printReceived(received)})`)
-              )
-
-              // `Either expected to be ${value}, but was ${v}`
-            }),
-            E.getOrElse(() => `Either expected to be right, but was left`)
-          )(received)
+          return determineDiff({ expand: !!this.expand }, expected)(received)
         }
       }
     }
   }
 })
+
+function determineDiff<A, B> (options: any, expected: B) {
+  return (received: E.Either<A, B>) =>
+    flow(
+      E.map(v => {
+        const diffString = diff(expected, v, options)
+        return (
+          matcherHint('toBeRight', undefined, undefined) +
+          '\n\n' +
+          (diffString && diffString.includes('- Expect')
+            ? `Difference:\n\n${diffString}`
+            : `Expected: right(${printExpected(expected)})\n` +
+              `Received: right(${printReceived(received)})`)
+        )
+      }),
+      E.getOrElse(() => `Either expected to be right, but was left`)
+    )(received)
+}
