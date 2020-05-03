@@ -49,6 +49,9 @@ const profileSlice = createSlice({
     },
     profileLoadFailed (state, action: PayloadAction<string>) {
       state.loadError = action.payload
+    },
+    updateProfile (state, action: PayloadAction<ProfileData>) {
+      state.data = action.payload
     }
   }
 })
@@ -58,7 +61,8 @@ export type LoadProfileAction = ReturnType<typeof loadProfile>
 export const {
   loadProfile,
   profileLoaded,
-  profileLoadFailed
+  profileLoadFailed,
+  updateProfile
 } = profileSlice.actions
 
 export default profileSlice.reducer
