@@ -1,8 +1,13 @@
 import {
   validOrganizationName,
   validPhone,
-  validUrl
+  validUrl,
+  validateProfile,
+  tInvalidOrgName,
+  tInvalidUrl,
+  tInvalidPhone
 } from './profileValidation'
+import * as E from 'fp-ts/lib/Either'
 
 it('validates organization names', () => {
   expect(validOrganizationName('')).toBeLeft()
@@ -22,4 +27,13 @@ it('validates phone numbers', () => {
   expect(validPhone('A')).toBeLeft()
   expect(validPhone('A1')).toBeLeft()
   expect(validPhone('012-3456789')).toBeRight()
+})
+
+it('validates profile data', () => {
+  const result = validateProfile('a', 'ftp://example.com', '')
+  E.mapLeft(errs => {
+    expect(errs).toContain(tInvalidOrgName)
+    expect(errs).toContain(tInvalidUrl)
+    expect(errs).toContain(tInvalidPhone)
+  })(result)
 })
