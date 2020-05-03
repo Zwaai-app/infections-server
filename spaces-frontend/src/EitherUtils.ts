@@ -12,12 +12,12 @@ export function lift<E, A, B> (
     )
 }
 
-export function lift2<E, A, B> (
-  check: (a1: A, a2: A) => Either<E, B>
-): (a1: A, a2: A) => Either<NonEmptyArray<E>, B> {
-  return (a1, a2) =>
+export function lift2<E, A, B, C> (
+  check: (a: A, b: B) => Either<E, C>
+): (a: A, b: B) => Either<NonEmptyArray<E>, C> {
+  return (a, b) =>
     pipe(
-      check(a1, a2),
+      check(a, b),
       mapLeft(e => [e])
     )
 }
