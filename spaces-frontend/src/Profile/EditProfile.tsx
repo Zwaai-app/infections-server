@@ -3,9 +3,9 @@ import { Form, Button, Image, Message } from 'semantic-ui-react'
 import { t } from '../i18n'
 import { useSelector } from 'react-redux'
 import { RootState } from '../rootReducer'
-import { maxLogoSizeKB, validLogo } from './profileValidation'
+import { maxLogoSizeKB, validLogo, validateProfile } from './profileValidation'
 import * as E from 'fp-ts/lib/Either'
-import { flow } from 'fp-ts/lib/function'
+import { flow, constant } from 'fp-ts/lib/function'
 
 export const EditProfile = () => {
     const profileData = useSelector((state: RootState) => state.profile.data)
@@ -16,6 +16,10 @@ export const EditProfile = () => {
     const [logoFile, setLogoFile] = useState(null as File | null)
     const [logoData, setLogoData] = useState('')
     const logoDataValid = logoData ? validLogo(logoData) : E.right('')
+    const [wantsToSave, setWantsToSave] = useState(false)
+    const profileDataValid = wantsToSave
+        ? validateProfile(orgName, orgUrl, phone, logoData)
+        : null
 
     useEffect(() => {
         if (logoFile) {
@@ -29,7 +33,7 @@ export const EditProfile = () => {
 
     return <div id='EditProfile'>
         <h1>{t('editProfile.header', 'Profiel bewerken')}</h1>
-        <Form error={E.isLeft(logoDataValid)}>
+        <Form error={E.isLeft(logoDataValid) || (!!profileDataValid && E.isLeft(profileDataValid))}>
             <Form.Input
                 label={t('editProfile.organizationNameLabel', 'Organisatienaam')}
                 placeholder={t('editProfile.organizationNamePlaceholder', 'Naam van uw organisatie')}
@@ -58,14 +62,23 @@ export const EditProfile = () => {
                 </Form.Field>
             }
             <Message error
-                list={flow(
-                    (e: E.Either<string, string>) => E.swap(e),
-                    E.map((s: string) => [s]),
-                    E.getOrElse(() => [] as string[])
-                )(logoDataValid)}
+                list={
+                    wantsToSave && profileDataValid
+                        ? E.getOrElse(constant([] as string[]))(E.swap(profileDataValid))
+                        : flow(
+                            (e: E.Either<string, string>) => E.swap(e),
+                            E.map((s: string) => [s]),
+                            E.getOrElse(() => [] as string[])
+                        )(logoDataValid)}
             />
             <Form.Field>
-                <Button floated='right' disabled primary>{t('editProfile.saveButton', 'Opslaan')}</Button>
+                <Button floated='right' primary
+                    onClick={() => {
+                        setWantsToSave(true)
+                        const v = validateProfile(orgName, orgUrl, phone, logoData)
+                        E.map(profile => { console.debug('save', profile) })(v)
+                    }}
+                >{t('editProfile.saveButton', 'Opslaan')}</Button>
             </Form.Field>
         </Form>
     </div>
