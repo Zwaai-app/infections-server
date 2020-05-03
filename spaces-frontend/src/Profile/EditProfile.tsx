@@ -52,9 +52,9 @@ export const EditProfile = () => {
                 accept="image/*"
                 onChange={e => { setLogoFile(e.target.files?.item(0) || null) }} />
             {(logoData && !E.isLeft(logoDataValid)) &&
-                <Form.Field>
+                <Form.Field className='logoPreview'>
                     <label>{t('editProfile.logoPreviewLabel', 'Voorvertoning')}</label>
-                    <Image bordered style={{ padding: '1em' }} src={logoData} />
+                    <Image bordered src={logoData} />
                 </Form.Field>
             }
             <Message error
