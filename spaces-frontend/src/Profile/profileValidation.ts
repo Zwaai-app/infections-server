@@ -1,17 +1,24 @@
 import * as E from 'fp-ts/lib/Either'
 import * as O from 'fp-ts/lib/Option'
 import { parseURL, URLRecord } from 'whatwg-url'
-import { t } from '../i18n'
 import { parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js'
+import { t } from '../i18n'
 import { constant, flow } from 'fp-ts/lib/function'
 import { curry } from 'rambda'
+import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray'
+import { ProfileData } from './profileSlice'
+import { sequenceS } from 'fp-ts/lib/Apply'
+import { lift } from '../EitherUtils'
 
-const tInvalidOrgName = t(
+export const tInvalidOrgName = t(
   'profile.invalidOrganizationName',
   'Organisatienaam moet minstens twee letters bevatten'
 )
-const tInvalidUrl = t('profile.invalidUrl', 'Ongeldige URL')
-const tInvalidPhone = t('profile.invalidPhone', 'Ongeldig telefoonnummer')
+export const tInvalidUrl = t('profile.invalidUrl', 'Ongeldige URL')
+export const tInvalidPhone = t(
+  'profile.invalidPhone',
+  'Ongeldig telefoonnummer'
+)
 
 const minLength = curry((minLength: number, s: string) => s.length >= minLength)
 
@@ -30,3 +37,17 @@ export const validUrl: (url: string) => E.Either<string, URLRecord> = flow(
 
 export const validPhone = (phone: string): E.Either<string, PhoneNumber> =>
   E.fromNullable(tInvalidPhone)(parsePhoneNumberFromString(phone, 'NL'))
+
+const applicativeValidation = () => E.getValidation(getSemigroup<string>())
+
+export function validateProfile (
+  organizationName: string,
+  organizationUrl: string,
+  phone: string
+): E.Either<NonEmptyArray<string>, ProfileData> {
+  return sequenceS(applicativeValidation())({
+    organizationName: lift(validOrganizationName)(organizationName),
+    organizationUrl: lift(validUrl)(organizationUrl),
+    phone: lift(validPhone)(phone)
+  })
+}
