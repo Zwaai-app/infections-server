@@ -15,7 +15,7 @@ export const EditProfile = () => {
     const [phone, setPhone] = useState(profileData?.phone || '')
     const [logoFile, setLogoFile] = useState(null as File | null)
     const [logoData, setLogoData] = useState('')
-    const logoDataValid = logoData ? validLogo(logoData) : E.right(logoData)
+    const logoDataValid = logoData ? validLogo(logoData) : E.right('')
 
     useEffect(() => {
         if (logoFile) {
