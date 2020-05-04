@@ -6,12 +6,11 @@ import profileReducer, {
   updateProfile
 } from './profileSlice'
 import { parseURL } from 'whatwg-url'
-import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 const orgData = {
   organizationName: 'my org',
   organizationUrl: parseURL('http://example.com')!,
-  phone: parsePhoneNumberFromString('088-1234567', 'NL')!,
+  phone: '088-1234567',
   logo: 'data:image/png;base64,...'
 }
 const filledState: ProfileState = { data: orgData, loadError: null }

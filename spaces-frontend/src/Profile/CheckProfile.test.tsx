@@ -6,7 +6,6 @@ import { createStore } from 'redux'
 import rootReducer from '../rootReducer'
 import { MemoryRouter } from 'react-router-dom'
 import { parseURL } from 'whatwg-url'
-import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 const loggedOutStore = createStore(rootReducer, {
     user: { status: 'loggedOut' },
@@ -22,7 +21,7 @@ const loggedInWithProfileStore = createStore(rootReducer, {
         data: {
             organizationName: 'foo',
             organizationUrl: parseURL('http://example.foo')!,
-            phone: parsePhoneNumberFromString('888-8888888', 'NL')!,
+            phone: '888-8888888',
             logo: 'data:image/png;base64,...'
         }, loadError: null
     }

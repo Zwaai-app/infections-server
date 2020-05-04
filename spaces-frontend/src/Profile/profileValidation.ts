@@ -69,7 +69,9 @@ export function validateProfile (
   return sequenceS(applicativeValidation())({
     organizationName: lift(validOrganizationName)(organizationName),
     organizationUrl: lift(validUrl)(organizationUrl),
-    phone: lift(validPhone)(phone),
+    phone: E.map((pn: PhoneNumber) => pn.formatInternational())(
+      lift(validPhone)(phone)
+    ),
     logo: lift(validLogo)(logo)
   })
 }

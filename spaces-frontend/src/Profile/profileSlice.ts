@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { parseURL, URLRecord } from 'whatwg-url'
-import { parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js'
 import * as R from 'rambda'
 
 type DataUrl = string
@@ -8,12 +7,11 @@ type DataUrl = string
 export interface ProfileData {
   organizationName: string
   organizationUrl: URLRecord
-  phone: PhoneNumber
+  phone: string
   logo: DataUrl
 }
 
 const dummyUrl = parseURL('https://example.com')!
-const dummyPhoneNumber = parsePhoneNumberFromString('999-9999999', 'NL')!
 
 export const isCompleteProfile = (data: object | null): boolean => {
   if (!data) return false
@@ -21,7 +19,7 @@ export const isCompleteProfile = (data: object | null): boolean => {
   const dummyProfile: ProfileData = {
     organizationName: 'dummy',
     organizationUrl: dummyUrl,
-    phone: dummyPhoneNumber,
+    phone: 'dummy',
     logo: ''
   }
 
