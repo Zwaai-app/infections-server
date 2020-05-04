@@ -2,7 +2,7 @@ import * as E from 'fp-ts/lib/Either'
 import { parseURL, URLRecord } from 'whatwg-url'
 import { parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js'
 import { t } from '../i18n'
-import { constant, flow } from 'fp-ts/lib/function'
+import { constant, flow, flip } from 'fp-ts/lib/function'
 import { curry } from 'rambda'
 import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray'
 import { ProfileData } from './profileSlice'
@@ -30,6 +30,7 @@ export const tLogoTooLarge = t(
   new Map([['maxSize', `${maxLogoSizeKB}`]])
 )
 
+const parseNLPhoneNr = curry(flip(parsePhoneNumberFromString))('NL')
 const minLength = curry((minLength: number, s: string) => s.length >= minLength)
 const maxLength = curry((maxLength: number, s: string) => s.length < maxLength)
 
@@ -45,8 +46,13 @@ export const validUrl: (url: string) => E.Either<string, URLRecord> = flow(
   E.filterOrElse(validScheme, constant(tInvalidScheme))
 )
 
-export const validPhone = (phone: string): E.Either<string, PhoneNumber> =>
-  E.fromNullable(tInvalidPhone)(parsePhoneNumberFromString(phone, 'NL'))
+export const validPhone: (
+  phone: string
+) => E.Either<string, PhoneNumber> = flow(
+  parseNLPhoneNr,
+  E.fromNullable(tInvalidPhone),
+  E.filterOrElse(pn => pn.isValid(), constant(tInvalidPhone))
+)
 
 const base64factor = 4 / 3
 export const validLogo = (logo: string): E.Either<string, string> =>

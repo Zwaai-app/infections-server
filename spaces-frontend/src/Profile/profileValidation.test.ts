@@ -30,6 +30,7 @@ it('validates URLs', () => {
 it('validates phone numbers', () => {
   expect(validPhone('A')).toBeLeft()
   expect(validPhone('A1')).toBeLeft()
+  expect(validPhone('+316123')).toBeLeft()
   expect(validPhone('012-3456789')).toBeRight()
 })
 
