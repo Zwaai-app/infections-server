@@ -6,6 +6,9 @@ import { RootState } from '../rootReducer'
 import { maxLogoSizeKB, validLogo, validateProfile } from './profileValidation'
 import * as E from 'fp-ts/lib/Either'
 import { flow, constant } from 'fp-ts/lib/function'
+import { AsYouType } from 'libphonenumber-js'
+
+const asYouType = new AsYouType('NL')
 
 export const EditProfile = () => {
     const profileData = useSelector((state: RootState) => state.profile.data)
@@ -49,7 +52,11 @@ export const EditProfile = () => {
                 label={t('editProfile.phoneLabel', 'Telefoonnummer voor ondersteuning')}
                 placeholder={t('editProfile.phonePlaceholder', '0123-456789')}
                 value={phone}
-                onChange={(_, { value }) => setPhone(value)} />
+                onChange={(_, { value }) => {
+                    asYouType.reset()
+                    asYouType.input(value)
+                    setPhone(asYouType.getNumber()?.formatInternational() || value)
+                }} />
             <Form.Input
                 label={t('editProfile.logoLabel', 'Logo (max {{maxSize}})', new Map([['maxSize', `${maxLogoSizeKB}KB`]]))}
                 type='file'
