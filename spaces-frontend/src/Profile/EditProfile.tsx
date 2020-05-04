@@ -12,7 +12,7 @@ export const EditProfile = () => {
 
     const [orgName, setOrgName] = useState(profileData?.organizationName || '')
     const [orgUrl, setOrgUrl] = useState(profileData?.organizationUrl.toString() || '')
-    const [phone, setPhone] = useState(profileData?.phone.formatInternational() || '')
+    const [phone, setPhone] = useState(profileData?.phone || '')
     const [logoFile, setLogoFile] = useState(null as File | null)
     const [logoData, setLogoData] = useState('')
     const logoDataValid = logoData ? validLogo(logoData) : E.right('')
