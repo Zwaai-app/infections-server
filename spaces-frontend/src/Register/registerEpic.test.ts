@@ -4,10 +4,8 @@ import {
   signupSucceeded,
   signupFailed
 } from './registerSlice'
-import { RootState } from '../rootReducer'
-import { StateObservable, ActionsObservable } from 'redux-observable'
-import store from '../store'
-import { Subject, throwError, of } from 'rxjs'
+import { ActionsObservable } from 'redux-observable'
+import { throwError, of } from 'rxjs'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
 import { initialStateObservable } from '../testUtils/stateObservable'
 

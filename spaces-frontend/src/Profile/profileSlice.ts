@@ -41,7 +41,7 @@ const profileSlice = createSlice({
   initialState,
   reducers: {
     // tslint:disable-next-line: no-empty
-    loadProfile (state, action: PayloadAction<void>) {},
+    loadProfile (_state, _action: PayloadAction<void>) {},
     profileLoaded (state, action: PayloadAction<ProfileData>) {
       state.data = action.payload
     },

@@ -1,15 +1,7 @@
 import { loginEpic } from './userEpic'
-import { ActionsObservable, StateObservable } from 'redux-observable'
-import {
-  login,
-  loginSucceeded,
-  LoginSucceededAction,
-  loginFailed,
-  logout
-} from './userSlice'
-import { RootState } from '../rootReducer'
-import { Subject, of, throwError } from 'rxjs'
-import store from '../store'
+import { ActionsObservable } from 'redux-observable'
+import { login, loginSucceeded, loginFailed, logout } from './userSlice'
+import { of, throwError } from 'rxjs'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
 import { initialStateObservable } from '../testUtils/stateObservable'
 import { loadProfile } from '../Profile/profileSlice'
@@ -21,7 +13,6 @@ it('performs login successfully', done => {
   expect.assertions(2)
   const action$ = ActionsObservable.of(loginAction)
   const state$ = initialStateObservable()
-  const token = 'some token'
   const postLoginFn = () => of({ response: {} })
   let actions: Action[] = []
   loginEpic(action$, state$, { postLoginFn }).subscribe(action => {

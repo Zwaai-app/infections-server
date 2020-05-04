@@ -28,16 +28,16 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    login (state, action: PayloadAction<LoginCredentials>) {
+    login (state, _action: PayloadAction<LoginCredentials>) {
       state.status = 'loggingIn'
     },
-    loginSucceeded (state, action: PayloadAction<void>) {
+    loginSucceeded (state, _action: PayloadAction<void>) {
       state.status = 'loggedIn'
     },
     loginFailed (state, action: PayloadAction<string>) {
       state.status = { error: action.payload }
     },
-    logout (state, action: PayloadAction<void>) {
+    logout (state, _action: PayloadAction<void>) {
       state.status = 'loggedOut'
     }
   }
