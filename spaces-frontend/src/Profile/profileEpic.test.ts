@@ -1,5 +1,5 @@
 import { loadProfileEpic } from './profileEpic'
-import { ActionsObservable, StateObservable } from 'redux-observable'
+import { ActionsObservable } from 'redux-observable'
 import { loadProfile, profileLoaded, profileLoadFailed } from './profileSlice'
 import { of, throwError } from 'rxjs'
 import { initialStateObservable } from '../testUtils/stateObservable'

@@ -36,7 +36,7 @@ export const loadProfileEpic: Epic<Actions, Actions, RootState> = (
 ) =>
   action$.pipe(
     ofType<Actions, LoadProfileAction>(loadProfile.type),
-    flatMap(action => getProfileFn().pipe(map(success), catchError(failed)))
+    flatMap(_action => getProfileFn().pipe(map(success), catchError(failed)))
   )
 
 export const allEpics = [loadProfileEpic]

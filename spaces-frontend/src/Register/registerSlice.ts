@@ -41,7 +41,7 @@ const registerSlice = createSlice({
     setRegistrationData (state, action: PayloadAction<RegistrationData>) {
       state.data = action.payload
     },
-    signupStarted (state, action: PayloadAction<void>) {
+    signupStarted (state, _action: PayloadAction<void>) {
       state.status = RegistrationStatus.InProgress
     },
     signupSucceeded (state, action: PayloadAction<any>) {

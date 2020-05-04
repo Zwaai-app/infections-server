@@ -12,7 +12,6 @@ import {
   tLogoTooLarge
 } from './profileValidation'
 import * as E from 'fp-ts/lib/Either'
-import { buffer } from 'rxjs/operators'
 
 it('validates organization names', () => {
   expect(validOrganizationName('')).toBeLeft()
