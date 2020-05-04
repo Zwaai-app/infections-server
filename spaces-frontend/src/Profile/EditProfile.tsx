@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Button, Image, Message } from 'semantic-ui-react'
+import { Form, Button, Image, Message, Input } from 'semantic-ui-react'
 import { t } from '../i18n'
 import { useSelector } from 'react-redux'
 import { RootState } from '../rootReducer'
 import { maxLogoSizeKB, validLogo, validateProfile } from './profileValidation'
 import * as E from 'fp-ts/lib/Either'
 import { flow, constant } from 'fp-ts/lib/function'
-import { AsYouType } from 'libphonenumber-js'
-
-const asYouType = new AsYouType('NL')
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import './EditProfile.css'
 
 export const EditProfile = () => {
     const profileData = useSelector((state: RootState) => state.profile.data)
@@ -23,6 +22,7 @@ export const EditProfile = () => {
     const profileDataValid = wantsToSave
         ? validateProfile(orgName, orgUrl, phone, logoData)
         : null
+    const parsedPhoneNumber = parsePhoneNumberFromString(phone, 'NL')?.formatInternational()
 
     useEffect(() => {
         if (logoFile) {
@@ -48,15 +48,17 @@ export const EditProfile = () => {
                 type='url'
                 value={orgUrl}
                 onChange={(_, { value }) => setOrgUrl(value)} />
-            <Form.Input
-                label={t('editProfile.phoneLabel', 'Telefoonnummer voor ondersteuning')}
-                placeholder={t('editProfile.phonePlaceholder', '0123-456789')}
-                value={phone}
-                onChange={(_, { value }) => {
-                    asYouType.reset()
-                    asYouType.input(value)
-                    setPhone(asYouType.getNumber()?.formatInternational() || value)
-                }} />
+            <Form.Field>
+                <label>{t('editProfile.phoneLabel', 'Telefoonnummer voor ondersteuning')}</label>
+                <Input
+                    placeholder={t('editProfile.phonePlaceholder', '0123-456789')}
+                    value={phone}
+                    onChange={(_, { value }) => setPhone(value)} />
+                {parsedPhoneNumber &&
+                    <span className='additionalInfo'>
+                        {t('editProfile.phoneIsSavedAs', 'Wordt opgeslagen als:')} {parsedPhoneNumber || ''}
+                    </span>}
+            </Form.Field>
             <Form.Input
                 label={t('editProfile.logoLabel', 'Logo (max {{maxSize}})', new Map([['maxSize', `${maxLogoSizeKB}KB`]]))}
                 type='file'
