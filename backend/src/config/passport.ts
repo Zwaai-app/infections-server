@@ -70,7 +70,7 @@ passport.use(
       clientSecret: process.env.FACEBOOK_SECRET!,
       callbackURL: '/auth/facebook/callback',
       profileFields: ['name', 'email', 'link', 'locale', 'timezone'],
-      passReqToCallback: true,
+      passReqToCallback: true
     },
     (req: any, accessToken, refreshToken, profile, done) => {
       if (req.user) {
@@ -81,7 +81,7 @@ passport.use(
           if (existingUser) {
             req.flash('errors', {
               msg:
-                'There is already a Facebook account that belongs to you. Sign in with that account or delete it, then link it with your current account.',
+                'There is already a Facebook account that belongs to you. Sign in with that account or delete it, then link it with your current account.'
             })
             done(err)
           } else {
@@ -122,7 +122,7 @@ passport.use(
               if (existingEmailUser) {
                 req.flash('errors', {
                   msg:
-                    'There is already an account using this email address. Sign in to that account and link it with Facebook manually from Account Settings.',
+                    'There is already an account using this email address. Sign in to that account and link it with Facebook manually from Account Settings.'
                 })
                 done(err)
               } else {
