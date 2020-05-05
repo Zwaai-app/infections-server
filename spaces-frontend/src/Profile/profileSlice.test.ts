@@ -5,7 +5,8 @@ import profileReducer, {
   isCompleteProfile,
   updateProfile,
   updateProfileFailed,
-  ProfileData
+  ProfileData,
+  profileLoadFailed
 } from './profileSlice'
 import { parseURL } from 'whatwg-url'
 
@@ -38,6 +39,18 @@ it('knows whether a data structure forms a complete profile', () => {
 it('can update a profile', () => {
   const state = profileState()
   expect(profileReducer(state, updateProfile(orgData)).data).toEqual(orgData)
+})
+
+it('clears load error when starting new load', () => {
+  const state = profileState({ loadError: 'error' })
+  expect(profileReducer(state, loadProfile()).loadError).toBeNull()
+})
+
+it('stores load errors', () => {
+  const state = profileState()
+  expect(profileReducer(state, profileLoadFailed('error')).loadError).toEqual(
+    'error'
+  )
 })
 
 it('clears update error when starting update', () => {
