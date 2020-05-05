@@ -6,7 +6,10 @@ import profileReducer, {
   updateProfile,
   storeProfileFailed,
   ProfileData,
-  profileLoadFailed
+  profileLoadFailed,
+  UpdateStatus,
+  storeProfileSucceeded,
+  storeProfileStarted
 } from './profileSlice'
 
 const orgData = {
@@ -17,15 +20,6 @@ const orgData = {
 }
 const filledState = profileState({ data: orgData })
 
-it('does not alter profile when starting load', () => {
-  expect(profileReducer(filledState, loadProfile())).toBe(filledState)
-})
-
-it('changes profile when new values come in', () => {
-  const state = profileState()
-  expect(profileReducer(state, profileLoaded(orgData))).toEqual(filledState)
-})
-
 it('knows whether a data structure forms a complete profile', () => {
   const incomplete = {
     organizationName: 'my org',
@@ -35,47 +29,76 @@ it('knows whether a data structure forms a complete profile', () => {
   expect(isCompleteProfile(incomplete)).toBeFalsy()
 })
 
-it('can update a profile', () => {
-  const state = profileState()
-  expect(profileReducer(state, updateProfile(orgData)).data).toEqual(orgData)
+describe('load profile', () => {
+  it('does not alter profile when starting load', () => {
+    expect(profileReducer(filledState, loadProfile())).toBe(filledState)
+  })
+
+  it('changes profile when new values come in', () => {
+    const state = profileState()
+    expect(profileReducer(state, profileLoaded(orgData))).toEqual(filledState)
+  })
+
+  it('clears load error when starting new load', () => {
+    const state = profileState({ loadError: 'error' })
+    expect(profileReducer(state, loadProfile()).loadError).toBeNull()
+  })
+
+  it('stores load errors', () => {
+    const state = profileState()
+    expect(profileReducer(state, profileLoadFailed('error')).loadError).toEqual(
+      'error'
+    )
+  })
 })
 
-it('clears load error when starting new load', () => {
-  const state = profileState({ loadError: 'error' })
-  expect(profileReducer(state, loadProfile()).loadError).toBeNull()
-})
+describe('update profile', () => {
+  it('can update a profile', () => {
+    const state = profileState()
+    expect(profileReducer(state, updateProfile(orgData)).data).toEqual(orgData)
+  })
 
-it('stores load errors', () => {
-  const state = profileState()
-  expect(profileReducer(state, profileLoadFailed('error')).loadError).toEqual(
-    'error'
-  )
-})
+  it('clears update error when starting update', () => {
+    const state = profileState({ updateStatus: { error: 'error' } })
+    expect(profileReducer(state, updateProfile(orgData)).updateStatus).toEqual(
+      'idle'
+    )
+  })
 
-it('clears update error when starting update', () => {
-  const state = profileState({ updateError: 'error' })
-  expect(profileReducer(state, updateProfile(orgData)).updateError).toBeNull()
-})
+  it('sets status to in progress when starting store', () => {
+    const state = profileState({ updateStatus: 'idle' })
+    expect(profileReducer(state, storeProfileStarted()).updateStatus).toEqual(
+      'inProgress'
+    )
+  })
 
-it('stores update profile errors', () => {
-  const state = profileState()
-  expect(
-    profileReducer(state, storeProfileFailed('error')).updateError
-  ).toEqual('error')
+  it('updates status when store succeeds', () => {
+    const state = profileState({ updateStatus: 'inProgress' })
+    expect(profileReducer(state, storeProfileSucceeded()).updateStatus).toEqual(
+      'success'
+    )
+  })
+
+  it('stores update profile errors', () => {
+    const state = profileState()
+    expect(
+      profileReducer(state, storeProfileFailed('error')).updateStatus
+    ).toEqual({ error: 'error' })
+  })
 })
 
 function profileState ({
   data,
   loadError,
-  updateError
+  updateStatus
 }: {
   data?: ProfileData | null
   loadError?: string | null
-  updateError?: string | null
+  updateStatus?: UpdateStatus
 } = {}): ProfileState {
   return {
     data: data || null,
     loadError: loadError || null,
-    updateError: updateError || null
+    updateStatus: updateStatus || 'idle'
   }
 }

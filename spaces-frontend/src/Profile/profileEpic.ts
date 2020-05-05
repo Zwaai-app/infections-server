@@ -1,7 +1,7 @@
 import { ActionType } from 'typesafe-actions'
 import { Epic, ofType } from 'redux-observable'
 import { RootState } from '../rootReducer'
-import { flatMap, map, catchError } from 'rxjs/operators'
+import { flatMap, map, catchError, startWith } from 'rxjs/operators'
 import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax'
 import { of, Observable } from 'rxjs'
 import {
@@ -12,7 +12,8 @@ import {
   updateProfile,
   UpdateProfileAction,
   storeProfileSucceeded,
-  storeProfileFailed
+  storeProfileFailed,
+  storeProfileStarted
 } from './profileSlice'
 
 export type Actions = ActionType<
@@ -73,7 +74,8 @@ export const storeProfileEpic: Epic<Actions, Actions, RootState> = (
     flatMap(action =>
       storeProfileFn(action, state$.value.user.email).pipe(
         map(storeSuccess),
-        catchError(storeFailed)
+        catchError(storeFailed),
+        startWith(storeProfileStarted())
       )
     )
   )

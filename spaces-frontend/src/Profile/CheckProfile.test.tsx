@@ -8,11 +8,11 @@ import { MemoryRouter } from 'react-router-dom'
 
 const loggedOutStore = createStore(rootReducer, {
     user: { status: 'loggedOut', email: '' },
-    profile: { data: null, loadError: null, updateError: null }
+    profile: { data: null, loadError: null, updateStatus: 'idle' }
 })
 const loggedInWithoutProfileStore = createStore(rootReducer, {
     user: { status: 'loggedIn', email: 'foo@bar.com' },
-    profile: { data: null, loadError: null, updateError: null }
+    profile: { data: null, loadError: null, updateStatus: 'idle' }
 })
 const loggedInWithProfileStore = createStore(rootReducer, {
     user: { status: 'loggedIn', email: 'foo@bar.com' },
@@ -22,7 +22,7 @@ const loggedInWithProfileStore = createStore(rootReducer, {
             organizationUrl: 'http://example.foo',
             phone: '888-8888888',
             logo: 'data:image/png;base64,...'
-        }, loadError: null, updateError: null
+        }, loadError: null, updateStatus: 'idle'
     }
 })
 

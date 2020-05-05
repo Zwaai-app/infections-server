@@ -26,16 +26,24 @@ export const isCompleteProfile = (data: object | null): boolean => {
   return R.equals({ ...dummyProfile, ...data }, data)
 }
 
+export type Idle = 'idle'
+export type InProgress = 'inProgress'
+export type Success = 'success'
+export interface Failed {
+  error: string
+}
+export type UpdateStatus = Idle | InProgress | Success | Failed
+
 export type ProfileState = {
   data: ProfileData | null
   loadError: string | null
-  updateError: string | null
+  updateStatus: UpdateStatus
 }
 
 const initialState: ProfileState = {
   data: null,
   loadError: null,
-  updateError: null
+  updateStatus: 'idle'
 }
 
 const profileSlice = createSlice({
@@ -53,12 +61,16 @@ const profileSlice = createSlice({
     },
     updateProfile (state, action: PayloadAction<ProfileData>) {
       state.data = action.payload
-      state.updateError = null
+      state.updateStatus = 'idle'
     },
-    // tslint:disable-next-line: no-empty
-    storeProfileSucceeded (_state, _action: PayloadAction<void>) {},
+    storeProfileStarted (state, _action: PayloadAction<void>) {
+      state.updateStatus = 'inProgress'
+    },
+    storeProfileSucceeded (state, _action: PayloadAction<void>) {
+      state.updateStatus = 'success'
+    },
     storeProfileFailed (state, action: PayloadAction<string>) {
-      state.updateError = action.payload
+      state.updateStatus = { error: action.payload }
     }
   }
 })
@@ -71,6 +83,7 @@ export const {
   profileLoaded,
   profileLoadFailed,
   updateProfile,
+  storeProfileStarted,
   storeProfileSucceeded,
   storeProfileFailed
 } = profileSlice.actions
