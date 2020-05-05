@@ -13,7 +13,8 @@ import './EditProfile.css'
 export const EditProfile = () => {
     const dispatch = useDispatch()
 
-    const profileData = useSelector((state: RootState) => state.profile.data)
+    const profileState = useSelector((state: RootState) => state.profile)
+    const profileData = profileState.data
 
     const [orgName, setOrgName] = useState(profileData?.organizationName || '')
     const [orgUrl, setOrgUrl] = useState(profileData?.organizationUrl || '')
@@ -85,6 +86,7 @@ export const EditProfile = () => {
             />
             <Form.Field>
                 <Button floated='right' primary
+                    loading={profileState.updateStatus === 'inProgress'}
                     onClick={() => {
                         setWantsToSave(true)
                         const v = validateProfile(orgName, orgUrl, phone, logoData)
