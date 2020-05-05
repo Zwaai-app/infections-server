@@ -41,7 +41,7 @@ describe('POST /login', () => {
       .field('email', 'john@me.com')
       .field('password', 'Hunter2')
       .expect(302)
-      .end(function (err, res) {
+      .end(function (_err, res) {
         expect(res.error).not.to.be.undefined
         done()
       })
