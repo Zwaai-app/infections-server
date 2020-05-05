@@ -96,7 +96,7 @@ export const postLoginApi = async (
 
   passport.authenticate(
     'local',
-    (err: Error, user: UserDocument, info: IVerifyOptions) => {
+    (err: Error, user: UserDocument, _info: IVerifyOptions) => {
       if (err) {
         return next(err)
       }
@@ -256,7 +256,7 @@ export const postSignupApi = async (
  * GET /account
  * Profile page.
  */
-export const getAccount = (req: Request, res: Response) => {
+export const getAccount = (_req: Request, res: Response) => {
   res.render('account/profile', {
     title: 'Account Management'
   })

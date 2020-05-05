@@ -1,15 +1,17 @@
 {
   "compilerOptions": {
+    "target": "es6",
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "target": "es6",
-    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": ".",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "paths": {
       "*": [
         "node_modules/*",
