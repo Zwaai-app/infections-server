@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { Random } from '../models/Random'
 
 export const getInfectedRandoms = async (
-  request: Request,
+  _request: Request,
   response: Response
 ) => {
   const values: string[] = []
