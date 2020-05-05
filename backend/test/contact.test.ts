@@ -16,7 +16,7 @@ describe('POST /contact', () => {
       .post('/contact')
       .field('name', 'John Doe')
       .field('email', 'john@me.com')
-      .end(function (err, res) {
+      .end(function (_err, res) {
         expect(res.error).to.be.false
         done()
       })
