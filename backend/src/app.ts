@@ -152,5 +152,10 @@ app.get(
   passportConfig.isAuthenticated,
   userController.getProfileApi
 )
+app.post(
+  '/api/v1/account/profile',
+  passportConfig.isAuthenticated,
+  userController.postUpdateProfileApi
+)
 
 export default app

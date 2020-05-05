@@ -298,7 +298,7 @@ export const postUpdateProfile = async (
     }
     user.email = req.body.email || ''
     user.profile.organizationName = req.body.organizationName || ''
-    user.profile.website = req.body.website || ''
+    user.profile.organizationUrl = req.body.organizationUrl || ''
     user.profile.phone = req.body.phone || ''
     // tslint:disable-next-line: no-floating-promises
     user.save((err: WriteError) => {
@@ -318,6 +318,53 @@ export const postUpdateProfile = async (
   })
 }
 
+export const postUpdateProfileApi = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  res.setHeader('Content-Type', 'application/json')
+  await check('email', 'Please enter a valid email address.')
+    .isEmail()
+    .run(req)
+  await sanitize('email')
+    .normalizeEmail({ gmail_remove_dots: false })
+    .run(req)
+
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    console.debug(errors)
+    return res.status(401).json({ errors: errors.array() })
+  }
+
+  const user = req.user as UserDocument
+  User.findById(user.id, (err, user: UserDocument) => {
+    if (err) {
+      return next(err)
+    }
+    user.email = req.body.email || ''
+    user.profile.organizationName = req.body.organizationName || ''
+    user.profile.organizationUrl = req.body.organizationUrl || ''
+    user.profile.phone = req.body.phone || ''
+    // tslint:disable-next-line: no-floating-promises
+    user.save((err: WriteError) => {
+      if (err) {
+        let errors = ['Could not save profile']
+        if (err.code === 11000) {
+          errors.push(
+            'The email address you have entered is already associated with an account.'
+          )
+        }
+        return res.json({
+          errors
+        })
+      }
+
+      res.json({})
+    })
+  })
+}
 /**
  * POST /account/password
  * Update current password.
