@@ -16,11 +16,11 @@ type SystemActionsWithPayload =
   | User.Actions
   | Profile.Actions
 type SystemActions = ActionType<SystemActionsWithPayload>
-type finalActions = SystemActions
+type FinalActions = SystemActions
 
 const epicMiddleware = createEpicMiddleware<
-  finalActions,
-  finalActions,
+  FinalActions,
+  FinalActions,
   RootState
 >()
 const rootEpic = combineEpics(
