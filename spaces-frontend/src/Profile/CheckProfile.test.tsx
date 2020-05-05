@@ -8,15 +8,15 @@ import { MemoryRouter } from 'react-router-dom'
 import { parseURL } from 'whatwg-url'
 
 const loggedOutStore = createStore(rootReducer, {
-    user: { status: 'loggedOut' },
+    user: { status: 'loggedOut', email: '' },
     profile: { data: null, loadError: null, updateError: null }
 })
 const loggedInWithoutProfileStore = createStore(rootReducer, {
-    user: { status: 'loggedIn' },
+    user: { status: 'loggedIn', email: 'foo@bar.com' },
     profile: { data: null, loadError: null, updateError: null }
 })
 const loggedInWithProfileStore = createStore(rootReducer, {
-    user: { status: 'loggedIn' },
+    user: { status: 'loggedIn', email: 'foo@bar.com' },
     profile: {
         data: {
             organizationName: 'foo',
