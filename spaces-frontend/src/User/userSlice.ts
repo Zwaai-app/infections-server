@@ -15,6 +15,7 @@ type LoginStatus = LoggedOut | LoggingIn | LoggedIn | LoginError
 
 export type UserState = {
   status: LoginStatus
+  email: string
 }
 
 export function isLoginError (status: LoginStatus) {
@@ -22,23 +23,26 @@ export function isLoginError (status: LoginStatus) {
   return (status as LoginError).error !== undefined
 }
 
-const initialState: UserState = { status: 'loggedOut' }
+const initialState: UserState = { status: 'loggedOut', email: '' }
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    login (state, _action: PayloadAction<LoginCredentials>) {
+    login (state, action: PayloadAction<LoginCredentials>) {
       state.status = 'loggingIn'
+      state.email = action.payload.username
     },
     loginSucceeded (state, _action: PayloadAction<void>) {
       state.status = 'loggedIn'
     },
     loginFailed (state, action: PayloadAction<string>) {
       state.status = { error: action.payload }
+      state.email = ''
     },
     logout (state, _action: PayloadAction<void>) {
       state.status = 'loggedOut'
+      state.email = ''
     }
   }
 })
