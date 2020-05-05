@@ -4,7 +4,7 @@ import profileReducer, {
   profileLoaded,
   isCompleteProfile,
   updateProfile,
-  updateProfileFailed,
+  storeProfileFailed,
   ProfileData,
   profileLoadFailed
 } from './profileSlice'
@@ -60,7 +60,7 @@ it('clears update error when starting update', () => {
 it('stores update profile errors', () => {
   const state = profileState()
   expect(
-    profileReducer(state, updateProfileFailed('error')).updateError
+    profileReducer(state, storeProfileFailed('error')).updateError
   ).toEqual('error')
 })
 

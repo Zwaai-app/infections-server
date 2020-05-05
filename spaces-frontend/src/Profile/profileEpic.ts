@@ -11,8 +11,8 @@ import {
   LoadProfileAction,
   updateProfile,
   UpdateProfileAction,
-  updateProfileSucceeded,
-  updateProfileFailed
+  storeProfileSucceeded,
+  storeProfileFailed
 } from './profileSlice'
 
 export type Actions = ActionType<
@@ -60,8 +60,8 @@ const storeProfile: StoreProfileFn = (
     body: { ...action.payload, email }
   })
 }
-const updateSuccess = (_r: AjaxResponse) => updateProfileSucceeded()
-const updateFailed = (e: AjaxError) => of(updateProfileFailed(e.message))
+const storeSuccess = (_r: AjaxResponse) => storeProfileSucceeded()
+const storeFailed = (e: AjaxError) => of(storeProfileFailed(e.message))
 
 export const storeProfileEpic: Epic<Actions, Actions, RootState> = (
   action$,
@@ -72,8 +72,8 @@ export const storeProfileEpic: Epic<Actions, Actions, RootState> = (
     ofType<Actions, UpdateProfileAction>(updateProfile.type),
     flatMap(action =>
       storeProfileFn(action, state$.value.user.email).pipe(
-        map(updateSuccess),
-        catchError(updateFailed)
+        map(storeSuccess),
+        catchError(storeFailed)
       )
     )
   )
