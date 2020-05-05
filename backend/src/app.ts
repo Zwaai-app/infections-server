@@ -17,7 +17,6 @@ const MongoStore = mongo(session)
 // Controllers (route handlers)
 import * as homeController from './controllers/home'
 import * as userController from './controllers/user'
-import * as apiController from './controllers/api'
 import * as contactController from './controllers/contact'
 import * as randomsController from './controllers/randoms'
 
@@ -152,21 +151,6 @@ app.get(
   '/api/v1/account/profile',
   passportConfig.isAuthenticated,
   userController.getProfileApi
-)
-
-/**
- * OAuth authentication routes. (Sign in)
- */
-app.get(
-  '/auth/facebook',
-  passport.authenticate('facebook', { scope: ['email', 'public_profile'] })
-)
-app.get(
-  '/auth/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
-  (req, res) => {
-    res.redirect(req.session!.returnTo || '/')
-  }
 )
 
 export default app
