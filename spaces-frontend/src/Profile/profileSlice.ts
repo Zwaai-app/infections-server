@@ -45,8 +45,9 @@ const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-    // tslint:disable-next-line: no-empty
-    loadProfile (_state, _action: PayloadAction<void>) {},
+    loadProfile (state, _action: PayloadAction<void>) {
+      state.loadError = null
+    },
     profileLoaded (state, action: PayloadAction<ProfileData>) {
       state.data = action.payload
     },
@@ -57,6 +58,7 @@ const profileSlice = createSlice({
       state.data = action.payload
       state.updateError = null
     },
+    // tslint:disable-next-line: no-empty
     updateProfileSucceeded (_state, _action: PayloadAction<void>) {},
     updateProfileFailed (state, action: PayloadAction<string>) {
       state.updateError = action.payload
