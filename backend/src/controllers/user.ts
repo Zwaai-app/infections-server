@@ -300,6 +300,7 @@ export const postUpdateProfile = async (
     user.profile.organizationName = req.body.organizationName || ''
     user.profile.organizationUrl = req.body.organizationUrl || ''
     user.profile.phone = req.body.phone || ''
+    user.profile.logo = req.body.logo || ''
     // tslint:disable-next-line: no-floating-promises
     user.save((err: WriteError) => {
       if (err) {
@@ -347,6 +348,7 @@ export const postUpdateProfileApi = async (
     user.profile.organizationName = req.body.organizationName || ''
     user.profile.organizationUrl = req.body.organizationUrl || ''
     user.profile.phone = req.body.phone || ''
+    user.profile.logo = req.body.logo || ''
     // tslint:disable-next-line: no-floating-promises
     user.save((err: WriteError) => {
       if (err) {
