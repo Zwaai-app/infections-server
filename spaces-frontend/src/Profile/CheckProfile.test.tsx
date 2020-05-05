@@ -9,11 +9,11 @@ import { parseURL } from 'whatwg-url'
 
 const loggedOutStore = createStore(rootReducer, {
     user: { status: 'loggedOut' },
-    profile: { data: null, loadError: null }
+    profile: { data: null, loadError: null, updateError: null }
 })
 const loggedInWithoutProfileStore = createStore(rootReducer, {
     user: { status: 'loggedIn' },
-    profile: { data: null, loadError: null }
+    profile: { data: null, loadError: null, updateError: null }
 })
 const loggedInWithProfileStore = createStore(rootReducer, {
     user: { status: 'loggedIn' },
@@ -23,7 +23,7 @@ const loggedInWithProfileStore = createStore(rootReducer, {
             organizationUrl: parseURL('http://example.foo')!,
             phone: '888-8888888',
             logo: 'data:image/png;base64,...'
-        }, loadError: null
+        }, loadError: null, updateError: null
     }
 })
 

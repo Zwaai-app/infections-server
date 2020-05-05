@@ -32,9 +32,14 @@ export const isCompleteProfile = (data: object | null): boolean => {
 export type ProfileState = {
   data: ProfileData | null
   loadError: string | null
+  updateError: string | null
 }
 
-const initialState: ProfileState = { data: null, loadError: null }
+const initialState: ProfileState = {
+  data: null,
+  loadError: null,
+  updateError: null
+}
 
 const profileSlice = createSlice({
   name: 'profile',
@@ -50,17 +55,25 @@ const profileSlice = createSlice({
     },
     updateProfile (state, action: PayloadAction<ProfileData>) {
       state.data = action.payload
+      state.updateError = null
+    },
+    updateProfileSucceeded (_state, _action: PayloadAction<void>) {},
+    updateProfileFailed (state, action: PayloadAction<string>) {
+      state.updateError = action.payload
     }
   }
 })
 
 export type LoadProfileAction = ReturnType<typeof loadProfile>
+export type UpdateProfileAction = ReturnType<typeof updateProfile>
 
 export const {
   loadProfile,
   profileLoaded,
   profileLoadFailed,
-  updateProfile
+  updateProfile,
+  updateProfileSucceeded,
+  updateProfileFailed
 } = profileSlice.actions
 
 export default profileSlice.reducer
