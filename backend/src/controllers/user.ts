@@ -297,8 +297,8 @@ export const postUpdateProfile = async (
       return next(err)
     }
     user.email = req.body.email || ''
-    user.profile.name = req.body.name || ''
     user.profile.location = req.body.location || ''
+    user.profile.organizationName = req.body.organizationName || ''
     user.profile.website = req.body.website || ''
     // tslint:disable-next-line: no-floating-promises
     user.save((err: WriteError) => {

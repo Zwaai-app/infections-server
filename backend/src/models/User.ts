@@ -5,8 +5,8 @@ import mongoose from 'mongoose'
 const saltRounds = 10
 
 export interface UserProfile {
-  name: string
   location: string
+  organizationName: string
   website: string
   picture: string
 }
@@ -45,8 +45,8 @@ const userSchema = new mongoose.Schema(
     tokens: Array,
 
     profile: {
-      name: String,
       location: String,
+      organizationName: String,
       website: String,
       picture: String
     }
