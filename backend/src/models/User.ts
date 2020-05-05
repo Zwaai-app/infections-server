@@ -4,21 +4,20 @@ import mongoose from 'mongoose'
 
 const saltRounds = 10
 
+export interface UserProfile {
+  name: string
+  location: string
+  website: string
+  picture: string
+}
+
 export type UserDocument = mongoose.Document & {
   email: string
   password: string
   passwordResetToken: string
   passwordResetExpires: Date
-
   tokens: AuthToken[]
-
-  profile: {
-    name: string
-    gender: string
-    location: string
-    website: string
-    picture: string
-  }
+  profile: UserProfile
 
   comparePassword: comparePasswordFunction
   gravatar: (size: number) => string
@@ -47,7 +46,6 @@ const userSchema = new mongoose.Schema(
 
     profile: {
       name: String,
-      gender: String,
       location: String,
       website: String,
       picture: String
