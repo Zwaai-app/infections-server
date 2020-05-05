@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Button, Image, Message, Input } from 'semantic-ui-react'
 import { t } from '../i18n'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../rootReducer'
 import { maxLogoSizeKB, validLogo, validateProfile } from './profileValidation'
 import * as E from 'fp-ts/lib/Either'
 import { flow, constant } from 'fp-ts/lib/function'
+import { updateProfile, ProfileData } from './profileSlice'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import './EditProfile.css'
 
 export const EditProfile = () => {
+    const dispatch = useDispatch()
+
     const profileData = useSelector((state: RootState) => state.profile.data)
 
     const [orgName, setOrgName] = useState(profileData?.organizationName || '')
@@ -85,7 +88,7 @@ export const EditProfile = () => {
                     onClick={() => {
                         setWantsToSave(true)
                         const v = validateProfile(orgName, orgUrl, phone, logoData)
-                        E.map(profile => { console.debug('save', profile) })(v)
+                        E.map((profile: ProfileData) => dispatch(updateProfile(profile)))(v)
                     }}
                 >{t('editProfile.saveButton', 'Opslaan')}</Button>
             </Form.Field>
