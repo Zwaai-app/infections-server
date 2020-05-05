@@ -40,6 +40,11 @@ export type ProfileState = {
   updateStatus: UpdateStatus
 }
 
+export function isUpdateError (status: UpdateStatus) {
+  // tslint:disable-next-line: strict-type-predicates
+  return (status as Failed).error !== undefined
+}
+
 const initialState: ProfileState = {
   data: null,
   loadError: null,

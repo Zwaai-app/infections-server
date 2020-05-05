@@ -6,7 +6,7 @@ import { RootState } from '../rootReducer'
 import { maxLogoSizeKB, validLogo, validateProfile } from './profileValidation'
 import * as E from 'fp-ts/lib/Either'
 import { flow, constant } from 'fp-ts/lib/function'
-import { updateProfile, ProfileData } from './profileSlice'
+import { updateProfile, ProfileData, isUpdateError, Failed } from './profileSlice'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import './EditProfile.css'
 
@@ -40,6 +40,11 @@ export const EditProfile = () => {
 
     return <div id='EditProfile'>
         <h1>{t('editProfile.header', 'Profiel bewerken')}</h1>
+        <Message error hidden={!isUpdateError(profileState.updateStatus)}>
+            <Message.Header>{t('editProfile.storeProfileErrorHeader', 'Serverprobleem')}</Message.Header>
+            <p>{t('editProfile.storeProfileErrorMessage', 'Er ging iets mis bij het opslaan van uw profiel; probeer het later nog eens aub.')}</p>
+            <p>{t('editProfile.errorMessage', 'Foutmelding')}: {(profileState.updateStatus as Failed).error}</p>
+        </Message>
         <Form error={E.isLeft(logoDataValid) || (!!profileDataValid && E.isLeft(profileDataValid))}>
             <Form.Input
                 label={t('editProfile.organizationNameLabel', 'Organisatienaam')}
