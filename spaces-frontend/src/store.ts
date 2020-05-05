@@ -29,13 +29,23 @@ const rootEpic = combineEpics(
   ...Profile.allEpics
 )
 
+const serializedPersistdState = localStorage.getItem('reduxState')
+const persistedState: RootState | undefined = serializedPersistdState
+  ? JSON.parse(serializedPersistdState)
+  : undefined
+
 const store = configureStore({
   reducer: rootReducer,
   middleware: [
     epicMiddleware,
     ...getDefaultMiddleware<RootState>(),
     logger as Middleware
-  ]
+  ],
+  preloadedState: persistedState
+})
+
+store.subscribe(() => {
+  localStorage.setItem('reduxState', JSON.stringify(store.getState()))
 })
 
 epicMiddleware.run(rootEpic)
