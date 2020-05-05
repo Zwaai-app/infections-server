@@ -19,7 +19,7 @@ export const EditProfile = () => {
     const [orgUrl, setOrgUrl] = useState(profileData?.organizationUrl || '')
     const [phone, setPhone] = useState(profileData?.phone || '')
     const [logoFile, setLogoFile] = useState(null as File | null)
-    const [logoData, setLogoData] = useState('')
+    const [logoData, setLogoData] = useState(profileData?.logo || '')
     const logoDataValid = logoData ? validLogo(logoData) : E.right('')
     const [wantsToSave, setWantsToSave] = useState(false)
     const profileDataValid = wantsToSave
