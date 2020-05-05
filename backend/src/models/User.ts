@@ -6,7 +6,7 @@ const saltRounds = 10
 
 export interface UserProfile {
   organizationName: string
-  website: string
+  organizationUrl: string
   phone: string
   picture: string
 }
@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema(
 
     profile: {
       organizationName: String,
-      website: String,
+      organizationUrl: String,
       phone: String,
       picture: String
     }
