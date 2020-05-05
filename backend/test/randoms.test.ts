@@ -13,7 +13,7 @@ it('returns an empty list of infected randoms', async () => {
     .get('/infected-randoms')
     .expect('Content-Type', /json/)
     .expect(200, {
-      randoms: [],
+      randoms: []
     })
 })
 

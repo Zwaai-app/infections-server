@@ -10,7 +10,7 @@ import { UserDocument } from '../models/User'
  */
 export const getApi = (req: Request, res: Response) => {
   res.render('api/index', {
-    title: 'API Examples',
+    title: 'API Examples'
   })
 }
 
@@ -37,7 +37,7 @@ export const getFacebook = (
       }
       res.render('api/facebook', {
         title: 'Facebook API',
-        profile: results,
+        profile: results
       })
     }
   )
