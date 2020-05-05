@@ -8,7 +8,7 @@ export interface UserProfile {
   organizationName: string
   organizationUrl: string
   phone: string
-  picture: string
+  logo: string
 }
 
 export type UserDocument = mongoose.Document & {
@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema(
       organizationName: String,
       organizationUrl: String,
       phone: String,
-      picture: String
+      logo: String
     }
   },
   { timestamps: true }
