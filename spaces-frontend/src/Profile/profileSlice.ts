@@ -1,24 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { parseURL, URLRecord } from 'whatwg-url'
 import * as R from 'rambda'
 
 type DataUrl = string
 
 export interface ProfileData {
   organizationName: string
-  organizationUrl: URLRecord
+  organizationUrl: string
   phone: string
   logo: DataUrl
 }
-
-const dummyUrl = parseURL('https://example.com')!
 
 export const isCompleteProfile = (data: object | null): boolean => {
   if (!data) return false
 
   const dummyProfile: ProfileData = {
     organizationName: 'dummy',
-    organizationUrl: dummyUrl,
+    organizationUrl: 'dummy',
     phone: 'dummy',
     logo: ''
   }

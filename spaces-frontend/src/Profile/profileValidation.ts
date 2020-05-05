@@ -74,7 +74,9 @@ export function validateProfile (
 ): E.Either<NonEmptyArray<string>, ProfileData> {
   return sequenceS(applicativeValidation())({
     organizationName: lift(validOrganizationName)(organizationName),
-    organizationUrl: lift(validUrl)(organizationUrl),
+    organizationUrl: E.map(constant(organizationUrl))(
+      lift(validUrl)(organizationUrl)
+    ),
     phone: E.map((pn: PhoneNumber) => pn.formatInternational())(
       lift(validPhone)(phone)
     ),

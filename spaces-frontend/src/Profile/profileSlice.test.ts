@@ -8,11 +8,10 @@ import profileReducer, {
   ProfileData,
   profileLoadFailed
 } from './profileSlice'
-import { parseURL } from 'whatwg-url'
 
 const orgData = {
   organizationName: 'my org',
-  organizationUrl: parseURL('http://example.com')!,
+  organizationUrl: 'http://example.com',
   phone: '088-1234567',
   logo: 'data:image/png;base64,...'
 }

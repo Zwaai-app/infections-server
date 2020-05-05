@@ -5,7 +5,6 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import rootReducer from '../rootReducer'
 import { MemoryRouter } from 'react-router-dom'
-import { parseURL } from 'whatwg-url'
 
 const loggedOutStore = createStore(rootReducer, {
     user: { status: 'loggedOut', email: '' },
@@ -20,7 +19,7 @@ const loggedInWithProfileStore = createStore(rootReducer, {
     profile: {
         data: {
             organizationName: 'foo',
-            organizationUrl: parseURL('http://example.foo')!,
+            organizationUrl: 'http://example.foo',
             phone: '888-8888888',
             logo: 'data:image/png;base64,...'
         }, loadError: null, updateError: null
