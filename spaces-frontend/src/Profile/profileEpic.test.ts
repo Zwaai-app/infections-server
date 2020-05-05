@@ -6,11 +6,13 @@ import {
   profileLoadFailed,
   updateProfile,
   storeProfileSucceeded,
-  storeProfileFailed
+  storeProfileFailed,
+  storeProfileStarted
 } from './profileSlice'
 import { of, throwError } from 'rxjs'
 import { initialStateObservable } from '../testUtils/stateObservable'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
+import { Action } from '@reduxjs/toolkit'
 
 const orgData = {
   organizationName: 'my org',
@@ -42,23 +44,33 @@ it('reports load failures', done => {
 })
 
 it('can store a profile', done => {
-  expect.assertions(1)
+  expect.assertions(2)
   const action$ = ActionsObservable.of(updateProfile(orgData))
   const state$ = initialStateObservable()
   const storeProfileFn = () => of({})
+  let dispatchedActions: Action[] = []
   storeProfileEpic(action$, state$, { storeProfileFn }).subscribe(action => {
-    expect(action).toEqual(storeProfileSucceeded())
-    done()
+    dispatchedActions.push(action)
+    if (dispatchedActions.length === 2) {
+      expect(dispatchedActions[0]).toEqual(storeProfileStarted())
+      expect(dispatchedActions[1]).toEqual(storeProfileSucceeded())
+      done()
+    }
   })
 })
 
 it('reports store errors', done => {
-  expect.assertions(1)
+  expect.assertions(2)
   const action$ = ActionsObservable.of(updateProfile(orgData))
   const state$ = initialStateObservable()
   const storeProfileFn = () => throwError(new MockAjaxError('some error'))
+  let dispatchedActions: Action[] = []
   storeProfileEpic(action$, state$, { storeProfileFn }).subscribe(action => {
-    expect(action).toEqual(storeProfileFailed('some error'))
-    done()
+    dispatchedActions.push(action)
+    if (dispatchedActions.length === 2) {
+      expect(dispatchedActions[0]).toEqual(storeProfileStarted())
+      expect(dispatchedActions[1]).toEqual(storeProfileFailed('some error'))
+      done()
+    }
   })
 })
