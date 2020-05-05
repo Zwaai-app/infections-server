@@ -5,8 +5,8 @@ import {
   profileLoaded,
   profileLoadFailed,
   updateProfile,
-  updateProfileSucceeded,
-  updateProfileFailed
+  storeProfileSucceeded,
+  storeProfileFailed
 } from './profileSlice'
 import { of, throwError } from 'rxjs'
 import { initialStateObservable } from '../testUtils/stateObservable'
@@ -47,7 +47,7 @@ it('can store a profile', done => {
   const state$ = initialStateObservable()
   const storeProfileFn = () => of({})
   storeProfileEpic(action$, state$, { storeProfileFn }).subscribe(action => {
-    expect(action).toEqual(updateProfileSucceeded())
+    expect(action).toEqual(storeProfileSucceeded())
     done()
   })
 })
@@ -58,7 +58,7 @@ it('reports store errors', done => {
   const state$ = initialStateObservable()
   const storeProfileFn = () => throwError(new MockAjaxError('some error'))
   storeProfileEpic(action$, state$, { storeProfileFn }).subscribe(action => {
-    expect(action).toEqual(updateProfileFailed('some error'))
+    expect(action).toEqual(storeProfileFailed('some error'))
     done()
   })
 })

@@ -56,8 +56,8 @@ const profileSlice = createSlice({
       state.updateError = null
     },
     // tslint:disable-next-line: no-empty
-    updateProfileSucceeded (_state, _action: PayloadAction<void>) {},
-    updateProfileFailed (state, action: PayloadAction<string>) {
+    storeProfileSucceeded (_state, _action: PayloadAction<void>) {},
+    storeProfileFailed (state, action: PayloadAction<string>) {
       state.updateError = action.payload
     }
   }
@@ -71,8 +71,8 @@ export const {
   profileLoaded,
   profileLoadFailed,
   updateProfile,
-  updateProfileSucceeded,
-  updateProfileFailed
+  storeProfileSucceeded,
+  storeProfileFailed
 } = profileSlice.actions
 
 export default profileSlice.reducer
