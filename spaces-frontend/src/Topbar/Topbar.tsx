@@ -17,6 +17,11 @@ export function Topbar() {
         <Menu.Item>
             <Link to='/'><Icon name='home' aria-label={t('topbar.home', 'Home')} /></Link>
         </Menu.Item>
+        {loggedIn &&
+            <Menu.Item>
+                <Link to='/spaces'>{t('topbar.spaces', 'Ruimtes')}</Link>
+            </Menu.Item>
+        }
         <Menu.Menu position='right'>
             {loggedIn
                 ? <>

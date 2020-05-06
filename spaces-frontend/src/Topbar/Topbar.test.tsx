@@ -36,3 +36,17 @@ it('renders no register link when already logged in', () => {
     </Provider>)
     expect(queryByText(/topbar\.register/i)).not.toBeInTheDocument()
 })
+
+it('shows spaces link when logged in', () => {
+    const { queryByText } = render(<Provider store={loggedInStore}>
+        <MemoryRouter><Topbar /></MemoryRouter>
+    </Provider>)
+    expect(queryByText(/topbar\.spaces/i)).toBeInTheDocument()
+})
+
+it(`doesn't show spaces link when not logged in`, () => {
+    const { queryByText } = render(<Provider store={loggedOutStore}>
+        <MemoryRouter><Topbar /></MemoryRouter>
+    </Provider>)
+    expect(queryByText(/topbar\.spaces/i)).not.toBeInTheDocument()
+})
