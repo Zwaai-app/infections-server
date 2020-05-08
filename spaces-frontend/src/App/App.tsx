@@ -10,6 +10,7 @@ import { ScrollToTop } from '../utils/ScrollToTop'
 import { Profile } from '../Profile/Profile'
 import { SpacesList } from '../Spaces/SpacesList'
 import moment from 'moment'
+import { Container } from 'semantic-ui-react'
 
 function App() {
   moment.locale(window.navigator.language)
@@ -17,17 +18,19 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
-        <ScrollToTop />
-        <Topbar />
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path='/login' component={Login} />
-          <Route path="/register" component={Register} />
-          <Route path='/profile' component={Profile} />
-          <Route path='/spaces' component={SpacesList} />
-        </Switch>
-      </Router>
+      <Container>
+        <Router>
+          <ScrollToTop />
+          <Topbar />
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path='/login' component={Login} />
+            <Route path="/register" component={Register} />
+            <Route path='/profile' component={Profile} />
+            <Route path='/spaces' component={SpacesList} />
+          </Switch>
+        </Router>
+      </Container>
     </div>
   )
 }
