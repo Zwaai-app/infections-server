@@ -15,11 +15,6 @@ import { eqString } from 'fp-ts/lib/Eq'
 export const SpacesList = () => {
     const [selected, setSelected] = useState(O.none as O.Option<string>)
     let spaces = useSelector((state: RootState) => state.spaces.list)
-    spaces = [
-        { id: '111', name: 'foo1', description: 'bar', autoCheckout: O.none },
-        { id: '222', name: 'HTC33 Atelier 5', description: 'Rechts-achter groep Software Concepts', autoCheckout: O.some(60 * 60 * 8) },
-        { id: '333', name: 'foo2', description: '', autoCheckout: O.none },
-        { id: '444', name: 'foo3', description: 'bar', autoCheckout: O.none }]
     return <div id='SpacesList'>
         <h1>{t('spacesList.header', 'Ruimtebeheer')}</h1>
         <Table selectable celled unstackable compact size='small' color='orange'>
