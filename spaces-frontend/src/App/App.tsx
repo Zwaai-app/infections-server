@@ -8,8 +8,13 @@ import { Topbar } from '../Topbar/Topbar'
 import './App.css'
 import { ScrollToTop } from '../utils/ScrollToTop'
 import { Profile } from '../Profile/Profile'
+import { SpacesList } from '../Spaces/SpacesList'
+import moment from 'moment'
 
 function App() {
+  moment.locale(window.navigator.language)
+  moment.duration().locale(window.navigator.language)
+
   return (
     <div className="App">
       <Router>
@@ -20,6 +25,7 @@ function App() {
           <Route path='/login' component={Login} />
           <Route path="/register" component={Register} />
           <Route path='/profile' component={Profile} />
+          <Route path='/spaces' component={SpacesList} />
         </Switch>
       </Router>
     </div>

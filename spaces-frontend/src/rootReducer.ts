@@ -2,11 +2,13 @@ import { combineReducers } from '@reduxjs/toolkit'
 import registerReducer from './Register/registerSlice'
 import userReducer, { logout } from './User/userSlice'
 import profileReducer from './Profile/profileSlice'
+import spacesReducer from './Spaces/spacesSlice'
 
 const appReducer = combineReducers({
   register: registerReducer,
   user: userReducer,
-  profile: profileReducer
+  profile: profileReducer,
+  spaces: spacesReducer
 })
 export type RootState = ReturnType<typeof appReducer>
 
