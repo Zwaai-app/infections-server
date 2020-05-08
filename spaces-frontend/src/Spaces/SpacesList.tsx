@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { t } from '../i18n'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../rootReducer'
-import { Table, Button } from 'semantic-ui-react'
-import { Space } from './spacesSlice'
+import { Table, Button, Confirm } from 'semantic-ui-react'
+import { Space, deleteSpace } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import { constant, flip } from 'fp-ts/lib/function'
 import * as moment from 'moment'
@@ -37,13 +37,32 @@ export const SpacesList = () => {
                             O.getOrElse(constant('—'))
                         )(s.autoCheckout)}
                             {O.elem(eqString)(s.id, selected) &&
-                                <Button.Group floated='right' size='small'>
-                                    <Button icon='edit' positive />
-                                    <Button icon='trash' negative />
-                                </Button.Group>}
+                                <ActionButtons space={s} />}
                         </Table.Cell>
                     </Table.Row>)}
             </Table.Body>
         </Table>
     </div >
+}
+
+const ActionButtons = ({ space }: { space: Space }) => {
+    const dispatch = useDispatch()
+    const [isDeleteConfShowing, setDeleteConfShowing] = useState(false)
+
+    return <Button.Group floated='right' size='small'>
+        <Button icon='edit' positive />
+        <Button icon='trash' negative
+            onClick={() => setDeleteConfShowing(true)} />
+        <Confirm
+            open={isDeleteConfShowing}
+            content={t('editProfile.deleteConfirmation', 'Wilt u de ruimte {{name}} verwijderen?', new Map([['name', space.name]]))}
+            onCancel={() => setDeleteConfShowing(false)}
+            onConfirm={() => {
+                setDeleteConfShowing(false)
+                dispatch(deleteSpace(space))
+            }}
+            cancelButton={t('editProfile.cancelDelete', 'Annuleren')}
+            confirmButton={t('editProfile.confirmDelete', 'Verwijder')}
+        ></Confirm>
+    </Button.Group>
 }
