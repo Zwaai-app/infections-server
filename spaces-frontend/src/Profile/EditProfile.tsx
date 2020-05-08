@@ -82,11 +82,11 @@ export const EditProfile = () => {
             <Message error
                 list={
                     wantsToSave && profileDataValid
-                        ? E.getOrElse(constant([] as string[]))(E.swap(profileDataValid))
+                        ? E.getOrElse(constStringArr)(E.swap(profileDataValid))
                         : flow(
                             (e: E.Either<string, string>) => E.swap(e),
                             E.map((s: string) => [s]),
-                            E.getOrElse(() => [] as string[])
+                            E.getOrElse(constStringArr)
                         )(logoDataValid)}
             />
             <Form.Field>
@@ -102,6 +102,8 @@ export const EditProfile = () => {
         </Form>
     </div>
 }
+
+const constStringArr = constant([] as string[])
 
 function readImageData(file: File, onLoad: (buf: string | null) => void) {
     const reader = new FileReader()
