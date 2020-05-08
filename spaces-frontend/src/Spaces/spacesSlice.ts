@@ -1,4 +1,4 @@
-import { Option } from 'fp-ts/lib/Option'
+import * as O from 'fp-ts/lib/Option'
 import { createSlice } from '@reduxjs/toolkit'
 
 type Seconds = number
@@ -7,14 +7,26 @@ export interface Space {
   id: string
   name: string
   description: string
-  autoCheckout: Option<Seconds>
+  autoCheckout: O.Option<Seconds>
 }
 
 export interface SpacesState {
   list: Space[]
 }
 
-const initialState: SpacesState = { list: [] }
+const initialState: SpacesState = {
+  list: [
+    { id: '111', name: 'foo1', description: 'bar', autoCheckout: O.none },
+    {
+      id: '222',
+      name: 'HTC33 Atelier 5',
+      description: 'Rechts-achter groep Software Concepts',
+      autoCheckout: O.some(60 * 60 * 8)
+    },
+    { id: '333', name: 'foo2', description: '', autoCheckout: O.none },
+    { id: '444', name: 'foo3', description: 'bar', autoCheckout: O.none }
+  ]
+}
 
 export const spacesSlice = createSlice({
   name: 'spaces',
