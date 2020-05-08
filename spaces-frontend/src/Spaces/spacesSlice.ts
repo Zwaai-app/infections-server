@@ -1,5 +1,5 @@
 import * as O from 'fp-ts/lib/Option'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type Seconds = number
 
@@ -31,7 +31,13 @@ const initialState: SpacesState = {
 export const spacesSlice = createSlice({
   name: 'spaces',
   initialState,
-  reducers: {}
+  reducers: {
+    deleteSpace (state: SpacesState, action: PayloadAction<Space>) {
+      state.list = state.list.filter(s => s.id !== action.payload.id)
+    }
+  }
 })
+
+export const { deleteSpace } = spacesSlice.actions
 
 export default spacesSlice.reducer
