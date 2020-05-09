@@ -49,18 +49,19 @@ const EditSpaceBang = ({ space }: { space: Space }) => {
                 label={t('editSpace.description', 'Omschrijving')}
                 value={desc}
                 onChange={(_, { value }) => setDesc(value)} />
-            <Form.Field>
-                <label>{t('EditSpace.autoCheckoutLabel', 'Automatisch uitchecken na:')}</label>
-                <Button.Group fluid>
+            <Form.Group>
+                <Form.Field>
+                    <label>{t('EditSpace.autoCheckoutLabel', 'Automatisch uitchecken na:')}</label>
                     {[30, 60, 2 * 60, 4 * 60, 8 * 60].map(minutes =>
                         <AutoCheckoutButton minutes={minutes} value={autoCheckout} setValue={setAutocheckout} />)}
-                    <Button
-                        active={O.isNone(autoCheckout)}
+                    <Form.Radio
+                        label={t('editSpace.disableAutocheckout', 'uitschakelen')}
+                        checked={O.isNone(autoCheckout)}
                         onClick={() => setAutocheckout(O.none)}
-                    >{t('editSpace.disableAutocheckout', 'uitschakelen')}</Button>
-                </Button.Group>
-                <Segment basic secondary>{tAutoCheckoutExplanation}</Segment>
-            </Form.Field>
+                    />
+                    <Segment basic secondary>{tAutoCheckoutExplanation}</Segment>
+                </Form.Field>
+            </Form.Group>
             <Form.Field>
                 <Button primary floated='right' disabled>{t('editSpace.saveButton', 'Opslaan')}</Button>
                 <Button secondary floated='right'
@@ -72,10 +73,11 @@ const EditSpaceBang = ({ space }: { space: Space }) => {
 }
 
 const AutoCheckoutButton = ({ minutes, value, setValue }: AutoCheckoutButtonProps) => {
-    return <Button
-        active={O.elem(eqNumber)(minutes * 60, value)}
+    return <Form.Radio
+        label={moment.duration(minutes, 'minutes').humanize()}
+        checked={O.elem(eqNumber)(minutes * 60, value)}
         onClick={() => setValue(O.some(minutes * 60))}
-    >{moment.duration(minutes, 'minutes').humanize()}</Button>
+    />
 }
 
 interface AutoCheckoutButtonProps {
