@@ -11,6 +11,7 @@ import { Profile } from '../Profile/Profile'
 import { SpacesList } from '../Spaces/SpacesList'
 import moment from 'moment'
 import { Container } from 'semantic-ui-react'
+import { EditSpace } from '../Spaces/EditSpace'
 
 function App() {
   moment.locale(window.navigator.language)
@@ -27,6 +28,7 @@ function App() {
             <Route path='/login' component={Login} />
             <Route path="/register" component={Register} />
             <Route path='/profile' component={Profile} />
+            <Route path='/spaces/edit/:id' component={EditSpace} />
             <Route path='/spaces' component={SpacesList} />
           </Switch>
         </Router>

@@ -11,6 +11,7 @@ import 'moment/locale/nl'
 import * as R from 'rambda'
 import { pipe } from 'rxjs'
 import { eqString } from 'fp-ts/lib/Eq'
+import { useHistory } from 'react-router-dom'
 
 export const SpacesList = () => {
     const [selected, setSelected] = useState(O.none as O.Option<string>)
@@ -47,10 +48,12 @@ export const SpacesList = () => {
 
 const ActionButtons = ({ space }: { space: Space }) => {
     const dispatch = useDispatch()
+    const history = useHistory()
     const [isDeleteConfShowing, setDeleteConfShowing] = useState(false)
 
     return <Button.Group floated='right' size='small'>
-        <Button icon='edit' positive />
+        <Button icon='edit' positive
+            onClick={() => history.push(`/spaces/edit/${space.id}`)} />
         <Button icon='trash' negative
             onClick={() => setDeleteConfShowing(true)} />
         <Confirm
