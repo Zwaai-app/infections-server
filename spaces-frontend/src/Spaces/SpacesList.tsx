@@ -34,7 +34,7 @@ export const SpacesList = () => {
                         <Table.Cell>{s.name}<div>{s.description || '\u00a0'}</div></Table.Cell>
                         <Table.Cell>{pipe(
                             O.map(R.curry(flip(moment.duration))('seconds')),
-                            O.map(d => d.locale('nl').humanize()),
+                            O.map(d => d.humanize()),
                             O.getOrElse(constant('—'))
                         )(s.autoCheckout)}
                             {O.elem(eqString)(s.id, selected) &&
