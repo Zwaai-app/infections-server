@@ -49,9 +49,9 @@ const EditSpaceBang = ({ space }: { space: Space }) => {
                 label={t('editSpace.description', 'Omschrijving')}
                 value={desc}
                 onChange={(_, { value }) => setDesc(value)} />
-            <Form.Group>
-                <Form.Field>
-                    <label>{t('EditSpace.autoCheckoutLabel', 'Automatisch uitchecken na:')}</label>
+            <Form.Field>
+                <label>{t('EditSpace.autoCheckoutLabel', 'Automatisch uitchecken na:')}</label>
+                <Form.Group >
                     {[30, 60, 2 * 60, 4 * 60, 8 * 60].map(minutes =>
                         <AutoCheckoutButton minutes={minutes} value={autoCheckout} setValue={setAutocheckout} />)}
                     <Form.Radio
@@ -59,9 +59,11 @@ const EditSpaceBang = ({ space }: { space: Space }) => {
                         checked={O.isNone(autoCheckout)}
                         onClick={() => setAutocheckout(O.none)}
                     />
-                    <Segment basic secondary>{tAutoCheckoutExplanation}</Segment>
-                </Form.Field>
-            </Form.Group>
+                </Form.Group>
+            </Form.Field>
+            <Form.Field>
+                <Segment basic secondary>{tAutoCheckoutExplanation}</Segment>
+            </Form.Field>
             <Form.Field>
                 <Button primary floated='right' disabled>{t('editSpace.saveButton', 'Opslaan')}</Button>
                 <Button secondary floated='right'
