@@ -51,10 +51,10 @@ const EditSpaceBang = ({ space }: { space: Space }) => {
                 onChange={(_, { value }) => setDesc(value)} />
             <Form.Field>
                 <label>{t('EditSpace.autoCheckoutLabel', 'Automatisch uitchecken na:')}</label>
-                <Form.Group >
+                <Form.Group>
                     {[30, 60, 2 * 60, 4 * 60, 8 * 60].map(minutes =>
-                    <Form.Radio
                         <AutoCheckoutButton name='autoCheckout' minutes={minutes} value={autoCheckout} setValue={setAutocheckout} />)}
+                    <Form.Radio width='16'
                         name='autoCheckout'
                         label={t('editSpace.disableAutocheckout', 'uitschakelen')}
                         checked={O.isNone(autoCheckout)}
@@ -75,8 +75,8 @@ const EditSpaceBang = ({ space }: { space: Space }) => {
     </div>
 }
 
-    return <Form.Radio
 const AutoCheckoutButton = ({ name, minutes, value, setValue }: AutoCheckoutButtonProps) => {
+    return <Form.Radio width='16'
         name={name}
         label={moment.duration(minutes, 'minutes').humanize()}
         checked={O.elem(eqNumber)(minutes * 60, value)}
