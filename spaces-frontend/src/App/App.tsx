@@ -12,6 +12,7 @@ import { SpacesList } from '../Spaces/SpacesList'
 import moment from 'moment'
 import { Container } from 'semantic-ui-react'
 import { EditSpace } from '../Spaces/EditSpace'
+import { AddSpace } from '../Spaces/AddSpace'
 
 function App() {
   moment.locale(window.navigator.language)
@@ -28,6 +29,7 @@ function App() {
             <Route path='/login' component={Login} />
             <Route path="/register" component={Register} />
             <Route path='/profile' component={Profile} />
+            <Route path='/spaces/add' component={AddSpace} />
             <Route path='/spaces/edit/:id' component={EditSpace} />
             <Route path='/spaces' component={SpacesList} />
           </Switch>
