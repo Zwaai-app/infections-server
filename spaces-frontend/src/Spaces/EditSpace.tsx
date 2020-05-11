@@ -89,4 +89,4 @@ interface AutoCheckoutButtonProps {
 const tAutoCheckoutExplanation
     = t(
         'editSpace.autoCheckoutExplanation',
-        'Als een bezoeker vergeet uit te checken, wordt deze persoon na deze periode automatisch uitgecheckt. Kies de waarde die bij de ruimte past. Het wordt afgeraden om "uitschakelen" te kiezen, maar in speciale omstandigheden kan dit nodig zijn.')
+        'Als een bezoeker vergeet uit te checken, wordt deze persoon na deze periode automatisch uitgecheckt. Kies de waarde die bij de ruimte past. Kies liever iets te lang dan iets te kort. Het wordt afgeraden om "uitschakelen" te kiezen, maar in speciale omstandigheden kan dit nodig zijn.')
