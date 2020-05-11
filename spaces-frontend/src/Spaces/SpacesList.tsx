@@ -5,19 +5,20 @@ import { RootState } from '../rootReducer'
 import { Table, Button, Confirm } from 'semantic-ui-react'
 import { Space, deleteSpace } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
+import * as R from 'fp-ts/lib/Record'
 import { constant, flip } from 'fp-ts/lib/function'
 import * as moment from 'moment'
 import 'moment/locale/nl'
-import * as R from 'rambda'
+import { curry } from 'rambda'
 import { pipe } from 'rxjs'
 import { eqString } from 'fp-ts/lib/Eq'
 import { useHistory } from 'react-router-dom'
 
 export const SpacesList = () => {
     const [selected, setSelected] = useState(O.none as O.Option<string>)
-    let spaces = useSelector((state: RootState) => state.spaces.list)
+    let spaces = useSelector((state: RootState) => state.spaces.spaces)
     return <div id='SpacesList'>
-        <h1>{t('spacesList.header', 'Ruimtebeheer')}</h1>
+        <h1>{t('spacesList.header', 'Ruimtebeheer')}<NewSpaceButton /></h1>
         <Table selectable celled unstackable compact size='small' color='orange'>
             <Table.Header>
                 <Table.Row>
@@ -26,24 +27,35 @@ export const SpacesList = () => {
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-                {spaces.map((s: Space) =>
+                {R.collect((_, s: Space) =>
                     <Table.Row
                         key={s.id}
                         active={O.elem(eqString)(s.id, selected)}
                         onClick={() => setSelected(O.some(s.id))} >
                         <Table.Cell>{s.name}<div>{s.description || '\u00a0'}</div></Table.Cell>
                         <Table.Cell>{pipe(
-                            O.map(R.curry(flip(moment.duration))('seconds')),
+                            O.map(curry(flip(moment.duration))('seconds')),
                             O.map(d => d.humanize()),
                             O.getOrElse(constant('—'))
                         )(s.autoCheckout)}
                             {O.elem(eqString)(s.id, selected) &&
                                 <ActionButtons space={s} />}
                         </Table.Cell>
-                    </Table.Row>)}
+                    </Table.Row>)(spaces)}
             </Table.Body>
         </Table>
+        <NewSpaceButton />
     </div >
+}
+
+const NewSpaceButton = () => {
+    const history = useHistory()
+
+    return <Button
+        floated='right'
+        icon='add'
+        alt={t('spacesList.createNewButton', 'Ruimte toevoegen')}
+        onClick={() => { history.push('/spaces/add') }} />
 }
 
 const ActionButtons = ({ space }: { space: Space }) => {
