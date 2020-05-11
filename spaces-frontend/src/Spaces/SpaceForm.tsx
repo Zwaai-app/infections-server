@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Space } from './spacesSlice'
-import { Form, Segment, Button } from 'semantic-ui-react'
+import { Form, Segment, Button, Message } from 'semantic-ui-react'
 import { t } from '../i18n'
 import { useHistory } from 'react-router-dom'
 import * as O from 'fp-ts/lib/Option'
@@ -13,20 +13,23 @@ export const SpaceForm = ({ space, saveHandler }: SpaceFormProps) => {
     const [name, setName] = useState(space?.name || '')
     const [desc, setDesc] = useState(space?.description || '')
     const [autoCheckout, setAutocheckout] = useState(space?.autoCheckout || null)
+    const [wantsToSave, setWantsToSave] = useState(false)
+
+    const invalid = name === '' || !autoCheckout
 
     return <div id='SpaceForm'>
-        <Form>
+        <Form error={wantsToSave && invalid}>
             <Form.Input
                 label={t('editSpace.nameLabel', 'Naam')}
                 value={name}
                 onChange={(_, { value }) => setName(value)}
             />
             <Form.Input
-                label={t('editSpace.description', 'Omschrijving')}
+                label={t('editSpace.description', 'Omschrijving (optioneel)')}
                 value={desc}
                 onChange={(_, { value }) => setDesc(value)} />
             <Form.Field>
-                <label>{t('EditSpace.autoCheckoutLabel', 'Automatisch uitchecken na:')}</label>
+                <label>{t('EditSpace.autoCheckoutLabel', 'Automatisch uitchecken na')}</label>
                 <Form.Group>
                     {[30, 60, 2 * 60, 4 * 60, 8 * 60].map(minutes =>
                         <AutoCheckoutButton
@@ -46,9 +49,16 @@ export const SpaceForm = ({ space, saveHandler }: SpaceFormProps) => {
             <Form.Field>
                 <Segment basic secondary>{tAutoCheckoutExplanation}</Segment>
             </Form.Field>
+            <Message error
+                list={[name === '' ? tNameIsRequired : undefined,
+                autoCheckout === null ? tAutoCheckoutIsRequired : undefined]}
+            />
             <Form.Field>
-                <Button primary floated='right' disabled
-                    onClick={() => saveHandler(name, desc, autoCheckout!)}>{t('editSpace.saveButton', 'Opslaan')}</Button>
+                <Button primary floated='right'
+                    onClick={() => {
+                        setWantsToSave(true)
+                        !invalid && saveHandler(name, desc, autoCheckout!)
+                    }}>{t('editSpace.saveButton', 'Opslaan')}</Button>
                 <Button secondary floated='right'
                     onClick={() => history.push('/spaces')}
                 >{t('editSpace.cancelButton', 'Annuleren')}</Button>
@@ -81,6 +91,10 @@ interface AutoCheckoutButtonProps {
     setValue: (newValue: O.Option<number>) => void
 }
 
+const tNameIsRequired
+    = t('editSpace.nameIsRequired', 'Naam moet verplicht ingevuld worden')
+const tAutoCheckoutIsRequired
+    = t('editSpace.autoCheckoutIsRequired', 'Automatisch uitchecken moet verplicht ingevuld worden')
 const tAutoCheckoutExplanation
     = t(
         'editSpace.autoCheckoutExplanation',
