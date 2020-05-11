@@ -1,4 +1,10 @@
-import reducer, { Space, SpacesState, deleteSpace } from './spacesSlice'
+import reducer, {
+  Space,
+  SpacesState,
+  deleteSpace,
+  updateSpace,
+  listToRecord
+} from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 
 const space1: Space = {
@@ -20,9 +26,37 @@ const space3: Space = {
   autoCheckout: O.none
 }
 
+it('can update a space', () => {
+  const state: SpacesState = { spaces: listToRecord([space1, space2, space3]) }
+  const updatedSpace2 = {
+    id: '2',
+    name: 'updated name',
+    description: 'updated description',
+    autoCheckout: O.some(7200)
+  }
+  expect(reducer(state, updateSpace(updatedSpace2)).spaces).toEqual(
+    listToRecord([space1, updatedSpace2, space3])
+  )
+})
+
+it('ignores nonexisting space', () => {
+  const state: SpacesState = { spaces: listToRecord([space1, space2, space3]) }
+  const nonexisting = {
+    id: '4',
+    name: 'updated name',
+    description: 'updated description',
+    autoCheckout: O.some(7200)
+  }
+  expect(reducer(state, updateSpace(nonexisting)).spaces).toEqual(
+    listToRecord([space1, space2, space3])
+  )
+})
+
 it('can delete a space', () => {
   const state: SpacesState = {
-    list: [space1, space2, space3]
+    spaces: listToRecord([space1, space2, space3])
   }
-  expect(reducer(state, deleteSpace(space2)).list).toEqual([space1, space3])
+  expect(reducer(state, deleteSpace(space2)).spaces).toEqual(
+    listToRecord([space1, space3])
+  )
 })
