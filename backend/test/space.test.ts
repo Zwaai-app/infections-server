@@ -7,6 +7,7 @@ const testUser = {
   password: 'Test1234',
   confirmPassword: 'Test1234'
 }
+const space1 = { name: 'test space', autoCheckout: 3600 }
 
 const server = request.agent(app)
 
@@ -26,12 +27,23 @@ describe('/api/v1/space', () => {
     server
       .post('/api/v1/space')
       //   .auth(testUser.email, testUser.password)
-      .send({ name: 'test space', autoCheckout: 3600 })
+      .send(space1)
       .expect(200)
       .end((_err, res) => {
         expect(res.body._id).not.to.be.undefined
         createdSpaceId = res.body._id
-        console.debug(createdSpaceId)
+        done()
+      })
+  })
+
+  it('can retrieve spaces', done => {
+    server
+      .get('/api/v1/spaces')
+      .expect(200)
+      .end((err, res) => {
+        expect(err).to.be.null
+        expect(res.body).to.have.lengthOf(1)
+        expect(res.body[0]).to.include(space1)
         done()
       })
   })
@@ -39,7 +51,7 @@ describe('/api/v1/space', () => {
   it('cannot create the space twice', done => {
     return server
       .post('/api/v1/space')
-      .send({ name: 'test space', autoCheckout: 3600 })
+      .send(space1)
       .expect(401, done)
   })
 

@@ -4,6 +4,20 @@ import { Space } from '../models/Space'
 import { UserDocument } from '../models/User'
 import * as R from 'rambda'
 
+export const getSpacesApi = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  res.setHeader('Content-Type', 'application/json')
+  const user = req.user as UserDocument
+  Space.find({ user }, (err, docs) => {
+    if (err) return next(err)
+
+    return res.json(docs)
+  })
+}
+
 const postSpaceApi = (req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Content-Type', 'application/json')
 
@@ -13,7 +27,7 @@ const postSpaceApi = (req: Request, res: Response, next: NextFunction) => {
   }
 
   const user = req.user as UserDocument
-  Space.findOne({ user: user, name: req.body.name }, (err, existingSpace) => {
+  Space.findOne({ user, name: req.body.name }, (err, existingSpace) => {
     if (err) {
       return next(err)
     }
