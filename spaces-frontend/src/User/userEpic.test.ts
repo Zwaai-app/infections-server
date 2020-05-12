@@ -6,20 +6,22 @@ import { MockAjaxError } from '../testUtils/MockAjaxError'
 import { initialStateObservable } from '../testUtils/stateObservable'
 import { loadProfile } from '../Profile/profileSlice'
 import { Action } from 'redux'
+import { loadSpaces } from '../Spaces/spacesSlice'
 
 const loginAction = login({ username: 'foo@example.com', password: 'bar' })
 
 it('performs login successfully', done => {
-  expect.assertions(2)
+  expect.assertions(3)
   const action$ = ActionsObservable.of(loginAction)
   const state$ = initialStateObservable()
   const postLoginFn = () => of({ response: {} })
   let actions: Action[] = []
   loginEpic(action$, state$, { postLoginFn }).subscribe(action => {
     actions.push(action)
-    if (actions.length === 2) {
+    if (actions.length === 3) {
       expect(actions[0]).toEqual(loginSucceeded())
       expect(actions[1]).toEqual(loadProfile())
+      expect(actions[2]).toEqual(loadSpaces())
       done()
     }
   })

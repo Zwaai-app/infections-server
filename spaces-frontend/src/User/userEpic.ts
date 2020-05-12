@@ -20,6 +20,7 @@ import {
 import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax'
 import { of, Observable } from 'rxjs'
 import { loadProfile } from '../Profile/profileSlice'
+import { loadSpaces } from '../Spaces/spacesSlice'
 
 export type Actions = ActionType<
   | typeof login
@@ -27,6 +28,7 @@ export type Actions = ActionType<
   | typeof loginFailed
   | typeof logout
   | typeof loadProfile
+  | typeof loadSpaces
 >
 
 type PostLoginFn = (creds: LoginCredentials) => Observable<any>
@@ -55,7 +57,7 @@ export const loginEpic: Epic<Actions, Actions, RootState> = (
     flatMap(action =>
       postLoginFn(action.payload).pipe(
         map(success),
-        endWith(loadProfile()),
+        endWith(loadProfile(), loadSpaces()),
         catchError(failed)
       )
     )
