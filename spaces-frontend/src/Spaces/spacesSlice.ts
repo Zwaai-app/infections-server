@@ -7,18 +7,17 @@ import { flow, constant } from 'fp-ts/lib/function'
 
 type Seconds = number
 
-export interface ClientSideOnlySpace {
+type SpaceId = string
+
+interface SpaceFields {
   name: string
   description: string
   autoCheckout: O.Option<Seconds>
 }
 
-type SpaceId = string
-interface ThingWithId {
+export interface Space extends SpaceFields {
   id: SpaceId
 }
-
-export type Space = ThingWithId & ClientSideOnlySpace
 
 export interface SpacesState {
   spaces: Record<SpaceId, Space>
@@ -47,10 +46,7 @@ export const spacesSlice = createSlice({
   name: 'spaces',
   initialState,
   reducers: {
-    createSpace (
-      _state: SpacesState,
-      _action: PayloadAction<ClientSideOnlySpace>
-    ) {
+    createSpace (_state: SpacesState, _action: PayloadAction<SpaceFields>) {
       throw new Error('todo')
     },
     updateSpace (state: SpacesState, action: PayloadAction<Space>) {
