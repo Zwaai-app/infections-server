@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import * as R from 'rambda'
-import { SyncStatus, Failed } from '../utils/syncStatus'
+import { SyncStatus } from '../utils/syncStatus'
 
 type DataUrl = string
 
@@ -31,11 +31,6 @@ export type ProfileState = {
   data: ProfileData | null
   loadError: string | null
   updateStatus: SyncStatus
-}
-
-export function isUpdateError (status: SyncStatus) {
-  // tslint:disable-next-line: strict-type-predicates
-  return (status as Failed).error !== undefined
 }
 
 const initialState: ProfileState = {
