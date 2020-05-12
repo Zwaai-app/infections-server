@@ -3,7 +3,7 @@ import { t } from '../i18n'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../rootReducer'
 import { Table, Button, Confirm } from 'semantic-ui-react'
-import { Space, deleteSpace } from './spacesSlice'
+import { Space, deleteSpace, clearNewSpace } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import * as R from 'fp-ts/lib/Record'
 import { constant, flip } from 'fp-ts/lib/function'
@@ -50,12 +50,16 @@ export const SpacesList = () => {
 
 const NewSpaceButton = () => {
     const history = useHistory()
+    const dispatch = useDispatch()
 
     return <Button
         floated='right'
         icon='add'
         alt={t('spacesList.createNewButton', 'Ruimte toevoegen')}
-        onClick={() => { history.push('/spaces/add') }} />
+        onClick={() => {
+            dispatch(clearNewSpace())
+            history.push('/spaces/add')
+        }} />
 }
 
 const ActionButtons = ({ space }: { space: Space }) => {

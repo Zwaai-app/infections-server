@@ -4,23 +4,26 @@ import * as R from 'fp-ts/lib/Record'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getLastSemigroup } from 'fp-ts/lib/Semigroup'
 import { flow, constant } from 'fp-ts/lib/function'
+import { SyncStatus } from '../utils/syncStatus'
 
 type Seconds = number
 
-type SpaceId = string
-
-interface SpaceFields {
+export interface SpaceFields {
   name: string
   description: string
   autoCheckout: O.Option<Seconds>
 }
 
+type SpaceId = string
 export interface Space extends SpaceFields {
   id: SpaceId
 }
 
+type SpaceList = Record<SpaceId, Space>
+export type NewSpace = SpaceFields & { status: SyncStatus }
 export interface SpacesState {
-  spaces: Record<SpaceId, Space>
+  spaces: SpaceList
+  newSpace?: NewSpace
 }
 
 export const listToRecord = (spaces: Space[]): Record<string, Space> =>
@@ -42,12 +45,22 @@ const initialState: SpacesState = {
   spaces: listToRecord(initialSpaces)
 }
 
+function existingName (spaces: SpaceList, name: string): boolean {
+  return R.some((space: Space) => space.name === name)(spaces)
+}
+
 export const spacesSlice = createSlice({
   name: 'spaces',
   initialState,
   reducers: {
-    createSpace (_state: SpacesState, _action: PayloadAction<SpaceFields>) {
-      throw new Error('todo')
+    clearNewSpace (state: SpacesState, _action: PayloadAction<void>) {
+      state.newSpace = undefined
+    },
+    createSpace (state: SpacesState, action: PayloadAction<SpaceFields>) {
+      if (!state.newSpace && !existingName(state.spaces, action.payload.name)) {
+        const newSpace: NewSpace = { ...action.payload, status: 'idle' }
+        state.newSpace = newSpace
+      }
     },
     updateSpace (state: SpacesState, action: PayloadAction<Space>) {
       state.spaces = flow(
@@ -61,6 +74,11 @@ export const spacesSlice = createSlice({
   }
 })
 
-export const { createSpace, updateSpace, deleteSpace } = spacesSlice.actions
+export const {
+  clearNewSpace,
+  createSpace,
+  updateSpace,
+  deleteSpace
+} = spacesSlice.actions
 
 export default spacesSlice.reducer
