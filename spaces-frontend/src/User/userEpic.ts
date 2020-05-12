@@ -42,7 +42,8 @@ const postLogin: PostLoginFn = creds =>
   })
 
 const success = (_r: AjaxResponse) => loginSucceeded()
-const failed = (e: AjaxError) => of(loginFailed(e.message))
+const failed = (e: AjaxError) =>
+  of(loginFailed(e.response.errors?.join('; ') || e.message))
 
 export const loginEpic: Epic<Actions, Actions, RootState> = (
   action$,
