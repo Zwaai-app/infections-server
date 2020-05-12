@@ -9,9 +9,12 @@ import reducer, {
   clearNewSpace,
   storeNewSpaceStarted,
   storeNewSpaceSucceeded,
-  storeNewSpaceFailed
+  storeNewSpaceFailed,
+  SpaceList,
+  NewSpace
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
+import { SyncStatus } from '../utils/syncStatus'
 
 const space1: Space = {
   id: '1',
@@ -33,7 +36,7 @@ const space3: Space = {
 }
 
 it('can create a space', () => {
-  const state: SpacesState = { spaces: listToRecord([space1]) }
+  const state = spaceState({ spaces: listToRecord([space1]) })
   const newSpaceFields: SpaceFields = {
     name: 'new',
     description: 'also new',
@@ -46,10 +49,7 @@ it('can create a space', () => {
 })
 
 it('ignores create when already creating one', () => {
-  const state: SpacesState = {
-    spaces: listToRecord([]),
-    newSpace: { ...space1, status: 'inProgress' }
-  }
+  const state = spaceState({ newSpace: { ...space1, status: 'inProgress' } })
   const newSpaceFields: SpaceFields = {
     name: 'new',
     description: 'also new',
@@ -61,7 +61,7 @@ it('ignores create when already creating one', () => {
 })
 
 it('cannot create a space with an existing name', () => {
-  const state: SpacesState = { spaces: listToRecord([space1]) }
+  const state = spaceState({ spaces: listToRecord([space1]) })
   const newSpaceFields: SpaceFields = {
     name: space1.name,
     description: 'also new',
@@ -71,7 +71,7 @@ it('cannot create a space with an existing name', () => {
 })
 
 it('can update a space', () => {
-  const state: SpacesState = { spaces: listToRecord([space1, space2, space3]) }
+  const state = spaceState({ spaces: listToRecord([space1, space2, space3]) })
   const updatedSpace2 = {
     id: '2',
     name: 'updated name',
@@ -84,7 +84,7 @@ it('can update a space', () => {
 })
 
 it('ignores nonexisting space', () => {
-  const state: SpacesState = { spaces: listToRecord([space1, space2, space3]) }
+  const state = spaceState({ spaces: listToRecord([space1, space2, space3]) })
   const nonexisting = {
     id: '4',
     name: 'updated name',
@@ -97,48 +97,60 @@ it('ignores nonexisting space', () => {
 })
 
 it('can delete a space', () => {
-  const state: SpacesState = {
+  const state = spaceState({
     spaces: listToRecord([space1, space2, space3])
-  }
+  })
   expect(reducer(state, deleteSpace(space2)).spaces).toEqual(
     listToRecord([space1, space3])
   )
 })
 
 it('can clear state about new space being created', () => {
-  const state: SpacesState = {
-    spaces: listToRecord([]),
+  const state = spaceState({
     newSpace: { ...space1, status: 'inProgress' }
-  }
+  })
   expect(reducer(state, clearNewSpace()).newSpace).toBeUndefined()
 })
 
 it('sets in progress when store started', () => {
-  const state: SpacesState = {
-    spaces: {},
+  const state = spaceState({
     newSpace: { ...space1, status: 'idle' }
-  }
+  })
   expect(reducer(state, storeNewSpaceStarted()).newSpace?.status).toEqual(
     'inProgress'
   )
 })
 
 it('sets status succeeded when store succeeds', () => {
-  const state: SpacesState = {
-    spaces: {},
+  const state = spaceState({
     newSpace: { ...space1, status: 'inProgress' }
-  }
+  })
   expect(reducer(state, storeNewSpaceSucceeded()).newSpace?.status).toEqual(
     'success'
   )
 })
 
 it('sets error when store fails', () => {
-  const state: SpacesState = {
-    spaces: {},
+  const state = spaceState({
     newSpace: { ...space1, status: 'inProgress' }
-  }
+  })
   expect(
     reducer(state, storeNewSpaceFailed('some error')).newSpace?.status
   ).toEqual({ error: 'some error' })
 })
+
+function spaceState ({
+  spaces,
+  newSpace,
+  loadingStatus
+}: {
+  spaces?: SpaceList
+  newSpace?: NewSpace
+  loadingStatus?: SyncStatus
+} = {}): SpacesState {
+  return {
+    spaces: spaces || {},
+    newSpace,
+    loadingStatus: loadingStatus || 'idle'
+  }
+}

@@ -19,11 +19,12 @@ export interface Space extends SpaceFields {
   id: SpaceId
 }
 
-type SpaceList = Record<SpaceId, Space>
+export type SpaceList = Record<SpaceId, Space>
 export type NewSpace = SpaceFields & { status: SyncStatus }
 export interface SpacesState {
   spaces: SpaceList
   newSpace?: NewSpace
+  loadingStatus: SyncStatus
 }
 
 export const listToRecord = (spaces: Space[]): Record<string, Space> =>
@@ -42,7 +43,8 @@ const initialSpaces = [
 ]
 
 const initialState: SpacesState = {
-  spaces: listToRecord(initialSpaces)
+  spaces: listToRecord(initialSpaces),
+  loadingStatus: 'idle'
 }
 
 function existingName (spaces: SpaceList, name: string): boolean {
@@ -85,7 +87,8 @@ export const spacesSlice = createSlice({
       if (state.newSpace) {
         state.newSpace.status = { error: action.payload }
       }
-    }
+    },
+    loadSpaces (_state: SpacesState, _action: PayloadAction<void>) {}
   }
 })
 
@@ -98,7 +101,8 @@ export const {
   deleteSpace,
   storeNewSpaceStarted,
   storeNewSpaceSucceeded,
-  storeNewSpaceFailed
+  storeNewSpaceFailed,
+  loadSpaces
 } = spacesSlice.actions
 
 export default spacesSlice.reducer
