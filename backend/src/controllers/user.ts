@@ -246,7 +246,7 @@ export const postSignupApi = async (
         if (err) {
           return next(err)
         }
-        res.end(JSON.stringify({}))
+        res.json({})
       })
     })
   })
@@ -335,7 +335,6 @@ export const postUpdateProfileApi = async (
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    console.debug(errors)
     return res.status(401).json({ errors: errors.array() })
   }
 
