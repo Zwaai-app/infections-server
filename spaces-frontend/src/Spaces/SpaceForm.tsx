@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Space } from './spacesSlice'
 import { Form, Segment, Button, Message } from 'semantic-ui-react'
 import { t } from '../i18n'
@@ -8,10 +8,12 @@ import { eqNumber } from 'fp-ts/lib/Eq'
 import * as moment from 'moment'
 import { useSelector } from 'react-redux'
 import { RootState } from '../rootReducer'
+import { isError, Failed } from '../utils/syncStatus'
 
 export const SpaceForm = ({ space, saveHandler }: SpaceFormProps) => {
     const history = useHistory()
-    const newSpace = useSelector((state: RootState) => state.spaces.newSpace)
+    const spacesState = useSelector((state: RootState) => state.spaces)
+    const newSpace = spacesState.newSpace
 
     const [name, setName] = useState(space?.name || newSpace?.name || '')
     const [desc, setDesc] = useState(space?.description || newSpace?.description || '')
@@ -20,7 +22,18 @@ export const SpaceForm = ({ space, saveHandler }: SpaceFormProps) => {
 
     const invalid = name === '' || !autoCheckout
 
+    useEffect(() => {
+        if (spacesState.newSpace && spacesState.newSpace.status === 'success') {
+            history.push('/spaces')
+        }
+    })
+
     return <div id='SpaceForm'>
+        <Message error hidden={!spacesState.newSpace || !isError(spacesState.newSpace.status)}>
+            <Message.Header>{t('spaceform.storeNewSpaceErrorHeader', 'Serverprobleem')}</Message.Header>
+            <p>{t('spaceForm.storeNewSpaceErrorMessage', 'Er ging iets mis bij het opslaan van uw ruimte; probeer het later nog eens aub.')}</p>
+            <p>{t('spaceForm.errorMessage', 'Foutmelding')}: {(spacesState.newSpace?.status as Failed | null)?.error}</p>
+        </Message>
         <Form error={wantsToSave && invalid}>
             <Form.Input
                 label={t('editSpace.nameLabel', 'Naam')}
@@ -58,6 +71,7 @@ export const SpaceForm = ({ space, saveHandler }: SpaceFormProps) => {
             />
             <Form.Field>
                 <Button primary floated='right'
+                    loading={spacesState.newSpace?.status === 'inProgress'}
                     onClick={() => {
                         setWantsToSave(true)
                         !invalid && saveHandler(name, desc, autoCheckout!)
