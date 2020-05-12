@@ -19,6 +19,7 @@ import * as homeController from './controllers/home'
 import * as userController from './controllers/user'
 import * as contactController from './controllers/contact'
 import * as randomsController from './controllers/randoms'
+import * as spaceController from './controllers/space'
 
 // API keys and Passport configuration
 import * as passportConfig from './config/passport'
@@ -157,5 +158,16 @@ app.post(
   passportConfig.isAuthenticated,
   userController.postUpdateProfileApi
 )
-
+app.post(
+  '/api/v1/space',
+  passportConfig.isAuthenticated,
+  spaceController.postSpace.sanitizers,
+  spaceController.postSpace.apiHandler
+)
+app.delete(
+  '/api/v1/space',
+  passportConfig.isAuthenticated,
+  spaceController.deleteSpace.sanitizers,
+  spaceController.deleteSpace.apiHandler
+)
 export default app
