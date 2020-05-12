@@ -3,7 +3,7 @@ import { t } from '../i18n'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../rootReducer'
 import { Table, Button, Confirm } from 'semantic-ui-react'
-import { Space, deleteSpace, clearNewSpace } from './spacesSlice'
+import { Space, deleteSpace, clearNewSpace, loadSpaces } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import * as R from 'fp-ts/lib/Record'
 import { constant, flip } from 'fp-ts/lib/function'
@@ -18,7 +18,10 @@ export const SpacesList = () => {
     const [selected, setSelected] = useState(O.none as O.Option<string>)
     let spaces = useSelector((state: RootState) => state.spaces.spaces)
     return <div id='SpacesList'>
-        <h1>{t('spacesList.header', 'Ruimtebeheer')}<NewSpaceButton /></h1>
+        <h1>{t('spacesList.header', 'Ruimtebeheer')}
+            <NewSpaceButton />
+            <ReloadButton />
+        </h1>
         <Table selectable celled unstackable compact size='small' color='orange'>
             <Table.Header>
                 <Table.Row>
@@ -29,16 +32,16 @@ export const SpacesList = () => {
             <Table.Body>
                 {R.collect((_, s: Space) =>
                     <Table.Row
-                        key={s.id}
-                        active={O.elem(eqString)(s.id, selected)}
-                        onClick={() => setSelected(O.some(s.id))} >
+                        key={s._id}
+                        active={O.elem(eqString)(s._id, selected)}
+                        onClick={() => setSelected(O.some(s._id))} >
                         <Table.Cell>{s.name}<div>{s.description || '\u00a0'}</div></Table.Cell>
                         <Table.Cell>{pipe(
                             O.map(curry(flip(moment.duration))('seconds')),
                             O.map(d => d.humanize()),
                             O.getOrElse(constant('—'))
                         )(s.autoCheckout)}
-                            {O.elem(eqString)(s.id, selected) &&
+                            {O.elem(eqString)(s._id, selected) &&
                                 <ActionButtons space={s} />}
                         </Table.Cell>
                     </Table.Row>)(spaces)}
@@ -62,6 +65,20 @@ const NewSpaceButton = () => {
         }} />
 }
 
+const ReloadButton = () => {
+    const dispatch = useDispatch()
+    const loadingState = useSelector((state: RootState) => state.spaces.loadingStatus)
+    // const isNotIdle = loadingState !== 'idle'
+    const isLoading = false && loadingState === 'inProgress'
+
+    return <Button
+        floated='right'
+        icon='refresh'
+        basic={isLoading} loading={isLoading} disabled={isLoading}
+        alt={t('spacesList.reloadButton', 'Ruimtes opnieuw laden van server')}
+        onClick={() => { dispatch(loadSpaces()) }} />
+}
+
 const ActionButtons = ({ space }: { space: Space }) => {
     const dispatch = useDispatch()
     const history = useHistory()
@@ -69,7 +86,7 @@ const ActionButtons = ({ space }: { space: Space }) => {
 
     return <Button.Group floated='right' size='small'>
         <Button icon='edit' positive
-            onClick={() => history.push(`/spaces/edit/${space.id}`)} />
+            onClick={() => history.push(`/spaces/edit/${space._id}`)} />
         <Button icon='trash' negative
             onClick={() => setDeleteConfShowing(true)} />
         <Confirm

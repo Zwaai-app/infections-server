@@ -14,9 +14,16 @@ export interface SpaceFields {
   autoCheckout: O.Option<Seconds>
 }
 
+export interface SpaceFromServer {
+  _id: SpaceId
+  name: string
+  description: string
+  autoCheckout: number
+}
+
 type SpaceId = string
 export interface Space extends SpaceFields {
-  id: SpaceId
+  _id: SpaceId
 }
 
 export type SpaceList = Record<SpaceId, Space>
@@ -28,18 +35,18 @@ export interface SpacesState {
 }
 
 export const listToRecord = (spaces: Space[]): Record<string, Space> =>
-  R.fromFoldableMap(getLastSemigroup<Space>(), A.array)(spaces, s => [s.id, s])
+  R.fromFoldableMap(getLastSemigroup<Space>(), A.array)(spaces, s => [s._id, s])
 
 const initialSpaces = [
-  { id: '111', name: 'foo1', description: 'bar', autoCheckout: O.none },
+  { _id: '111', name: 'foo1', description: 'bar', autoCheckout: O.none },
   {
-    id: '222',
+    _id: '222',
     name: 'HTC33 Atelier 5',
     description: 'Rechts-achter groep Software Concepts',
     autoCheckout: O.some(60 * 60 * 8)
   },
-  { id: '333', name: 'foo2', description: '', autoCheckout: O.none },
-  { id: '444', name: 'foo3', description: 'bar', autoCheckout: O.none }
+  { _id: '333', name: 'foo2', description: '', autoCheckout: O.none },
+  { _id: '444', name: 'foo3', description: 'bar', autoCheckout: O.none }
 ]
 
 const initialState: SpacesState = {
@@ -66,12 +73,12 @@ export const spacesSlice = createSlice({
     },
     updateSpace (state: SpacesState, action: PayloadAction<Space>) {
       state.spaces = flow(
-        R.updateAt(action.payload.id, action.payload),
+        R.updateAt(action.payload._id, action.payload),
         O.getOrElse(constant(state.spaces))
       )(state.spaces)
     },
     deleteSpace (state: SpacesState, action: PayloadAction<Space>) {
-      state.spaces = R.deleteAt(action.payload.id)(state.spaces)
+      state.spaces = R.deleteAt(action.payload._id)(state.spaces)
     },
     storeNewSpaceStarted (state: SpacesState, _action: PayloadAction<void>) {
       if (state.newSpace) {
@@ -88,11 +95,29 @@ export const spacesSlice = createSlice({
         state.newSpace.status = { error: action.payload }
       }
     },
-    loadSpaces (_state: SpacesState, _action: PayloadAction<void>) {}
+    loadSpaces (state: SpacesState, _action: PayloadAction<void>) {
+      state.loadingStatus = 'inProgress'
+    },
+    loadSpacesSucceeded (
+      state: SpacesState,
+      action: PayloadAction<SpaceFromServer[]>
+    ) {
+      state.loadingStatus = 'success'
+      const spaces = action.payload.map(serverRep => ({
+        ...serverRep,
+        autoCheckout:
+          serverRep.autoCheckout < 0 ? O.none : O.some(serverRep.autoCheckout)
+      }))
+      state.spaces = listToRecord(spaces)
+    },
+    loadSpacesFailed (state: SpacesState, action: PayloadAction<string>) {
+      state.loadingStatus = { error: action.payload }
+    }
   }
 })
 
 export type CreateSpaceAction = ReturnType<typeof createSpace>
+export type LoadSpacesAction = ReturnType<typeof loadSpaces>
 
 export const {
   clearNewSpace,
@@ -102,7 +127,9 @@ export const {
   storeNewSpaceStarted,
   storeNewSpaceSucceeded,
   storeNewSpaceFailed,
-  loadSpaces
+  loadSpaces,
+  loadSpacesSucceeded,
+  loadSpacesFailed
 } = spacesSlice.actions
 
 export default spacesSlice.reducer
