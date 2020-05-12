@@ -10,11 +10,13 @@ import { ActionType } from 'typesafe-actions'
 import * as RegisterUser from './Register/registerEpic'
 import * as User from './User/userEpic'
 import * as Profile from './Profile/profileEpic'
+import * as Space from './Spaces/spaceEpic'
 
 type SystemActionsWithPayload =
   | RegisterUser.Actions
   | User.Actions
   | Profile.Actions
+  | Space.Actions
 type SystemActions = ActionType<SystemActionsWithPayload>
 type FinalActions = SystemActions
 
@@ -26,7 +28,8 @@ const epicMiddleware = createEpicMiddleware<
 const rootEpic = combineEpics(
   RegisterUser.epic,
   ...User.allEpics,
-  ...Profile.allEpics
+  ...Profile.allEpics,
+  ...Space.allEpics
 )
 
 const serializedPersistdState = localStorage.getItem('reduxState')
