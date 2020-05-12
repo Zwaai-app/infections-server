@@ -170,4 +170,10 @@ app.delete(
   spaceController.deleteSpace.sanitizers,
   spaceController.deleteSpace.apiHandler
 )
+app.get(
+  '/api/v1/spaces',
+  passportConfig.isAuthenticated,
+  spaceController.getSpacesApi
+)
+
 export default app
