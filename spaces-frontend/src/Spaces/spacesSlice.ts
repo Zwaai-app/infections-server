@@ -70,15 +70,35 @@ export const spacesSlice = createSlice({
     },
     deleteSpace (state: SpacesState, action: PayloadAction<Space>) {
       state.spaces = R.deleteAt(action.payload.id)(state.spaces)
+    },
+    storeNewSpaceStarted (state: SpacesState, _action: PayloadAction<void>) {
+      if (state.newSpace) {
+        state.newSpace.status = 'inProgress'
+      }
+    },
+    storeNewSpaceSucceeded (state: SpacesState, _action: PayloadAction<void>) {
+      if (state.newSpace) {
+        state.newSpace.status = 'success'
+      }
+    },
+    storeNewSpaceFailed (state: SpacesState, action: PayloadAction<string>) {
+      if (state.newSpace) {
+        state.newSpace.status = { error: action.payload }
+      }
     }
   }
 })
+
+export type CreateSpaceAction = ReturnType<typeof createSpace>
 
 export const {
   clearNewSpace,
   createSpace,
   updateSpace,
-  deleteSpace
+  deleteSpace,
+  storeNewSpaceStarted,
+  storeNewSpaceSucceeded,
+  storeNewSpaceFailed
 } = spacesSlice.actions
 
 export default spacesSlice.reducer
