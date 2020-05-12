@@ -32,7 +32,8 @@ const getProfile: GetProfileFn = () =>
   })
 
 const success = (r: AjaxResponse) => profileLoaded(r.response)
-const failed = (e: AjaxError) => of(profileLoadFailed(e.message))
+const failed = (e: AjaxError) =>
+  of(profileLoadFailed(e.response.errors?.join('; ') || e.message))
 
 export const loadProfileEpic: Epic<Actions, Actions, RootState> = (
   action$,
@@ -62,7 +63,8 @@ const storeProfile: StoreProfileFn = (
   })
 }
 const storeSuccess = (_r: AjaxResponse) => storeProfileSucceeded()
-const storeFailed = (e: AjaxError) => of(storeProfileFailed(e.message))
+const storeFailed = (e: AjaxError) =>
+  of(storeProfileFailed(e.response.errors?.join('; ') || e.message))
 
 export const storeProfileEpic: Epic<Actions, Actions, RootState> = (
   action$,

@@ -38,7 +38,9 @@ const storeNewSpace: StoreNewSpaceFn = action =>
   })
 
 const storeNewSuccess = (_r: AjaxResponse) => storeNewSpaceSucceeded()
-const storeNewFailed = (e: AjaxError) => of(storeNewSpaceFailed(e.message))
+const storeNewFailed = (e: AjaxError) => {
+  return of(storeNewSpaceFailed(e.response.errors?.join('; ') || e.message))
+}
 
 export const storeNewSpaceEpic: Epic<Actions, Actions, RootState> = (
   action$,

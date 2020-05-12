@@ -20,7 +20,7 @@ const postSpaceApi = (req: Request, res: Response, next: NextFunction) => {
     if (existingSpace) {
       return res
         .status(401)
-        .json({ error: 'space with that name already exists' })
+        .json({ errors: ['space with that name already exists'] })
     }
     const space = new Space({
       user: user,

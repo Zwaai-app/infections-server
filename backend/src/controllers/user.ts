@@ -235,7 +235,7 @@ export const postSignupApi = async (
       return next(err)
     }
     if (existingUser) {
-      return res.status(400).json({ error: 'email address already in use' })
+      return res.status(400).json({ errors: ['email address already in use'] })
     }
     // tslint:disable-next-line: no-floating-promises
     user.save(err => {
