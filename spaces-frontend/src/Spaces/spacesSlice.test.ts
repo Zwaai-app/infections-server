@@ -6,7 +6,10 @@ import reducer, {
   listToRecord,
   SpaceFields,
   createSpace,
-  clearNewSpace
+  clearNewSpace,
+  storeNewSpaceStarted,
+  storeNewSpaceSucceeded,
+  storeNewSpaceFailed
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 
@@ -108,4 +111,34 @@ it('can clear state about new space being created', () => {
     newSpace: { ...space1, status: 'inProgress' }
   }
   expect(reducer(state, clearNewSpace()).newSpace).toBeUndefined()
+})
+
+it('sets in progress when store started', () => {
+  const state: SpacesState = {
+    spaces: {},
+    newSpace: { ...space1, status: 'idle' }
+  }
+  expect(reducer(state, storeNewSpaceStarted()).newSpace?.status).toEqual(
+    'inProgress'
+  )
+})
+
+it('sets status succeeded when store succeeds', () => {
+  const state: SpacesState = {
+    spaces: {},
+    newSpace: { ...space1, status: 'inProgress' }
+  }
+  expect(reducer(state, storeNewSpaceSucceeded()).newSpace?.status).toEqual(
+    'success'
+  )
+})
+
+it('sets error when store fails', () => {
+  const state: SpacesState = {
+    spaces: {},
+    newSpace: { ...space1, status: 'inProgress' }
+  }
+  expect(
+    reducer(state, storeNewSpaceFailed('some error')).newSpace?.status
+  ).toEqual({ error: 'some error' })
 })
