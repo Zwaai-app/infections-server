@@ -7,10 +7,10 @@ import profileReducer, {
   storeProfileFailed,
   ProfileData,
   profileLoadFailed,
-  UpdateStatus,
   storeProfileSucceeded,
   storeProfileStarted
 } from './profileSlice'
+import { SyncStatus } from '../utils/syncStatus'
 
 const orgData = {
   organizationName: 'my org',
@@ -94,7 +94,7 @@ function profileState ({
 }: {
   data?: ProfileData | null
   loadError?: string | null
-  updateStatus?: UpdateStatus
+  updateStatus?: SyncStatus
 } = {}): ProfileState {
   return {
     data: data || null,

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import * as R from 'rambda'
+import { SyncStatus, Failed } from '../utils/syncStatus'
 
 type DataUrl = string
 
@@ -26,21 +27,13 @@ export const isCompleteProfile = (data: object | null): boolean => {
   return R.equals({ ...dummyProfile, ...data }, data)
 }
 
-export type Idle = 'idle'
-export type InProgress = 'inProgress'
-export type Success = 'success'
-export interface Failed {
-  error: string
-}
-export type UpdateStatus = Idle | InProgress | Success | Failed
-
 export type ProfileState = {
   data: ProfileData | null
   loadError: string | null
-  updateStatus: UpdateStatus
+  updateStatus: SyncStatus
 }
 
-export function isUpdateError (status: UpdateStatus) {
+export function isUpdateError (status: SyncStatus) {
   // tslint:disable-next-line: strict-type-predicates
   return (status as Failed).error !== undefined
 }

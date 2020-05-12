@@ -6,9 +6,10 @@ import { RootState } from '../rootReducer'
 import { maxLogoSizeKB, validLogo, validateProfile } from './profileValidation'
 import * as E from 'fp-ts/lib/Either'
 import { flow, constant } from 'fp-ts/lib/function'
-import { updateProfile, ProfileData, isUpdateError, Failed } from './profileSlice'
+import { updateProfile, ProfileData, isUpdateError } from './profileSlice'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import './EditProfile.css'
+import { Failed } from '../utils/syncStatus'
 
 export const EditProfile = () => {
     const dispatch = useDispatch()
