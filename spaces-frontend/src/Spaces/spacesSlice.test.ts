@@ -11,25 +11,28 @@ import reducer, {
   storeNewSpaceSucceeded,
   storeNewSpaceFailed,
   SpaceList,
-  NewSpace
+  NewSpace,
+  loadSpaces,
+  loadSpacesSucceeded,
+  loadSpacesFailed
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import { SyncStatus } from '../utils/syncStatus'
 
 const space1: Space = {
-  id: '1',
+  _id: '1',
   name: 'one',
   description: 'one',
   autoCheckout: O.none
 }
 const space2: Space = {
-  id: '2',
+  _id: '2',
   name: 'two',
   description: 'two',
   autoCheckout: O.some(3600)
 }
 const space3: Space = {
-  id: '3',
+  _id: '3',
   name: 'three',
   description: 'three',
   autoCheckout: O.none
@@ -73,7 +76,7 @@ it('cannot create a space with an existing name', () => {
 it('can update a space', () => {
   const state = spaceState({ spaces: listToRecord([space1, space2, space3]) })
   const updatedSpace2 = {
-    id: '2',
+    _id: '2',
     name: 'updated name',
     description: 'updated description',
     autoCheckout: O.some(7200)
@@ -86,7 +89,7 @@ it('can update a space', () => {
 it('ignores nonexisting space', () => {
   const state = spaceState({ spaces: listToRecord([space1, space2, space3]) })
   const nonexisting = {
-    id: '4',
+    _id: '4',
     name: 'updated name',
     description: 'updated description',
     autoCheckout: O.some(7200)
@@ -112,31 +115,71 @@ it('can clear state about new space being created', () => {
   expect(reducer(state, clearNewSpace()).newSpace).toBeUndefined()
 })
 
-it('sets in progress when store started', () => {
-  const state = spaceState({
-    newSpace: { ...space1, status: 'idle' }
+describe('store new space', () => {
+  it('sets in progress when store started', () => {
+    const state = spaceState({
+      newSpace: { ...space1, status: 'idle' }
+    })
+    expect(reducer(state, storeNewSpaceStarted()).newSpace?.status).toEqual(
+      'inProgress'
+    )
   })
-  expect(reducer(state, storeNewSpaceStarted()).newSpace?.status).toEqual(
-    'inProgress'
-  )
+
+  it('sets status succeeded when store succeeds', () => {
+    const state = spaceState({
+      newSpace: { ...space1, status: 'inProgress' }
+    })
+    expect(reducer(state, storeNewSpaceSucceeded()).newSpace?.status).toEqual(
+      'success'
+    )
+  })
+
+  it('sets error when store fails', () => {
+    const state = spaceState({
+      newSpace: { ...space1, status: 'inProgress' }
+    })
+    expect(
+      reducer(state, storeNewSpaceFailed('some error')).newSpace?.status
+    ).toEqual({ error: 'some error' })
+  })
 })
 
-it('sets status succeeded when store succeeds', () => {
-  const state = spaceState({
-    newSpace: { ...space1, status: 'inProgress' }
+describe('load spaces list', () => {
+  it('sets status when loading', () => {
+    const state = spaceState({ loadingStatus: 'idle' })
+    expect(reducer(state, loadSpaces()).loadingStatus).toEqual('inProgress')
   })
-  expect(reducer(state, storeNewSpaceSucceeded()).newSpace?.status).toEqual(
-    'success'
-  )
-})
 
-it('sets error when store fails', () => {
-  const state = spaceState({
-    newSpace: { ...space1, status: 'inProgress' }
+  it('sets status and spaces when succeeded', () => {
+    const state = spaceState({
+      spaces: listToRecord([space1]),
+      loadingStatus: 'inProgress'
+    })
+    const space2ServerRep = {
+      ...space2,
+      autoCheckout: 3600
+    }
+    const space3ServerRep = {
+      ...space3,
+      autoCheckout: -1
+    }
+    const newState = reducer(
+      state,
+      loadSpacesSucceeded([space2ServerRep, space3ServerRep])
+    )
+    expect(newState.loadingStatus).toEqual('success')
+    expect(newState.spaces).toEqual(listToRecord([space2, space3]))
   })
-  expect(
-    reducer(state, storeNewSpaceFailed('some error')).newSpace?.status
-  ).toEqual({ error: 'some error' })
+
+  it('sets status on error', () => {
+    const state = spaceState({
+      spaces: listToRecord([space1, space2]),
+      loadingStatus: 'inProgress'
+    })
+    const newState = reducer(state, loadSpacesFailed('some error'))
+    expect(newState.loadingStatus).toEqual({ error: 'some error' })
+    expect(newState.spaces).toEqual(listToRecord([space1, space2]))
+  })
 })
 
 function spaceState ({

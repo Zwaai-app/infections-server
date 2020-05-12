@@ -42,7 +42,7 @@ const EditSpaceBang = ({ space }: { space: Space }) => {
         <SpaceForm
             space={space}
             saveHandler={(name, description, autoCheckout) => {
-                dispatch(updateSpace({ id: space.id, name, description, autoCheckout }))
+                dispatch(updateSpace({ _id: space._id, name, description, autoCheckout }))
             }} />
     </div>
 }
