@@ -6,13 +6,16 @@ import { useHistory } from 'react-router-dom'
 import * as O from 'fp-ts/lib/Option'
 import { eqNumber } from 'fp-ts/lib/Eq'
 import * as moment from 'moment'
+import { useSelector } from 'react-redux'
+import { RootState } from '../rootReducer'
 
 export const SpaceForm = ({ space, saveHandler }: SpaceFormProps) => {
     const history = useHistory()
+    const newSpace = useSelector((state: RootState) => state.spaces.newSpace)
 
-    const [name, setName] = useState(space?.name || '')
-    const [desc, setDesc] = useState(space?.description || '')
-    const [autoCheckout, setAutocheckout] = useState(space?.autoCheckout || null)
+    const [name, setName] = useState(space?.name || newSpace?.name || '')
+    const [desc, setDesc] = useState(space?.description || newSpace?.description || '')
+    const [autoCheckout, setAutocheckout] = useState(space?.autoCheckout || newSpace?.autoCheckout || null)
     const [wantsToSave, setWantsToSave] = useState(false)
 
     const invalid = name === '' || !autoCheckout
