@@ -6,10 +6,10 @@ import { RootState } from '../rootReducer'
 import { maxLogoSizeKB, validLogo, validateProfile } from './profileValidation'
 import * as E from 'fp-ts/lib/Either'
 import { flow, constant } from 'fp-ts/lib/function'
-import { updateProfile, ProfileData, isUpdateError } from './profileSlice'
+import { updateProfile, ProfileData } from './profileSlice'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 import './EditProfile.css'
-import { Failed } from '../utils/syncStatus'
+import { Failed, isError } from '../utils/syncStatus'
 
 export const EditProfile = () => {
     const dispatch = useDispatch()
@@ -41,7 +41,7 @@ export const EditProfile = () => {
 
     return <div id='EditProfile'>
         <h1>{t('editProfile.header', 'Profiel bewerken')}</h1>
-        <Message error hidden={!isUpdateError(profileState.updateStatus)}>
+        <Message error hidden={!isError(profileState.updateStatus)}>
             <Message.Header>{t('editProfile.storeProfileErrorHeader', 'Serverprobleem')}</Message.Header>
             <p>{t('editProfile.storeProfileErrorMessage', 'Er ging iets mis bij het opslaan van uw profiel; probeer het later nog eens aub.')}</p>
             <p>{t('editProfile.errorMessage', 'Foutmelding')}: {(profileState.updateStatus as Failed).error}</p>
