@@ -14,7 +14,8 @@ import reducer, {
   NewSpace,
   loadSpaces,
   loadSpacesSucceeded,
-  loadSpacesFailed
+  loadSpacesFailed,
+  loadSpacesReset
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import { SyncStatus } from '../utils/syncStatus'
@@ -179,6 +180,11 @@ describe('load spaces list', () => {
     const newState = reducer(state, loadSpacesFailed('some error'))
     expect(newState.loadingStatus).toEqual({ error: 'some error' })
     expect(newState.spaces).toEqual(listToRecord([space1, space2]))
+  })
+
+  it('can reset loading status', () => {
+    const state = spaceState({ loadingStatus: 'inProgress' })
+    expect(reducer(state, loadSpacesReset()).loadingStatus).toEqual('idle')
   })
 })
 
