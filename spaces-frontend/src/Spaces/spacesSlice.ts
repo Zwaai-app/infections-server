@@ -112,12 +112,16 @@ export const spacesSlice = createSlice({
     },
     loadSpacesFailed (state: SpacesState, action: PayloadAction<string>) {
       state.loadingStatus = { error: action.payload }
+    },
+    loadSpacesReset (state: SpacesState, _action: PayloadAction<void>) {
+      state.loadingStatus = 'idle'
     }
   }
 })
 
 export type CreateSpaceAction = ReturnType<typeof createSpace>
 export type LoadSpacesAction = ReturnType<typeof loadSpaces>
+export type LoadSpacesSucceededAction = ReturnType<typeof loadSpacesSucceeded>
 
 export const {
   clearNewSpace,
@@ -129,7 +133,8 @@ export const {
   storeNewSpaceFailed,
   loadSpaces,
   loadSpacesSucceeded,
-  loadSpacesFailed
+  loadSpacesFailed,
+  loadSpacesReset
 } = spacesSlice.actions
 
 export default spacesSlice.reducer
