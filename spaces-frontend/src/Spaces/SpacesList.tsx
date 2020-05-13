@@ -68,15 +68,20 @@ const NewSpaceButton = () => {
 const ReloadButton = () => {
     const dispatch = useDispatch()
     const loadingState = useSelector((state: RootState) => state.spaces.loadingStatus)
-    // const isNotIdle = loadingState !== 'idle'
-    const isLoading = false && loadingState === 'inProgress'
+    const isLoading = loadingState === 'inProgress'
+    const isSuccess = loadingState === 'success'
 
-    return <Button
-        floated='right'
-        icon='refresh'
-        basic={isLoading} loading={isLoading} disabled={isLoading}
-        alt={t('spacesList.reloadButton', 'Ruimtes opnieuw laden van server')}
-        onClick={() => { dispatch(loadSpaces()) }} />
+    return isSuccess
+        ? <Button
+            floated='right'
+            icon='checkmark'
+            basic={true} color='green' />
+        : <Button
+            floated='right'
+            icon='refresh'
+            basic={isLoading} loading={isLoading} disabled={isLoading}
+            alt={t('spacesList.reloadButton', 'Ruimtes opnieuw laden van server')}
+            onClick={() => { dispatch(loadSpaces()) }} />
 }
 
 const ActionButtons = ({ space }: { space: Space }) => {
