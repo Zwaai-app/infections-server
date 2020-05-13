@@ -67,10 +67,7 @@ const loadSpaces: LoadSpacesFn = () =>
     responseType: 'json'
   })
 
-const loadSpacesSuccess = (r: AjaxResponse) => {
-  console.debug(r)
-  return A.loadSpacesSucceeded(r.response)
-}
+const loadSpacesSuccess = (r: AjaxResponse) => A.loadSpacesSucceeded(r.response)
 const loadSpacesFailure = (e: AjaxError) =>
   of(A.loadSpacesFailed(e.response.errors?.join('; ') || e.message))
 
