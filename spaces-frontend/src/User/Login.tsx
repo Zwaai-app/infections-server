@@ -15,7 +15,7 @@ export const Login = () => {
 
   useEffect(() => {
     if (loginStatus === 'loggedIn') {
-      history.replace('/')
+      history.replace('/spaces')
     }
   })
   return <div id='Login'>
