@@ -4,7 +4,7 @@ import { Epic, ofType } from 'redux-observable'
 import { RootState } from '../rootReducer'
 import { Observable, of } from 'rxjs'
 import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax'
-import { flatMap, map, catchError, startWith } from 'rxjs/operators'
+import { flatMap, map, catchError, startWith, delay } from 'rxjs/operators'
 import * as O from 'fp-ts/lib/Option'
 import { constant } from 'fp-ts/lib/function'
 
@@ -16,6 +16,7 @@ export type Actions = ActionType<
   | typeof A.loadSpaces
   | typeof A.loadSpacesSucceeded
   | typeof A.loadSpacesFailed
+  | typeof A.loadSpacesReset
 >
 
 type StoreNewSpaceFn = (action: A.CreateSpaceAction) => Observable<any>
@@ -83,4 +84,17 @@ export const loadSpacesEpic: Epic<Actions, Actions, RootState> = (
     )
   )
 
-export const allEpics = [storeNewSpaceEpic, loadSpacesEpic]
+export const resetAfterLoadSuccess: Epic<Actions, Actions, RootState> = (
+  action$,
+  _state$
+) =>
+  action$.pipe(
+    ofType<Actions, A.LoadSpacesSucceededAction>(A.loadSpacesSucceeded.type),
+    flatMap(() => of(A.loadSpacesReset()).pipe(delay(3e3)))
+  )
+
+export const allEpics = [
+  storeNewSpaceEpic,
+  loadSpacesEpic,
+  resetAfterLoadSuccess
+]
