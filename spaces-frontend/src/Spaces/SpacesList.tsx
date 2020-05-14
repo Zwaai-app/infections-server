@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { t } from '../i18n'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../rootReducer'
-import { Table, Button, Confirm } from 'semantic-ui-react'
+import { Table, Button, Confirm, Message } from 'semantic-ui-react'
 import { Space, deleteSpace, clearNewSpace, loadSpaces } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import * as R from 'fp-ts/lib/Record'
@@ -13,6 +13,7 @@ import { curry } from 'rambda'
 import { pipe } from 'rxjs'
 import { eqString } from 'fp-ts/lib/Eq'
 import { useHistory } from 'react-router-dom'
+import { isError, Failed } from '../utils/syncStatus'
 
 export const SpacesList = () => {
     const [selected, setSelected] = useState(O.none as O.Option<string>)
@@ -22,6 +23,7 @@ export const SpacesList = () => {
             <NewSpaceButton />
             <ReloadButton />
         </h1>
+        <LoadSpacesErrors />
         <Table selectable celled unstackable compact size='small' color='orange'>
             <Table.Header>
                 <Table.Row>
@@ -84,6 +86,19 @@ const ReloadButton = () => {
             onClick={() => { dispatch(loadSpaces()) }} />
 }
 
+const LoadSpacesErrors = () => {
+    const loadingState = useSelector((state: RootState) => state.spaces.loadingStatus)
+    if (isError(loadingState)) {
+        return <Message error>
+            <Message.Header>{t('loadSpaces.errorsHeader', 'Er ging iets mis')}</Message.Header>
+            <Message.Content>
+                <p>{tErrorMessageContent1}</p>
+                <p>{tErrorMessageContent2((loadingState as Failed).error)}</p></Message.Content>
+        </Message>
+    } else {
+        return <></>
+    }
+}
 const ActionButtons = ({ space }: { space: Space }) => {
     const dispatch = useDispatch()
     const history = useHistory()
@@ -107,3 +122,10 @@ const ActionButtons = ({ space }: { space: Space }) => {
         ></Confirm>
     </Button.Group>
 }
+
+const tErrorMessageContent1 = t(
+    'loadSpaces.errorsContent1',
+    'De server gaf een foutmelding bij het laden van de ruimtes. Probeer het later nog eens.')
+const tErrorMessageContent2 = (error: string) => t(
+    'loadSpaces.errorsContent',
+    'Foutmelding: {{error}}', new Map([['error', error]]))
