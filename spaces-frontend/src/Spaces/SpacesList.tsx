@@ -26,7 +26,7 @@ export const SpacesList = () => {
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell>{t('spacesTable.headerName', 'Ruimte')}</Table.HeaderCell>
-                    <Table.HeaderCell>{t('spacesTable.headerAutoCheckout', 'Auto checkout')}</Table.HeaderCell>
+                    <Table.HeaderCell width={6}>{t('spacesTable.headerAutoCheckout', 'Auto checkout')}</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
