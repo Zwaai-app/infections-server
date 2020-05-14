@@ -21,7 +21,7 @@
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
     "typesafe-actions": "^5.1.0",
-    "typescript": "~3.7.2",
+    "typescript": "^3.9.0",
     "whatwg-url": "^8.0.0"
   },
   "devDependencies": {
