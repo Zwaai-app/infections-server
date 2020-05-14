@@ -4,7 +4,14 @@ import { Epic, ofType } from 'redux-observable'
 import { RootState } from '../rootReducer'
 import { Observable, of } from 'rxjs'
 import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax'
-import { flatMap, map, catchError, startWith, delay } from 'rxjs/operators'
+import {
+  flatMap,
+  map,
+  catchError,
+  startWith,
+  delay,
+  endWith
+} from 'rxjs/operators'
 import * as O from 'fp-ts/lib/Option'
 import { constant } from 'fp-ts/lib/function'
 
@@ -53,7 +60,8 @@ export const storeNewSpaceEpic: Epic<Actions, Actions, RootState> = (
       storeNewSpaceFn(action).pipe(
         map(storeNewSuccess),
         catchError(storeNewFailed),
-        startWith(A.storeNewSpaceStarted())
+        startWith(A.storeNewSpaceStarted()),
+        endWith(A.loadSpaces())
       )
     )
   )
