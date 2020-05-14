@@ -3,11 +3,15 @@ import {
   createSpace,
   storeNewSpaceStarted,
   storeNewSpaceSucceeded,
-  storeNewSpaceFailed
+  storeNewSpaceFailed,
+  loadSpaces,
+  loadSpacesSucceeded,
+  SpaceFromServer,
+  loadSpacesFailed
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import { initialStateObservable } from '../testUtils/stateObservable'
-import { storeNewSpaceEpic } from './spaceEpic'
+import { storeNewSpaceEpic, loadSpacesEpic } from './spaceEpic'
 import { of, throwError } from 'rxjs'
 import { Action } from '@reduxjs/toolkit'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
@@ -46,5 +50,28 @@ it('reports store errors', done => {
       expect(dispatchedActions[1]).toEqual(storeNewSpaceFailed('some error'))
       done()
     }
+  })
+})
+
+it('can load spaces', () => {
+  expect.assertions(1)
+  const action$ = ActionsObservable.of(loadSpaces())
+  const state$ = initialStateObservable()
+  const spaces: SpaceFromServer[] = [
+    { _id: '1', name: '1', description: '1', autoCheckout: -1 }
+  ]
+  const loadSpacesFn = () => of({ response: spaces })
+  loadSpacesEpic(action$, state$, { loadSpacesFn }).subscribe(action => {
+    expect(action).toEqual(loadSpacesSucceeded(spaces))
+  })
+})
+
+it('reports load errors', () => {
+  expect.assertions(1)
+  const action$ = ActionsObservable.of(loadSpaces())
+  const state$ = initialStateObservable()
+  const loadSpacesFn = () => throwError(new MockAjaxError('some error'))
+  loadSpacesEpic(action$, state$, { loadSpacesFn }).subscribe(action => {
+    expect(action).toEqual(loadSpacesFailed('some error'))
   })
 })
