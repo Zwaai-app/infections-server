@@ -13,14 +13,20 @@ import moment from 'moment'
 import { Container } from 'semantic-ui-react'
 import { EditSpace } from '../Spaces/EditSpace'
 import { AddSpace } from '../Spaces/AddSpace'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../rootReducer'
 import { elem } from 'fp-ts/lib/Array'
 import { eqString } from 'fp-ts/lib/Eq'
+import { loadProfile } from '../Profile/profileSlice'
 
 function App() {
   moment.locale(window.navigator.language)
   moment.duration().locale(window.navigator.language)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(loadProfile())
+  })
 
   return (
     <div className="App">
