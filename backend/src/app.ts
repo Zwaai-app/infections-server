@@ -150,29 +150,29 @@ app.post('/api/v1/logout', userController.postLogoutApi)
 app.post('/api/v1/signup', userController.postSignupApi)
 app.get(
   '/api/v1/account/profile',
-  passportConfig.isAuthenticated,
+  passportConfig.isAuthenticatedApi,
   userController.getProfileApi
 )
 app.post(
   '/api/v1/account/profile',
-  passportConfig.isAuthenticated,
+  passportConfig.isAuthenticatedApi,
   userController.postUpdateProfileApi
 )
 app.post(
   '/api/v1/space',
-  passportConfig.isAuthenticated,
+  passportConfig.isAuthenticatedApi,
   spaceController.postSpace.sanitizers,
   spaceController.postSpace.apiHandler
 )
 app.delete(
   '/api/v1/space',
-  passportConfig.isAuthenticated,
+  passportConfig.isAuthenticatedApi,
   spaceController.deleteSpace.sanitizers,
   spaceController.deleteSpace.apiHandler
 )
 app.get(
   '/api/v1/spaces',
-  passportConfig.isAuthenticated,
+  passportConfig.isAuthenticatedApi,
   spaceController.getSpacesApi
 )
 

@@ -57,6 +57,17 @@ export const isAuthenticated = (
   res.redirect('/login')
 }
 
+export const isAuthenticatedApi = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  res.status(401).end()
+}
+
 /**
  * Authorization Required middleware.
  */
