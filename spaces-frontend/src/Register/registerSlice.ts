@@ -44,12 +44,10 @@ const registerSlice = createSlice({
     signupStarted (state, _action: PayloadAction<void>) {
       state.status = RegistrationStatus.InProgress
     },
-    signupSucceeded (state, action: PayloadAction<any>) {
-      console.debug('signupSucceeded', action.payload)
+    signupSucceeded (state, _action: PayloadAction<any>) {
       state.status = RegistrationStatus.Success
     },
-    signupFailed (state, action: PayloadAction<SignupError>) {
-      console.debug('signupFailed', action.payload)
+    signupFailed (state, _action: PayloadAction<SignupError>) {
       state.status = RegistrationStatus.Failed
     }
   }
