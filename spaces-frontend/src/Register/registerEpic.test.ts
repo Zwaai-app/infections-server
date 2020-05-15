@@ -1,6 +1,6 @@
 import { signupEpic } from './registerEpic'
 import {
-  setRegistrationData,
+  startRegistration,
   signupSucceeded,
   signupFailed
 } from './registerSlice'
@@ -9,7 +9,7 @@ import { throwError, of } from 'rxjs'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
 import { initialStateObservable } from '../testUtils/stateObservable'
 
-const validRegistrationDataAction = setRegistrationData({
+const validRegistrationDataAction = startRegistration({
   email: 'foo@bar.com',
   phone: '12345678',
   password: 'Welcome123',

@@ -15,17 +15,10 @@ export enum RegistrationStatus {
 }
 
 export type RegistrationState = {
-  data: RegistrationData
   status: RegistrationStatus
 }
 
 export const initialState: RegistrationState = {
-  data: {
-    email: '',
-    phone: '',
-    password: '',
-    consented: false
-  },
   status: RegistrationStatus.Idle
 }
 
@@ -38,15 +31,12 @@ const registerSlice = createSlice({
   name: 'register',
   initialState,
   reducers: {
-    setRegistrationData (state, action: PayloadAction<RegistrationData>) {
-      state.data = action.payload
-    },
+    startRegistration (_state, _action: PayloadAction<RegistrationData>) {},
     signupStarted (state, _action: PayloadAction<void>) {
       state.status = RegistrationStatus.InProgress
     },
     signupSucceeded (state, _action: PayloadAction<any>) {
       state.status = RegistrationStatus.Success
-      state.data = initialState.data
     },
     signupFailed (state, _action: PayloadAction<SignupError>) {
       state.status = RegistrationStatus.Failed
@@ -54,11 +44,11 @@ const registerSlice = createSlice({
   }
 })
 
-export type SetRegistrationDataAction = ReturnType<typeof setRegistrationData>
+export type StartRegistrationAction = ReturnType<typeof startRegistration>
 export type SignupSucceededAction = ReturnType<typeof signupSucceeded>
 
 export const {
-  setRegistrationData,
+  startRegistration,
   signupStarted,
   signupSucceeded,
   signupFailed

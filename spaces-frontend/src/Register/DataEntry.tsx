@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { Either, isLeft, map, swap, getOrElse } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
 import { equalPasswords, validateRegistrationData } from './registrationValidation'
-import { RegistrationData, setRegistrationData, RegistrationStatus, signupStarted } from './registerSlice'
+import { RegistrationData, startRegistration, RegistrationStatus, signupStarted } from './registerSlice'
 import { constant } from 'fp-ts/lib/function'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../rootReducer'
@@ -118,7 +118,7 @@ export const DataEntry = () => {
             onClick={() => {
               map((reg: RegistrationData) => {
                 dispatch(signupStarted())
-                dispatch(setRegistrationData(reg))
+                dispatch(startRegistration(reg))
               })(validationResult)
             }}
           />

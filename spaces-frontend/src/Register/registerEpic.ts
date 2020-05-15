@@ -4,10 +4,10 @@ import { of, Observable } from 'rxjs'
 import { Epic, ofType } from 'redux-observable'
 import { ActionType } from 'typesafe-actions'
 import {
-  setRegistrationData,
+  startRegistration,
   signupFailed,
   signupSucceeded,
-  SetRegistrationDataAction,
+  StartRegistrationAction,
   signupStarted,
   SignupSucceededAction
 } from './registerSlice'
@@ -15,15 +15,13 @@ import { RootState } from '../rootReducer'
 import { login } from '../User/userSlice'
 
 export type Actions = ActionType<
-  | typeof setRegistrationData
+  | typeof startRegistration
   | typeof signupSucceeded
   | typeof signupFailed
   | typeof signupStarted
 >
 
-export type PostSignupFn = (
-  action: SetRegistrationDataAction
-) => Observable<any>
+export type PostSignupFn = (action: StartRegistrationAction) => Observable<any>
 
 const postSignup: PostSignupFn = action =>
   ajax({
@@ -58,7 +56,7 @@ export const signupEpic: Epic<Actions, Actions, RootState> = (
   { postSignupFn = postSignup }: EpicDeps = {}
 ) =>
   action$.pipe(
-    ofType<Actions, SetRegistrationDataAction>(setRegistrationData.type),
+    ofType<Actions, StartRegistrationAction>(startRegistration.type),
     flatMap(action =>
       postSignupFn(action).pipe(
         map(response =>
