@@ -30,7 +30,7 @@ export const isCompleteProfile = (data: object | null): boolean => {
 
 export type ProfileState = {
   data: ProfileData | null
-  loadError: string | null
+  loadError: ErrorInfo | null
   updateStatus: SyncStatus
 }
 
@@ -51,7 +51,7 @@ const profileSlice = createSlice({
       state.data = action.payload
     },
     profileLoadFailed (state, action: PayloadAction<ErrorInfo>) {
-      state.loadError = action.payload.message
+      state.loadError = action.payload
     },
     updateProfile (state, action: PayloadAction<ProfileData>) {
       state.data = action.payload
