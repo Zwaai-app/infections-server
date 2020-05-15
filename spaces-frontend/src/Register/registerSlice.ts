@@ -31,6 +31,7 @@ const registerSlice = createSlice({
   name: 'register',
   initialState,
   reducers: {
+    // tslint:disable-next-line: no-empty
     startRegistration (_state, _action: PayloadAction<RegistrationData>) {},
     signupStarted (state, _action: PayloadAction<void>) {
       state.status = RegistrationStatus.InProgress
