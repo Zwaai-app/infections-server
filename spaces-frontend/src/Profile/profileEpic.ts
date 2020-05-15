@@ -15,6 +15,7 @@ import {
   storeProfileFailed,
   storeProfileStarted
 } from './profileSlice'
+import { ajaxErrorToString } from '../utils/ajaxError'
 
 export type Actions = ActionType<
   typeof loadProfile | typeof profileLoaded | typeof profileLoadFailed
@@ -32,8 +33,7 @@ const getProfile: GetProfileFn = () =>
   })
 
 const success = (r: AjaxResponse) => profileLoaded(r.response)
-const failed = (e: AjaxError) =>
-  of(profileLoadFailed(e.response.errors?.join('; ') || e.message))
+const failed = (e: AjaxError) => of(profileLoadFailed(ajaxErrorToString(e)))
 
 export const loadProfileEpic: Epic<Actions, Actions, RootState> = (
   action$,
@@ -64,7 +64,7 @@ const storeProfile: StoreProfileFn = (
 }
 const storeSuccess = (_r: AjaxResponse) => storeProfileSucceeded()
 const storeFailed = (e: AjaxError) =>
-  of(storeProfileFailed(e.response.errors?.join('; ') || e.message))
+  of(storeProfileFailed(ajaxErrorToString(e)))
 
 export const storeProfileEpic: Epic<Actions, Actions, RootState> = (
   action$,

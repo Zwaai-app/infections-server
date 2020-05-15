@@ -14,6 +14,7 @@ import {
 } from 'rxjs/operators'
 import * as O from 'fp-ts/lib/Option'
 import { constant } from 'fp-ts/lib/function'
+import { ajaxErrorToString } from '../utils/ajaxError'
 
 export type Actions = ActionType<
   | typeof A.createSpace
@@ -44,7 +45,7 @@ const storeNewSpace: StoreNewSpaceFn = action =>
 
 const storeNewSuccess = (_r: AjaxResponse) => A.storeNewSpaceSucceeded()
 const storeNewFailed = (e: AjaxError) => {
-  return of(A.storeNewSpaceFailed(e.response.errors?.join('; ') || e.message))
+  return of(A.storeNewSpaceFailed(ajaxErrorToString(e)))
 }
 
 export const storeNewSpaceEpic: Epic<Actions, Actions, RootState> = (
@@ -78,7 +79,7 @@ const loadSpaces: LoadSpacesFn = () =>
 
 const loadSpacesSuccess = (r: AjaxResponse) => A.loadSpacesSucceeded(r.response)
 const loadSpacesFailure = (e: AjaxError) =>
-  of(A.loadSpacesFailed(e.response.errors?.join('; ') || e.message))
+  of(A.loadSpacesFailed(ajaxErrorToString(e)))
 
 export const loadSpacesEpic: Epic<Actions, Actions, RootState> = (
   action$,
