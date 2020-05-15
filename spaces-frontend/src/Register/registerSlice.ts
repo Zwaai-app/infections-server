@@ -14,12 +14,12 @@ export enum RegistrationStatus {
   Failed
 }
 
-type RegistrationState = {
+export type RegistrationState = {
   data: RegistrationData
   status: RegistrationStatus
 }
 
-let initialState: RegistrationState = {
+export const initialState: RegistrationState = {
   data: {
     email: '',
     phone: '',
@@ -46,6 +46,7 @@ const registerSlice = createSlice({
     },
     signupSucceeded (state, _action: PayloadAction<any>) {
       state.status = RegistrationStatus.Success
+      state.data = initialState.data
     },
     signupFailed (state, _action: PayloadAction<SignupError>) {
       state.status = RegistrationStatus.Failed
@@ -54,6 +55,7 @@ const registerSlice = createSlice({
 })
 
 export type SetRegistrationDataAction = ReturnType<typeof setRegistrationData>
+export type SignupSucceededAction = ReturnType<typeof signupSucceeded>
 
 export const {
   setRegistrationData,
