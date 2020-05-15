@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../rootReducer'
-import { Message } from 'semantic-ui-react'
+import { Message, Segment } from 'semantic-ui-react'
 import { t } from '../i18n'
 import { Link } from 'react-router-dom'
 import { isCompleteProfile } from './profileSlice'
@@ -15,12 +15,12 @@ export const CheckProfile = () => {
         userLoggedIn: state.user.status === 'loggedIn'
     }))
 
-    return <div id='CheckProfile'>
+    return <Segment basic width={16} id='CheckProfile'>
         {isCompleteProfile(profileData) || !userLoggedIn
             ? <></>
             : <Message warning>{tCompleteProfile}
                 <Link to='/profile'>{tProfilePage}</Link>.
             </Message>
         }
-    </div >
+    </Segment >
 }
