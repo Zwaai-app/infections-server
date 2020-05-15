@@ -3,13 +3,9 @@ import { t } from '../i18n'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 export const extractAjaxErrorInfo = (e: AjaxError): ErrorInfo => {
-  let errorInfo: ErrorInfo = { message: '' }
+  let errorInfo: ErrorInfo = { code: e.status, message: '' }
 
-  if (e.xhr?.status) {
-    errorInfo.code = e.xhr.status
-  }
-
-  if (e.xhr?.status === 401 || e.xhr?.status === 403) {
+  if (e.status === 401 || e.status === 403) {
     errorInfo.code = e.xhr.status
     errorInfo.message = t('general.accessDenied', 'toegang geweigerd')
   } else {

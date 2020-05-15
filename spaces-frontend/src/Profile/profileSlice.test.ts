@@ -11,6 +11,7 @@ import profileReducer, {
   storeProfileStarted
 } from './profileSlice'
 import { SyncStatus } from '../utils/syncStatus'
+import { ErrorInfo } from '../utils/ajaxError'
 
 const orgData = {
   organizationName: 'my org',
@@ -40,7 +41,7 @@ describe('load profile', () => {
   })
 
   it('clears load error when starting new load', () => {
-    const state = profileState({ loadError: 'error' })
+    const state = profileState({ loadError: { message: 'error' } })
     expect(profileReducer(state, loadProfile()).loadError).toBeNull()
   })
 
@@ -49,7 +50,7 @@ describe('load profile', () => {
     expect(
       profileReducer(state, profileLoadFailed({ message: 'some error' }))
         .loadError
-    ).toEqual('some error')
+    ).toEqual({ message: 'some error' })
   })
 })
 
@@ -95,7 +96,7 @@ function profileState ({
   updateStatus
 }: {
   data?: ProfileData | null
-  loadError?: string | null
+  loadError?: ErrorInfo | null
   updateStatus?: SyncStatus
 } = {}): ProfileState {
   return {

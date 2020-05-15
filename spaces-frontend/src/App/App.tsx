@@ -19,6 +19,7 @@ import { elem } from 'fp-ts/lib/Array'
 import { eqString } from 'fp-ts/lib/Eq'
 import { loadProfile } from '../Profile/profileSlice'
 import { CheckProfile } from '../Profile/CheckProfile'
+import { NetworkError } from './NetworkError'
 
 function App() {
   moment.locale(window.navigator.language)
@@ -33,13 +34,26 @@ function App() {
     <div className="App">
       <Container>
         <Router>
-          <ScrollToTop />
-          <Topbar />
-          <AppRoutes />
+          <AppContent />
         </Router>
       </Container>
     </div>
   )
+}
+
+const AppContent = () => {
+  const loadError = useSelector((state: RootState) => state.profile.loadError)
+  console.debug(loadError)
+  const isNetworkError = loadError?.code === 0
+
+  return <>{
+    isNetworkError
+      ? <NetworkError />
+      : <>
+        <ScrollToTop />
+        <Topbar />
+        <AppRoutes />
+      </>}</>
 }
 
 const unauthenticatedPaths = ['/', '/register', '/login']
