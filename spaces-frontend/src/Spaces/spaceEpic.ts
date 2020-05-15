@@ -25,6 +25,9 @@ export type Actions = ActionType<
   | typeof A.loadSpacesSucceeded
   | typeof A.loadSpacesFailed
   | typeof A.loadSpacesReset
+  | typeof A.deleteSpace
+  | typeof A.deleteSucceeded
+  | typeof A.deleteFailed
 >
 
 type StoreNewSpaceFn = (action: A.CreateSpaceAction) => Observable<any>
@@ -67,6 +70,36 @@ export const storeNewSpaceEpic: Epic<Actions, Actions, RootState> = (
     )
   )
 
+type DeleteSpaceFn = (action: A.DeleteSpaceAction) => Observable<any>
+const deleteSpace: DeleteSpaceFn = action =>
+  ajax({
+    url: 'http://localhost:3000/api/v1/space',
+    method: 'DELETE',
+    crossDomain: true,
+    withCredentials: true,
+    responseType: 'json',
+    body: { _id: action.payload._id }
+  })
+
+const deleteSuccess = (_r: AjaxResponse) => A.deleteSucceeded()
+const deleteFailed = (e: AjaxError) => of(A.deleteFailed(ajaxErrorToString(e)))
+
+export const deleteSpaceEpic: Epic<Actions, Actions, RootState> = (
+  action$,
+  _state$,
+  { deleteSpaceFn = deleteSpace }: { deleteSpaceFn?: DeleteSpaceFn } = {}
+) =>
+  action$.pipe(
+    ofType<Actions, A.DeleteSpaceAction>(A.deleteSpace.type),
+    flatMap(action =>
+      deleteSpaceFn(action).pipe(
+        map(deleteSuccess),
+        catchError(deleteFailed),
+        endWith(A.loadSpaces())
+      )
+    )
+  )
+
 type LoadSpacesFn = () => Observable<any>
 const loadSpaces: LoadSpacesFn = () =>
   ajax({
@@ -104,6 +137,7 @@ export const resetAfterLoadSuccess: Epic<Actions, Actions, RootState> = (
 
 export const allEpics = [
   storeNewSpaceEpic,
+  deleteSpaceEpic,
   loadSpacesEpic,
   resetAfterLoadSuccess
 ]
