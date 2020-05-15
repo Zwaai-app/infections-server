@@ -46,9 +46,10 @@ describe('load profile', () => {
 
   it('stores load errors', () => {
     const state = profileState()
-    expect(profileReducer(state, profileLoadFailed('error')).loadError).toEqual(
-      'error'
-    )
+    expect(
+      profileReducer(state, profileLoadFailed({ message: 'some error' }))
+        .loadError
+    ).toEqual('some error')
   })
 })
 
@@ -82,8 +83,9 @@ describe('update profile', () => {
   it('stores update profile errors', () => {
     const state = profileState()
     expect(
-      profileReducer(state, storeProfileFailed('error')).updateStatus
-    ).toEqual({ error: 'error' })
+      profileReducer(state, storeProfileFailed({ message: 'some error' }))
+        .updateStatus
+    ).toEqual({ error: 'some error' })
   })
 })
 

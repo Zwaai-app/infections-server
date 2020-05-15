@@ -5,6 +5,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getLastSemigroup } from 'fp-ts/lib/Semigroup'
 import { flow, constant } from 'fp-ts/lib/function'
 import { SyncStatus } from '../utils/syncStatus'
+import { ErrorInfo } from '../utils/ajaxError'
 
 type Seconds = number
 
@@ -73,8 +74,8 @@ export const spacesSlice = createSlice({
     deleteSucceeded (state: SpacesState, _action: PayloadAction<void>) {
       state.deleteStatus = 'success'
     },
-    deleteFailed (state: SpacesState, action: PayloadAction<string>) {
-      state.deleteStatus = { error: action.payload }
+    deleteFailed (state: SpacesState, action: PayloadAction<ErrorInfo>) {
+      state.deleteStatus = { error: action.payload.message }
     },
     storeNewSpaceStarted (state: SpacesState, _action: PayloadAction<void>) {
       if (state.newSpace) {
@@ -86,9 +87,9 @@ export const spacesSlice = createSlice({
         state.newSpace.status = 'success'
       }
     },
-    storeNewSpaceFailed (state: SpacesState, action: PayloadAction<string>) {
+    storeNewSpaceFailed (state: SpacesState, action: PayloadAction<ErrorInfo>) {
       if (state.newSpace) {
-        state.newSpace.status = { error: action.payload }
+        state.newSpace.status = { error: action.payload.message }
       }
     },
     loadSpaces (state: SpacesState, _action: PayloadAction<void>) {
@@ -106,8 +107,8 @@ export const spacesSlice = createSlice({
       }))
       state.spaces = listToRecord(spaces)
     },
-    loadSpacesFailed (state: SpacesState, action: PayloadAction<string>) {
-      state.loadingStatus = { error: action.payload }
+    loadSpacesFailed (state: SpacesState, action: PayloadAction<ErrorInfo>) {
+      state.loadingStatus = { error: action.payload.message }
     },
     loadSpacesReset (state: SpacesState, _action: PayloadAction<void>) {
       state.loadingStatus = 'idle'

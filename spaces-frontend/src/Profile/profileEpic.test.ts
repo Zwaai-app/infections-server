@@ -38,7 +38,7 @@ it('reports load failures', done => {
   const state$ = initialStateObservable()
   const getProfileFn = () => throwError(new MockAjaxError('some error'))
   loadProfileEpic(action$, state$, { getProfileFn }).subscribe(action => {
-    expect(action).toEqual(profileLoadFailed('some error'))
+    expect(action).toEqual(profileLoadFailed({ message: 'some error' }))
     done()
   })
 })
@@ -69,7 +69,9 @@ it('reports store errors', done => {
     dispatchedActions.push(action)
     if (dispatchedActions.length === 2) {
       expect(dispatchedActions[0]).toEqual(storeProfileStarted())
-      expect(dispatchedActions[1]).toEqual(storeProfileFailed('some error'))
+      expect(dispatchedActions[1]).toEqual(
+        storeProfileFailed({ message: 'some error' })
+      )
       done()
     }
   })

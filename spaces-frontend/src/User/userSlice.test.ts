@@ -24,7 +24,7 @@ it('sets loggedIn and email when login succeeds', () => {
 it('clears loggedIn and email on login error', () => {
   const state: UserState = { status: 'loggingIn', email: 'foo@bar.com' }
   const errorMessage = 'some error message'
-  const newState = reducer(state, loginFailed(errorMessage))
+  const newState = reducer(state, loginFailed({ message: errorMessage }))
   expect(newState.status).toEqual({ error: 'some error message' })
   expect(newState.email).toEqual('')
 })

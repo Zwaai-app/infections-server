@@ -21,7 +21,7 @@ import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax'
 import { of, Observable } from 'rxjs'
 import { loadProfile } from '../Profile/profileSlice'
 import { loadSpaces } from '../Spaces/spacesSlice'
-import { ajaxErrorToString } from '../utils/ajaxError'
+import { extractAjaxErrorInfo } from '../utils/ajaxError'
 
 export type Actions = ActionType<
   | typeof login
@@ -45,7 +45,7 @@ const postLogin: PostLoginFn = creds =>
   })
 
 const success = (_r: AjaxResponse) => loginSucceeded()
-const failed = (e: AjaxError) => of(loginFailed(ajaxErrorToString(e)))
+const failed = (e: AjaxError) => of(loginFailed(extractAjaxErrorInfo(e)))
 
 export const loginEpic: Epic<Actions, Actions, RootState> = (
   action$,

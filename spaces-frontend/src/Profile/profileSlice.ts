@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import * as R from 'rambda'
 import { SyncStatus } from '../utils/syncStatus'
+import { ErrorInfo } from '../utils/ajaxError'
 
 type DataUrl = string
 
@@ -49,8 +50,8 @@ const profileSlice = createSlice({
     profileLoaded (state, action: PayloadAction<ProfileData>) {
       state.data = action.payload
     },
-    profileLoadFailed (state, action: PayloadAction<string>) {
-      state.loadError = action.payload
+    profileLoadFailed (state, action: PayloadAction<ErrorInfo>) {
+      state.loadError = action.payload.message
     },
     updateProfile (state, action: PayloadAction<ProfileData>) {
       state.data = action.payload
@@ -62,8 +63,8 @@ const profileSlice = createSlice({
     storeProfileSucceeded (state, _action: PayloadAction<void>) {
       state.updateStatus = 'success'
     },
-    storeProfileFailed (state, action: PayloadAction<string>) {
-      state.updateStatus = { error: action.payload }
+    storeProfileFailed (state, action: PayloadAction<ErrorInfo>) {
+      state.updateStatus = { error: action.payload.message }
     }
   }
 })
