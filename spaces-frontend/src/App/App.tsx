@@ -18,6 +18,7 @@ import { RootState } from '../rootReducer'
 import { elem } from 'fp-ts/lib/Array'
 import { eqString } from 'fp-ts/lib/Eq'
 import { loadProfile } from '../Profile/profileSlice'
+import { CheckProfile } from '../Profile/CheckProfile'
 
 function App() {
   moment.locale(window.navigator.language)
@@ -56,6 +57,7 @@ export const AppRoutes = () => {
   })
 
   return <>
+    {history.location.pathname !== '/profile' && <CheckProfile />}
     <Switch>
       <Route exact path="/" component={Home} />
       <Route path='/login' component={Login} />
