@@ -20,11 +20,13 @@ describe('Register epic', () => {
   test('happy path', done => {
     expect.assertions(1)
     const response = 'some response'
-    const postSignupFn = () => of({ response })
+    const username = 'foo@bar.com'
+    const password = 'Welcome123'
+    const postSignupFn = () => of({ response, username, password })
     const action$ = ActionsObservable.of(validRegistrationDataAction)
     const state$ = initialStateObservable()
     signupEpic(action$, state$, { postSignupFn }).subscribe(action => {
-      expect(action).toEqual(signupSucceeded(response))
+      expect(action).toEqual(signupSucceeded({ response, username, password }))
       done()
     })
   })

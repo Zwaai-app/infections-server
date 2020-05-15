@@ -8,9 +8,11 @@ import {
   signupFailed,
   signupSucceeded,
   SetRegistrationDataAction,
-  signupStarted
+  signupStarted,
+  SignupSucceededAction
 } from './registerSlice'
 import { RootState } from '../rootReducer'
+import { login } from '../User/userSlice'
 
 export type Actions = ActionType<
   | typeof setRegistrationData
@@ -36,7 +38,8 @@ const postSignup: PostSignupFn = action =>
     }
   })
 
-const success = (r: AjaxResponse) => signupSucceeded(r.response)
+const success = (r: AjaxResponse, username: string, password: string) =>
+  signupSucceeded({ response: r.response, username, password })
 const failed = (e: AjaxError) =>
   of(
     signupFailed({
@@ -57,8 +60,29 @@ export const signupEpic: Epic<Actions, Actions, RootState> = (
   action$.pipe(
     ofType<Actions, SetRegistrationDataAction>(setRegistrationData.type),
     flatMap(action =>
-      postSignupFn(action).pipe(map(success), catchError(failed))
+      postSignupFn(action).pipe(
+        map(response =>
+          success(response, action.payload.email, action.payload.password)
+        ),
+        catchError(failed)
+      )
     )
   )
 
-export const allEpics = [signupEpic]
+export const autoLoginEpic: Epic<Actions, Actions, RootState> = (
+  action$,
+  _state$
+) =>
+  action$.pipe(
+    ofType<Actions, SignupSucceededAction>(signupSucceeded.type),
+    flatMap(action =>
+      of(
+        login({
+          username: action.payload.username,
+          password: action.payload.password
+        })
+      )
+    )
+  )
+
+export const allEpics = [signupEpic, autoLoginEpic]
