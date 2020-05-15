@@ -170,6 +170,12 @@ app.delete(
   spaceController.deleteSpace.sanitizers,
   spaceController.deleteSpace.apiHandler
 )
+app.put(
+  '/api/v1/space',
+  passportConfig.isAuthenticatedApi,
+  spaceController.putSpace.sanitizers,
+  spaceController.putSpace.apiHandler
+)
 app.get(
   '/api/v1/spaces',
   passportConfig.isAuthenticatedApi,

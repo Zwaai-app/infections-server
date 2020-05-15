@@ -357,9 +357,7 @@ export const postUpdateProfileApi = async (
             'The email address you have entered is already associated with an account.'
           )
         }
-        return res.json({
-          errors
-        })
+        return res.status(400).json({ errors })
       }
 
       res.json({})
