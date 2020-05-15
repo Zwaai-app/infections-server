@@ -23,7 +23,7 @@ const postSpaceApi = (req: Request, res: Response, next: NextFunction) => {
 
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    return res.status(401).json({ errors: errors.array() })
+    return res.status(400).json({ errors: errors.array() })
   }
 
   const user = req.user as UserDocument
@@ -33,7 +33,7 @@ const postSpaceApi = (req: Request, res: Response, next: NextFunction) => {
     }
     if (existingSpace) {
       return res
-        .status(401)
+        .status(400)
         .json({ errors: ['space with that name already exists'] })
     }
     const space = new Space({
@@ -72,7 +72,7 @@ const deleteSpaceApi = (req: Request, res: Response, next: NextFunction) => {
 
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    return res.status(401).json({ errors: errors.array() })
+    return res.status(400).json({ errors: errors.array() })
   }
 
   Space.remove({ _id: req.body._id }, err => {

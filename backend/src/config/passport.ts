@@ -65,7 +65,7 @@ export const isAuthenticatedApi = (
   if (req.isAuthenticated()) {
     return next()
   }
-  res.status(401).end()
+  res.sendStatus(403)
 }
 
 /**

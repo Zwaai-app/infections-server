@@ -91,7 +91,7 @@ export const postLoginApi = async (
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    return res.status(401).json({ errors: errors.array() })
+    return res.status(400).json({ errors: errors.array() })
   }
 
   passport.authenticate(
@@ -101,7 +101,7 @@ export const postLoginApi = async (
         return next(err)
       }
       if (!user) {
-        return res.status(401).end()
+        return res.status(400).end()
       }
       req.logIn(user, err => {
         if (err) {
@@ -335,7 +335,7 @@ export const postUpdateProfileApi = async (
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    return res.status(401).json({ errors: errors.array() })
+    return res.status(400).json({ errors: errors.array() })
   }
 
   const user = req.user as UserDocument

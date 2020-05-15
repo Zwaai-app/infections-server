@@ -52,7 +52,7 @@ describe('/api/v1/space', () => {
     return server
       .post('/api/v1/space')
       .send(space1)
-      .expect(401, done)
+      .expect(400, done)
   })
 
   it('can delete the space', done => {
@@ -66,7 +66,7 @@ describe('/api/v1/space', () => {
     server
       .delete('/api/v1/space')
       .send({ _id: 'invalid' })
-      .expect(401, done)
+      .expect(400, done)
   })
 })
 
