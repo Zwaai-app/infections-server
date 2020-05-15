@@ -27,7 +27,7 @@ const epicMiddleware = createEpicMiddleware<
   RootState
 >()
 const rootEpic = combineEpics(
-  RegisterUser.epic,
+  ...RegisterUser.allEpics,
   ...User.allEpics,
   ...Profile.allEpics,
   ...Space.allEpics

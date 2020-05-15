@@ -1,4 +1,4 @@
-import { epic } from './registerEpic'
+import { signupEpic } from './registerEpic'
 import {
   setRegistrationData,
   signupSucceeded,
@@ -23,7 +23,7 @@ describe('Register epic', () => {
     const postSignupFn = () => of({ response })
     const action$ = ActionsObservable.of(validRegistrationDataAction)
     const state$ = initialStateObservable()
-    epic(action$, state$, { postSignupFn }).subscribe(action => {
+    signupEpic(action$, state$, { postSignupFn }).subscribe(action => {
       expect(action).toEqual(signupSucceeded(response))
       done()
     })
@@ -36,7 +36,7 @@ describe('Register epic', () => {
     const postSignupFn = () => throwError(error)
     const action$ = ActionsObservable.of(validRegistrationDataAction)
     const state$ = initialStateObservable()
-    epic(action$, state$, { postSignupFn }).subscribe(action => {
+    signupEpic(action$, state$, { postSignupFn }).subscribe(action => {
       expect(action).toEqual(signupFailed({ message: error.message, errors }))
       done()
     })

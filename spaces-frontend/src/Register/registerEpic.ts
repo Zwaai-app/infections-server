@@ -37,7 +37,6 @@ const postSignup: PostSignupFn = action =>
   })
 
 const success = (r: AjaxResponse) => signupSucceeded(r.response)
-
 const failed = (e: AjaxError) =>
   of(
     signupFailed({
@@ -50,7 +49,7 @@ interface EpicDeps {
   postSignupFn?: PostSignupFn
 }
 
-export const epic: Epic<Actions, Actions, RootState> = (
+export const signupEpic: Epic<Actions, Actions, RootState> = (
   action$,
   _state$,
   { postSignupFn = postSignup }: EpicDeps = {}
@@ -61,3 +60,5 @@ export const epic: Epic<Actions, Actions, RootState> = (
       postSignupFn(action).pipe(map(success), catchError(failed))
     )
   )
+
+export const allEpics = [signupEpic]
