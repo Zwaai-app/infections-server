@@ -32,14 +32,16 @@ export interface SpacesState {
   spaces: SpaceList
   newSpace?: NewSpace
   loadingStatus: SyncStatus
+  deleteStatus: SyncStatus
 }
 
 export const listToRecord = (spaces: Space[]): Record<string, Space> =>
   R.fromFoldableMap(getLastSemigroup<Space>(), A.array)(spaces, s => [s._id, s])
 
 const initialState: SpacesState = {
-  loadingStatus: 'idle'
   spaces: listToRecord([]),
+  loadingStatus: 'idle',
+  deleteStatus: 'idle'
 }
 
 function existingName (spaces: SpaceList, name: string): boolean {
@@ -65,8 +67,14 @@ export const spacesSlice = createSlice({
         O.getOrElse(constant(state.spaces))
       )(state.spaces)
     },
-    deleteSpace (state: SpacesState, action: PayloadAction<Space>) {
-      state.spaces = R.deleteAt(action.payload._id)(state.spaces)
+    deleteSpace (state: SpacesState, _action: PayloadAction<Space>) {
+      state.deleteStatus = 'inProgress'
+    },
+    deleteSucceeded (state: SpacesState, _action: PayloadAction<void>) {
+      state.deleteStatus = 'success'
+    },
+    deleteFailed (state: SpacesState, action: PayloadAction<string>) {
+      state.deleteStatus = { error: action.payload }
     },
     storeNewSpaceStarted (state: SpacesState, _action: PayloadAction<void>) {
       if (state.newSpace) {
@@ -110,12 +118,15 @@ export const spacesSlice = createSlice({
 export type CreateSpaceAction = ReturnType<typeof createSpace>
 export type LoadSpacesAction = ReturnType<typeof loadSpaces>
 export type LoadSpacesSucceededAction = ReturnType<typeof loadSpacesSucceeded>
+export type DeleteSpaceAction = ReturnType<typeof deleteSpace>
 
 export const {
   clearNewSpace,
   createSpace,
   updateSpace,
   deleteSpace,
+  deleteSucceeded,
+  deleteFailed,
   storeNewSpaceStarted,
   storeNewSpaceSucceeded,
   storeNewSpaceFailed,

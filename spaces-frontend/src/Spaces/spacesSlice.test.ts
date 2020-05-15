@@ -15,7 +15,9 @@ import reducer, {
   loadSpaces,
   loadSpacesSucceeded,
   loadSpacesFailed,
-  loadSpacesReset
+  loadSpacesReset,
+  deleteSucceeded,
+  deleteFailed
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import { SyncStatus } from '../utils/syncStatus'
@@ -100,15 +102,6 @@ it('ignores nonexisting space', () => {
   )
 })
 
-it('can delete a space', () => {
-  const state = spaceState({
-    spaces: listToRecord([space1, space2, space3])
-  })
-  expect(reducer(state, deleteSpace(space2)).spaces).toEqual(
-    listToRecord([space1, space3])
-  )
-})
-
 it('can clear state about new space being created', () => {
   const state = spaceState({
     newSpace: { ...space1, status: 'inProgress' }
@@ -142,6 +135,38 @@ describe('store new space', () => {
     expect(
       reducer(state, storeNewSpaceFailed('some error')).newSpace?.status
     ).toEqual({ error: 'some error' })
+  })
+})
+
+describe('delete space', () => {
+  it('set status when deleting', () => {
+    const state = spaceState({
+      spaces: listToRecord([space1, space2, space3]),
+      deleteStatus: 'idle'
+    })
+    const newState = reducer(state, deleteSpace(space2))
+    expect(newState.deleteStatus).toEqual('inProgress')
+    expect(newState.spaces).toEqual(listToRecord([space1, space2, space3]))
+  })
+
+  it('sets status on success', () => {
+    const state = spaceState({
+      spaces: listToRecord([space1, space2, space3]),
+      deleteStatus: 'inProgress'
+    })
+    const newState = reducer(state, deleteSucceeded())
+    expect(newState.deleteStatus).toEqual('success')
+    expect(newState.spaces).toEqual(listToRecord([space1, space2, space3]))
+  })
+
+  it('sets error on fail', () => {
+    const state = spaceState({
+      spaces: listToRecord([space1, space2, space3]),
+      deleteStatus: 'inProgress'
+    })
+    const newState = reducer(state, deleteFailed('some error'))
+    expect(newState.deleteStatus).toEqual({ error: 'some error' })
+    expect(newState.spaces).toEqual(listToRecord([space1, space2, space3]))
   })
 })
 
@@ -191,15 +216,18 @@ describe('load spaces list', () => {
 function spaceState ({
   spaces,
   newSpace,
-  loadingStatus
+  loadingStatus,
+  deleteStatus
 }: {
   spaces?: SpaceList
   newSpace?: NewSpace
   loadingStatus?: SyncStatus
+  deleteStatus?: SyncStatus
 } = {}): SpacesState {
   return {
     spaces: spaces || {},
     newSpace,
-    loadingStatus: loadingStatus || 'idle'
+    loadingStatus: loadingStatus || 'idle',
+    deleteStatus: deleteStatus || 'idle'
   }
 }
