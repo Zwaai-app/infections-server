@@ -48,7 +48,7 @@ export const AppRoutes = () => {
   const history = useHistory()
 
   useEffect(() => {
-    if ((!user.email || user.email.length === 0)
+    if ((!user.email || user.email.length === 0 || user.status !== 'loggedIn')
       && !elem(eqString)(history.location.pathname, unauthenticatedPaths)
     ) {
       history.push('/login')
