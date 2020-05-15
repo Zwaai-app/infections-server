@@ -133,7 +133,8 @@ describe('store new space', () => {
       newSpace: { ...space1, status: 'inProgress' }
     })
     expect(
-      reducer(state, storeNewSpaceFailed('some error')).newSpace?.status
+      reducer(state, storeNewSpaceFailed({ message: 'some error' })).newSpace
+        ?.status
     ).toEqual({ error: 'some error' })
   })
 })
@@ -164,7 +165,7 @@ describe('delete space', () => {
       spaces: listToRecord([space1, space2, space3]),
       deleteStatus: 'inProgress'
     })
-    const newState = reducer(state, deleteFailed('some error'))
+    const newState = reducer(state, deleteFailed({ message: 'some error' }))
     expect(newState.deleteStatus).toEqual({ error: 'some error' })
     expect(newState.spaces).toEqual(listToRecord([space1, space2, space3]))
   })
@@ -202,7 +203,7 @@ describe('load spaces list', () => {
       spaces: listToRecord([space1, space2]),
       loadingStatus: 'inProgress'
     })
-    const newState = reducer(state, loadSpacesFailed('some error'))
+    const newState = reducer(state, loadSpacesFailed({ message: 'some error' }))
     expect(newState.loadingStatus).toEqual({ error: 'some error' })
     expect(newState.spaces).toEqual(listToRecord([space1, space2]))
   })

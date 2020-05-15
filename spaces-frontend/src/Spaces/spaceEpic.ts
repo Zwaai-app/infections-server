@@ -14,7 +14,7 @@ import {
 } from 'rxjs/operators'
 import * as O from 'fp-ts/lib/Option'
 import { constant } from 'fp-ts/lib/function'
-import { ajaxErrorToString } from '../utils/ajaxError'
+import { extractAjaxErrorInfo } from '../utils/ajaxError'
 
 export type Actions = ActionType<
   | typeof A.createSpace
@@ -48,7 +48,7 @@ const storeNewSpace: StoreNewSpaceFn = action =>
 
 const storeNewSuccess = (_r: AjaxResponse) => A.storeNewSpaceSucceeded()
 const storeNewFailed = (e: AjaxError) => {
-  return of(A.storeNewSpaceFailed(ajaxErrorToString(e)))
+  return of(A.storeNewSpaceFailed(extractAjaxErrorInfo(e)))
 }
 
 export const storeNewSpaceEpic: Epic<Actions, Actions, RootState> = (
@@ -82,7 +82,8 @@ const deleteSpace: DeleteSpaceFn = action =>
   })
 
 const deleteSuccess = (_r: AjaxResponse) => A.deleteSucceeded()
-const deleteFailed = (e: AjaxError) => of(A.deleteFailed(ajaxErrorToString(e)))
+const deleteFailed = (e: AjaxError) =>
+  of(A.deleteFailed(extractAjaxErrorInfo(e)))
 
 export const deleteSpaceEpic: Epic<Actions, Actions, RootState> = (
   action$,
@@ -112,7 +113,7 @@ const loadSpaces: LoadSpacesFn = () =>
 
 const loadSpacesSuccess = (r: AjaxResponse) => A.loadSpacesSucceeded(r.response)
 const loadSpacesFailure = (e: AjaxError) =>
-  of(A.loadSpacesFailed(ajaxErrorToString(e)))
+  of(A.loadSpacesFailed(extractAjaxErrorInfo(e)))
 
 export const loadSpacesEpic: Epic<Actions, Actions, RootState> = (
   action$,

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { ErrorInfo } from '../utils/ajaxError'
 
 export type LoginCredentials = {
   username: string
@@ -36,8 +37,8 @@ const userSlice = createSlice({
     loginSucceeded (state, _action: PayloadAction<void>) {
       state.status = 'loggedIn'
     },
-    loginFailed (state, action: PayloadAction<string>) {
-      state.status = { error: action.payload }
+    loginFailed (state, action: PayloadAction<ErrorInfo>) {
+      state.status = { error: action.payload.message }
       state.email = ''
     },
     logout (state, _action: PayloadAction<void>) {

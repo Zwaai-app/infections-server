@@ -56,7 +56,7 @@ it('reports store errors', done => {
     .subscribe(emittedActions => {
       expect(emittedActions).toEqual([
         storeNewSpaceStarted(),
-        storeNewSpaceFailed('some error'),
+        storeNewSpaceFailed({ message: 'some error' }),
         loadSpaces()
       ])
       done()
@@ -83,7 +83,7 @@ it('reports load errors', done => {
   const state$ = initialStateObservable()
   const loadSpacesFn = () => throwError(new MockAjaxError('some error'))
   loadSpacesEpic(action$, state$, { loadSpacesFn }).subscribe(action => {
-    expect(action).toEqual(loadSpacesFailed('some error'))
+    expect(action).toEqual(loadSpacesFailed({ message: 'some error' }))
     done()
   })
 })
@@ -107,7 +107,10 @@ it('reports delete space errors', done => {
   deleteSpaceEpic(action$, state$, { deleteSpaceFn })
     .pipe(toArray())
     .subscribe(emittedActions => {
-      expect(emittedActions).toEqual([deleteFailed('some error'), loadSpaces()])
+      expect(emittedActions).toEqual([
+        deleteFailed({ message: 'some error' }),
+        loadSpaces()
+      ])
       done()
     })
 })
