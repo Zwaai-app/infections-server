@@ -37,21 +37,9 @@ export interface SpacesState {
 export const listToRecord = (spaces: Space[]): Record<string, Space> =>
   R.fromFoldableMap(getLastSemigroup<Space>(), A.array)(spaces, s => [s._id, s])
 
-const initialSpaces = [
-  { _id: '111', name: 'foo1', description: 'bar', autoCheckout: O.none },
-  {
-    _id: '222',
-    name: 'HTC33 Atelier 5',
-    description: 'Rechts-achter groep Software Concepts',
-    autoCheckout: O.some(60 * 60 * 8)
-  },
-  { _id: '333', name: 'foo2', description: '', autoCheckout: O.none },
-  { _id: '444', name: 'foo3', description: 'bar', autoCheckout: O.none }
-]
-
 const initialState: SpacesState = {
-  spaces: listToRecord(initialSpaces),
   loadingStatus: 'idle'
+  spaces: listToRecord([]),
 }
 
 function existingName (spaces: SpaceList, name: string): boolean {
