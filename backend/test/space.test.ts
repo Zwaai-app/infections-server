@@ -55,6 +55,21 @@ describe('/api/v1/space', () => {
       .expect(400, done)
   })
 
+  it('can update the space', async function () {
+    const updatedSpace1 = {
+      _id: createdSpaceId,
+      ...space1,
+      description: 'some description'
+    }
+    await server
+      .put('/api/v1/space')
+      .send(updatedSpace1)
+      .expect(200)
+    const res = await server.get('/api/v1/spaces').expect(200)
+    expect(res.body).to.have.lengthOf(1)
+    expect(res.body[0]).to.include(updatedSpace1)
+  })
+
   it('can delete the space', done => {
     server
       .delete('/api/v1/space')
