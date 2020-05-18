@@ -28,6 +28,8 @@ export const Preview = (props: Props) => {
     </div>
 }
 
+interface Props { match: { params: { id: string } } }
+
 const SpaceNotFound = () => {
     const history = useHistory()
 
@@ -40,7 +42,7 @@ const SpaceNotFound = () => {
 
 const ShowPreview = (space: Space) => {
     const [qrData, setQrData] = useState('')
-    const profile = useSelector((state: RootState) => state.profile.data)
+    const profile = useSelector((state: RootState) => state.profile.data)!
 
     useEffect(() => {
         async function generateTheCode() {
@@ -56,8 +58,8 @@ const ShowPreview = (space: Space) => {
 
     return <>
         <img id='logo'
-            src={profile?.logo}
-            alt={t('showPreview.logoAlt', `${profile?.organizationName} logo`)} />
+            src={profile.logo}
+            alt={t('showPreview.logoAlt', `${profile.organizationName} logo`)} />
         <img
             id='qr'
             src={qrData}
@@ -70,19 +72,11 @@ const ShowPreview = (space: Space) => {
             <div className='contact'>{t('preview.contactText',
                 'Bij vragen of problemen, neem contact op met:')}
                 <span className='phone'>
-                    <Icon name='phone' size='small' />{profile!.phone}</span></div>
+                    <Icon name='phone' size='small' />{profile.phone}</span></div>
             <div className='zwaai'>
                 <img src={logo} alt='Zwaai' />
                 {/* <div className='url'><span className='proto'>https://</span>Zwaai.app</div> */}
             </div>
         </div>
     </>
-}
-
-interface Props {
-    match: {
-        params: {
-            id: string
-        }
-    }
 }
