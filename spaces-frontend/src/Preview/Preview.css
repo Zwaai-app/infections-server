@@ -1,0 +1,68 @@
+body.preview #root,
+body.preview #root > div,
+body.preview #root > div .container {
+  height: 100%;
+}
+body.preview .fullscreen {
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#spacePreview {
+  height: 100%;
+  padding: 3em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#spacePreview,
+#spacePreview * {
+  text-align: center;
+}
+
+#spacePreview #logo {
+  width: 80%;
+  height: auto;
+}
+
+#spacePreview #qr {
+  width: 70%;
+  height: auto;
+}
+
+#spacePreview h1 {
+  font-size: 3rem;
+  margin-top: 0;
+}
+
+#spacePreview .description {
+  font-size: 2rem;
+}
+
+#spacePreview .bottom {
+  margin-top: 3em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+#spacePreview .contact {
+  width: 40%;
+}
+
+#spacePreview .zwaai img {
+  height: 4em;
+  width: auto;
+}
+
+#spacePreview .url .proto {
+  color: gray;
+}
+
+#spacePreview .phone {
+  white-space: nowrap;
+}
