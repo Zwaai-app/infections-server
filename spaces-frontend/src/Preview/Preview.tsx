@@ -12,12 +12,15 @@ import QRCode from 'qrcode'
 import { curry } from 'rambda'
 import { logError } from '../utils'
 import logo from '../Home/logo.png'
-import { Icon } from 'semantic-ui-react'
+import { Icon, Button } from 'semantic-ui-react'
 
 export const Preview = (props: Props) => {
     const spaces = useSelector((state: RootState) => state.spaces.spaces)
 
     return <div id='spacePreview'>
+        <Button id='printButton'
+            onClick={() => { window.print() }}
+        >{t('preview.print', 'Afdrukken')}</Button>
         {pipe(
             O.fromNullable(props.match.params.id),
             O.chain(id => R.lookup(id, spaces)),
