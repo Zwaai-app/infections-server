@@ -20,6 +20,7 @@ import { eqString } from 'fp-ts/lib/Eq'
 import { loadProfile } from '../Profile/profileSlice'
 import { CheckProfile } from '../Profile/CheckProfile'
 import { NetworkError } from './NetworkError'
+import { Preview } from '../Preview/Preview'
 
 function App() {
   moment.locale(window.navigator.language)
@@ -43,15 +44,16 @@ function App() {
 
 const AppContent = () => {
   const loadError = useSelector((state: RootState) => state.profile.loadError)
-  console.debug(loadError)
   const isNetworkError = loadError?.code === 0
+  const history = useHistory()
 
   return <>{
     isNetworkError
       ? <NetworkError />
       : <>
         <ScrollToTop />
-        <Topbar />
+        {history.location.pathname.indexOf('preview') < 0 &&
+          <Topbar />}
         <AppRoutes />
       </>}</>
 }
@@ -80,6 +82,7 @@ export const AppRoutes = () => {
       <Route path='/spaces/add' component={AddSpace} />
       <Route path='/spaces/edit/:id' component={EditSpace} />
       <Route path='/spaces' component={SpacesList} />
+      <Route path='/preview/:id' component={Preview} />
     </Switch>
   </>
 }

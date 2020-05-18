@@ -106,6 +106,11 @@ const ActionButtons = ({ space }: { space: Space }) => {
     const [isDeleteConfShowing, setDeleteConfShowing] = useState(false)
 
     return <Button.Group floated='right' size='small'>
+        <Button icon='print'
+            color='blue'
+            title={t('spacesList.printButtonLabel', 'Afdrukken')}
+            aria-label={t('spacesList.printButtonLabel', 'Afdrukken')}
+            onClick={() => { showPreview(space) }} />
         <Button icon='edit' positive
             title={t('spacesList.editButtonLabel', 'Bewerken')}
             aria-label={t('spacesList.editButtonLabel', 'Bewerken')}
@@ -126,6 +131,10 @@ const ActionButtons = ({ space }: { space: Space }) => {
             confirmButton={t('editProfile.confirmDelete', 'Verwijder')}
         ></Confirm>
     </Button.Group>
+}
+
+function showPreview(space: Space) {
+    window.open(`/preview/${space._id}`, 'preview')
 }
 
 const tErrorMessageContent1 = t(
