@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import * as O from 'fp-ts/lib/Option'
 import * as R from 'fp-ts/lib/Record'
 import { useSelector } from 'react-redux'
@@ -9,10 +9,9 @@ import { useHistory } from 'react-router-dom'
 import { t } from '../i18n'
 import './Preview.css'
 import QRCode from 'qrcode'
-import { curry } from 'rambda'
-import { logError } from '../utils'
 import logo from '../Home/logo.png'
 import { Icon, Button } from 'semantic-ui-react'
+import { logError } from '../utils'
 
 export const Preview = (props: Props) => {
     const spaces = useSelector((state: RootState) => state.spaces.spaces)
@@ -41,29 +40,26 @@ const SpaceNotFound = () => {
 }
 
 const ShowPreview = (space: Space) => {
-    const [qrData, setQrData] = useState('')
     const profile = useSelector((state: RootState) => state.profile.data)!
 
     useEffect(() => {
         async function generateTheCode() {
-            return QRCode.toDataURL('https://zwaai.app/checkin')
+            return QRCode.toCanvas(
+                document.getElementById('qr'),
+                'https://zwaai.app/checkin',
+                { scale: 10 })
         }
 
         document.body.classList.add('preview')
 
-        generateTheCode()
-            .then(curry(setQrData))
-            .catch(logError('Failed to generate QR code'))
-    }, [setQrData])
+        generateTheCode().catch(logError('Failed to generate QR code'))
+    }, [])
 
     return <>
         <img id='logo'
             src={profile.logo}
             alt={t('showPreview.logoAlt', `${profile.organizationName} logo`)} />
-        <img
-            id='qr'
-            src={qrData}
-            alt={t('showPreview.qrCodeAlt', 'QR code voor deze ruimte')} />
+        <canvas id='qr' />
         <div>
             <h1>{space.name}</h1>
             <p className='description'>{space.description}</p>
