@@ -28,7 +28,7 @@ export const SpacesList = () => {
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell>{t('spacesTable.headerName', 'Ruimte')}</Table.HeaderCell>
-                    <Table.HeaderCell width={6}>{t('spacesTable.headerAutoCheckout', 'Auto checkout')}</Table.HeaderCell>
+                    <Table.HeaderCell width={5}>{t('spacesTable.headerAutoCheckout', 'Auto checkout')}</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -37,14 +37,15 @@ export const SpacesList = () => {
                         key={s._id}
                         active={O.elem(eqString)(s._id, selected)}
                         onClick={() => setSelected(O.some(s._id))} >
-                        <Table.Cell>{s.name}<div>{s.description || '\u00a0'}</div></Table.Cell>
+                        <Table.Cell>{O.elem(eqString)(s._id, selected) &&
+                            <ActionButtons space={s} />}{s.name}<div>{s.description || '\u00a0'}</div>
+
+                        </Table.Cell>
                         <Table.Cell>{pipe(
                             O.map(curry(flip(moment.duration))('seconds')),
                             O.map(d => d.humanize()),
                             O.getOrElse(constant('—'))
                         )(s.autoCheckout)}
-                            {O.elem(eqString)(s._id, selected) &&
-                                <ActionButtons space={s} />}
                         </Table.Cell>
                     </Table.Row>)(spaces)}
             </Table.Body>
@@ -106,8 +107,12 @@ const ActionButtons = ({ space }: { space: Space }) => {
 
     return <Button.Group floated='right' size='small'>
         <Button icon='edit' positive
+            title={t('spacesList.editButtonLabel', 'Bewerken')}
+            aria-label={t('spacesList.editButtonLabel', 'Bewerken')}
             onClick={() => history.push(`/spaces/edit/${space._id}`)} />
         <Button icon='trash' negative
+            title={t('spacesList.deleteButtonLabel', 'Verwijderen')}
+            aria-label={t('spacesList.deleteButtonLabel', 'Verwijderen')}
             onClick={() => setDeleteConfShowing(true)} />
         <Confirm
             open={isDeleteConfShowing}
