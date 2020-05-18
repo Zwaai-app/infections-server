@@ -11,6 +11,7 @@ body.preview .fullscreen {
 
 #spacePreview {
   height: 100%;
+  width: 100%;
   padding: 3em;
   display: flex;
   flex-direction: column;
@@ -21,6 +22,12 @@ body.preview .fullscreen {
 #spacePreview,
 #spacePreview * {
   text-align: center;
+}
+
+@media print {
+  #printButton {
+    display: none;
+  }
 }
 
 #spacePreview #logo {
