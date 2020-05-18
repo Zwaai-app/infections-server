@@ -19,6 +19,13 @@ body.preview .fullscreen {
   justify-content: space-around;
 }
 
+@media screen {
+  #spacePreview {
+    max-width: 800px;
+    border: 1px dotted grey;
+  }
+}
+
 #spacePreview,
 #spacePreview * {
   text-align: center;
