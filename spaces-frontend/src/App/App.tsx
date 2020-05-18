@@ -32,7 +32,7 @@ function App() {
   })
 
   return (
-    <div className="App">
+    <div>
       <Container>
         <Router>
           <AppContent />
@@ -72,8 +72,15 @@ export const AppRoutes = () => {
     }
   })
 
-  return <>
-    {history.location.pathname !== '/profile' && <CheckProfile />}
+  const className =
+    history.location.pathname.indexOf('/preview') === 0
+      ? 'App fullscreen'
+      : 'App'
+
+  return <div className={className}>
+    {(history.location.pathname !== '/profile' &&
+      history.location.pathname.indexOf('/preview')) < 0 &&
+      <CheckProfile />}
     <Switch>
       <Route exact path="/" component={Home} />
       <Route path='/login' component={Login} />
@@ -84,7 +91,7 @@ export const AppRoutes = () => {
       <Route path='/spaces' component={SpacesList} />
       <Route path='/preview/:id' component={Preview} />
     </Switch>
-  </>
+  </div>
 }
 
 export default App
