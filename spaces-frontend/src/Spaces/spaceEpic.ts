@@ -4,18 +4,16 @@ import { Epic, ofType } from 'redux-observable'
 import { RootState } from '../rootReducer'
 import { Observable, of } from 'rxjs'
 import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax'
-import {
-  flatMap,
-  map,
-  catchError,
-  startWith,
-  delay,
-  endWith
-} from 'rxjs/operators'
+import { flatMap, map, catchError, startWith, endWith } from 'rxjs/operators'
 import { extractAjaxErrorInfo } from '../utils/ajaxError'
 import { autoCheckoutToServer } from './conversions'
 import { updateSpaceEpic, Actions as UpdateActions } from './epics/updateSpace'
 import { deleteSpaceEpic, Actions as DeleteActions } from './epics/deleteSpace'
+import {
+  loadSpacesEpic,
+  resetAfterLoadSuccess,
+  Actions as LoadActions
+} from './epics/loadSpaces'
 
 export type Actions =
   | ActionType<
@@ -23,13 +21,10 @@ export type Actions =
       | typeof A.storeNewSpaceStarted
       | typeof A.storeNewSpaceSucceeded
       | typeof A.storeNewSpaceFailed
-      | typeof A.loadSpaces
-      | typeof A.loadSpacesSucceeded
-      | typeof A.loadSpacesFailed
-      | typeof A.loadSpacesReset
     >
-  | DeleteActions
+  | LoadActions
   | UpdateActions
+  | DeleteActions
 
 type StoreNewSpaceFn = (action: A.CreateSpaceAction) => Observable<any>
 
@@ -69,41 +64,6 @@ export const storeNewSpaceEpic: Epic<Actions, Actions, RootState> = (
         endWith(A.loadSpaces())
       )
     )
-  )
-
-type LoadSpacesFn = () => Observable<any>
-const loadSpaces: LoadSpacesFn = () =>
-  ajax({
-    url: 'http://localhost:3000/api/v1/spaces',
-    method: 'GET',
-    crossDomain: true,
-    withCredentials: true,
-    responseType: 'json'
-  })
-
-const loadSpacesSuccess = (r: AjaxResponse) => A.loadSpacesSucceeded(r.response)
-const loadSpacesFailure = (e: AjaxError) =>
-  of(A.loadSpacesFailed(extractAjaxErrorInfo(e)))
-
-export const loadSpacesEpic: Epic<Actions, Actions, RootState> = (
-  action$,
-  _state$,
-  { loadSpacesFn = loadSpaces }: { loadSpacesFn?: LoadSpacesFn } = {}
-) =>
-  action$.pipe(
-    ofType<Actions, A.LoadSpacesAction>(A.loadSpaces.type),
-    flatMap(() =>
-      loadSpacesFn().pipe(map(loadSpacesSuccess), catchError(loadSpacesFailure))
-    )
-  )
-
-export const resetAfterLoadSuccess: Epic<Actions, Actions, RootState> = (
-  action$,
-  _state$
-) =>
-  action$.pipe(
-    ofType<Actions, A.LoadSpacesSucceededAction>(A.loadSpacesSucceeded.type),
-    flatMap(() => of(A.loadSpacesReset()).pipe(delay(3e3)))
   )
 
 export const allEpics = [
