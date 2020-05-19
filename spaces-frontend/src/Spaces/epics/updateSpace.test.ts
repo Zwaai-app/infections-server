@@ -30,6 +30,7 @@ it('creates the right ajax options', () => {
   const updateAction = updateSpace(space)
   const options = updateAjaxOptions(updateAction)
   expect(options.method).toEqual('PUT')
+  expect(options.url).toMatch(/\/api\/v1\/space$/)
   expect(options.body.autoCheckout).toBe(1800)
   expect(options.body.createdAt).toBeUndefined()
   expect(options.body.modifiedAt).toBeUndefined()

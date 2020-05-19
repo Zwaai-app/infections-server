@@ -30,6 +30,7 @@ it('creates the right ajax options', () => {
   const deleteAction = deleteSpace(space)
   const options = deleteAjaxOptions(deleteAction)
   expect(options.method).toEqual('DELETE')
+  expect(options.url).toMatch(/\/api\/v1\/space$/)
   expect(options.body).toEqual({ _id: 'foo_id' })
 })
 
