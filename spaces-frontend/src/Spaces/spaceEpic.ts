@@ -13,9 +13,8 @@ import {
   endWith
 } from 'rxjs/operators'
 import { extractAjaxErrorInfo } from '../utils/ajaxError'
-import { PayloadAction } from '@reduxjs/toolkit'
-import { PayloadType } from '../utils/utilityTypes'
 import { autoCheckoutToServer } from './conversions'
+import { updateSpaceEpic, Actions as UpdateActions } from './epics/updateSpace'
 
 export type Actions = ActionType<
   | typeof A.createSpace
@@ -29,6 +28,7 @@ export type Actions = ActionType<
   | typeof A.deleteSpace
   | typeof A.deleteSucceeded
   | typeof A.deleteFailed
+  | UpdateActions
 >
 
 type StoreNewSpaceFn = (action: A.CreateSpaceAction) => Observable<any>
@@ -135,50 +135,6 @@ export const resetAfterLoadSuccess: Epic<Actions, Actions, RootState> = (
   action$.pipe(
     ofType<Actions, A.LoadSpacesSucceededAction>(A.loadSpacesSucceeded.type),
     flatMap(() => of(A.loadSpacesReset()).pipe(delay(3e3)))
-  )
-
-type OptionsCreator<P> = (action: PayloadAction<P>) => any
-const ajaxFunction = <P>(optionsCreator: OptionsCreator<P>) => (
-  action: PayloadAction<P>
-): Observable<any> => ajax(optionsCreator(action))
-
-export const updateAjaxOptions: OptionsCreator<PayloadType<
-  A.UpdateSpaceAction
->> = action => ({
-  url: 'http://localhost:3000/api/v1/space',
-  method: 'PUT',
-  crossDomain: true,
-  withCredentials: true,
-  responseType: 'json',
-  body: {
-    ...action.payload,
-    autoCheckout: autoCheckoutToServer(action.payload.autoCheckout),
-    createdAt: undefined,
-    modifiedAt: undefined
-  }
-})
-
-type UpdateSpaceFn = (action: A.UpdateSpaceAction) => Observable<any>
-const updateSpace: UpdateSpaceFn = ajaxFunction(updateAjaxOptions)
-
-const updateSuccess = (_r: AjaxResponse) => A.updateSucceeded()
-const updateFailed = (e: AjaxError) =>
-  of(A.updateSpaceFailed(extractAjaxErrorInfo(e)))
-
-export const updateSpaceEpic: Epic<Actions, Actions, RootState> = (
-  action$,
-  _state$,
-  { updateSpaceFn = updateSpace }: { updateSpaceFn?: UpdateSpaceFn } = {}
-) =>
-  action$.pipe(
-    ofType<Actions, A.UpdateSpaceAction>(A.updateSpace.type),
-    flatMap(action =>
-      updateSpaceFn(action).pipe(
-        map(updateSuccess),
-        catchError(updateFailed),
-        endWith(A.loadSpaces())
-      )
-    )
   )
 
 export const allEpics = [
