@@ -73,6 +73,9 @@ export const spacesSlice = createSlice({
         state.newSpace = newSpace
       }
     },
+    clearUpdateSpace (state: SpacesState, _action: PayloadAction<void>) {
+      state.updateStatus = 'idle'
+    },
     updateSpace (
       state: SpacesState,
       _action: PayloadAction<SpaceFields & ThingWithId>
@@ -143,6 +146,7 @@ export type UpdateSpaceAction = ReturnType<typeof updateSpace>
 export const {
   clearNewSpace,
   createSpace,
+  clearUpdateSpace,
   updateSpace,
   updateSpaceSucceeded,
   updateSpaceFailed,

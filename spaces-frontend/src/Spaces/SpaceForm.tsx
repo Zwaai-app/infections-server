@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Space } from './spacesSlice'
 import { Form, Segment, Button, Message } from 'semantic-ui-react'
 import { t } from '../i18n'
@@ -21,12 +21,6 @@ export const SpaceForm = ({ space, saveHandler }: SpaceFormProps) => {
     const [wantsToSave, setWantsToSave] = useState(false)
 
     const invalid = name === '' || !autoCheckout
-
-    useEffect(() => {
-        if (spacesState.newSpace && spacesState.newSpace.status === 'success') {
-            history.push('/spaces')
-        }
-    })
 
     return <div id='SpaceForm'>
         <Message error hidden={!spacesState.newSpace || !isError(spacesState.newSpace.status)}>

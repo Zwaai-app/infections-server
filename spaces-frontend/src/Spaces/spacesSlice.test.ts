@@ -19,7 +19,8 @@ import reducer, {
   deleteSucceeded,
   deleteFailed,
   updateSpaceSucceeded,
-  updateSpaceFailed
+  updateSpaceFailed,
+  clearUpdateSpace
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import { SyncStatus } from '../utils/syncStatus'
@@ -173,6 +174,11 @@ describe('update space', () => {
     )
     expect(newState.updateStatus).toEqual({ error: 'some error' })
     expect(newState.spaces).toEqual(listToRecord([space1, space2, space3]))
+  })
+
+  it('can clear update status', () => {
+    const state = spaceState({ updateStatus: 'success' })
+    expect(reducer(state, clearUpdateSpace()).updateStatus).toEqual('idle')
   })
 })
 
