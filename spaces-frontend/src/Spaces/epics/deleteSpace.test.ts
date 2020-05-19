@@ -1,4 +1,4 @@
-import { deleteSpaceEpic } from './deleteSpace'
+import { deleteSpaceEpic, deleteAjaxOptions } from './deleteSpace'
 import { ActionsObservable } from 'redux-observable'
 import {
   deleteSpace,
@@ -25,6 +25,13 @@ const space: Space = {
   createdAt: Date.now(),
   updatedAt: Date.now()
 }
+
+it('creates the right ajax options', () => {
+  const deleteAction = deleteSpace(space)
+  const options = deleteAjaxOptions(deleteAction)
+  expect(options.method).toEqual('DELETE')
+  expect(options.body).toEqual({ _id: 'foo_id' })
+})
 
 it('can delete a space', done => {
   const action$ = ActionsObservable.of(deleteSpace(space))
