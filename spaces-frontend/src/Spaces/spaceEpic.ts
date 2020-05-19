@@ -12,11 +12,10 @@ import {
   delay,
   endWith
 } from 'rxjs/operators'
-import * as O from 'fp-ts/lib/Option'
-import { constant } from 'fp-ts/lib/function'
 import { extractAjaxErrorInfo } from '../utils/ajaxError'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { PayloadType } from '../utils/utilityTypes'
+import { autoCheckoutToServer } from './conversions'
 
 export type Actions = ActionType<
   | typeof A.createSpace
@@ -31,9 +30,6 @@ export type Actions = ActionType<
   | typeof A.deleteSucceeded
   | typeof A.deleteFailed
 >
-
-const autoCheckoutToServer = (autoCheckout: O.Option<number>) =>
-  O.getOrElse(constant(-1))(autoCheckout)
 
 type StoreNewSpaceFn = (action: A.CreateSpaceAction) => Observable<any>
 
