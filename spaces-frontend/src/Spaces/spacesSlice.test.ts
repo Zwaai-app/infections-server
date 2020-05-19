@@ -17,7 +17,9 @@ import reducer, {
   loadSpacesFailed,
   loadSpacesReset,
   deleteSucceeded,
-  deleteFailed
+  deleteFailed,
+  updateSucceeded,
+  updateSpaceFailed
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import { SyncStatus } from '../utils/syncStatus'
@@ -82,23 +84,6 @@ it('cannot create a space with an existing name', () => {
   expect(reducer(state, createSpace(newSpaceFields)).newSpace).toBeUndefined()
 })
 
-it('can update a space', () => {
-  const state = spaceState({ spaces: listToRecord([space1, space2, space3]) })
-  const updatedSpace2 = {
-    _id: '2',
-    name: 'updated name',
-    description: 'updated description',
-    autoCheckout: O.some(7200),
-    createdAt: space2.createdAt,
-    updatedAt: space2.updatedAt
-    // `updatedAt` is incorrect but will be fixed automatically
-    // when update is done on server
-  }
-  expect(reducer(state, updateSpace(updatedSpace2)).spaces).toEqual(
-    listToRecord([space1, updatedSpace2, space3])
-  )
-})
-
 it('ignores nonexisting space', () => {
   const state = spaceState({ spaces: listToRecord([space1, space2, space3]) })
   const nonexisting = {
@@ -147,6 +132,47 @@ describe('store new space', () => {
       reducer(state, storeNewSpaceFailed({ message: 'some error' })).newSpace
         ?.status
     ).toEqual({ error: 'some error' })
+  })
+})
+
+describe('update space', () => {
+  it('set status when updating', () => {
+    const state = spaceState({
+      spaces: listToRecord([space1, space2, space3]),
+      updateStatus: 'idle'
+    })
+    const updatedSpace2 = {
+      _id: space2._id,
+      name: 'updated',
+      description: 'updated',
+      autoCheckout: O.some(7200)
+    }
+    const newState = reducer(state, updateSpace(updatedSpace2))
+    expect(newState.updateStatus).toEqual('inProgress')
+    expect(newState.spaces).toEqual(listToRecord([space1, space2, space3]))
+  })
+
+  it('sets status on success', () => {
+    const state = spaceState({
+      spaces: listToRecord([space1, space2, space3]),
+      updateStatus: 'inProgress'
+    })
+    const newState = reducer(state, updateSucceeded())
+    expect(newState.updateStatus).toEqual('success')
+    expect(newState.spaces).toEqual(listToRecord([space1, space2, space3]))
+  })
+
+  it('sets error on fail', () => {
+    const state = spaceState({
+      spaces: listToRecord([space1, space2, space3]),
+      updateStatus: 'inProgress'
+    })
+    const newState = reducer(
+      state,
+      updateSpaceFailed({ message: 'some error' })
+    )
+    expect(newState.updateStatus).toEqual({ error: 'some error' })
+    expect(newState.spaces).toEqual(listToRecord([space1, space2, space3]))
   })
 })
 
@@ -233,17 +259,20 @@ function spaceState ({
   spaces,
   newSpace,
   loadingStatus,
+  updateStatus,
   deleteStatus
 }: {
   spaces?: SpaceList
   newSpace?: NewSpace
   loadingStatus?: SyncStatus
+  updateStatus?: SyncStatus
   deleteStatus?: SyncStatus
 } = {}): SpacesState {
   return {
     spaces: spaces || {},
     newSpace,
     loadingStatus: loadingStatus || 'idle',
+    updateStatus: updateStatus || 'idle',
     deleteStatus: deleteStatus || 'idle'
   }
 }

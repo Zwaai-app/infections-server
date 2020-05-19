@@ -3,7 +3,6 @@ import * as A from 'fp-ts/lib/Array'
 import * as R from 'fp-ts/lib/Record'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getLastSemigroup } from 'fp-ts/lib/Semigroup'
-import { flow, constant } from 'fp-ts/lib/function'
 import { SyncStatus } from '../utils/syncStatus'
 import { ErrorInfo } from '../utils/ajaxError'
 
@@ -39,6 +38,7 @@ export interface SpacesState {
   spaces: SpaceList
   newSpace?: NewSpace
   loadingStatus: SyncStatus
+  updateStatus: SyncStatus
   deleteStatus: SyncStatus
 }
 
@@ -48,6 +48,7 @@ export const listToRecord = (spaces: Space[]): Record<string, Space> =>
 const initialState: SpacesState = {
   spaces: listToRecord([]),
   loadingStatus: 'idle',
+  updateStatus: 'idle',
   deleteStatus: 'idle'
 }
 
@@ -70,18 +71,15 @@ export const spacesSlice = createSlice({
     },
     updateSpace (
       state: SpacesState,
-      action: PayloadAction<SpaceFields & ThingWithId>
+      _action: PayloadAction<SpaceFields & ThingWithId>
     ) {
-      state.spaces = flow(
-        R.modifyAt(action.payload._id, (current: Space) => {
-          let modified = current
-          modified.name = action.payload.name
-          modified.description = action.payload.description
-          modified.autoCheckout = action.payload.autoCheckout
-          return modified
-        }),
-        O.getOrElse(constant(state.spaces))
-      )(state.spaces)
+      state.updateStatus = 'inProgress'
+    },
+    updateSucceeded (state: SpacesState, _action: PayloadAction<void>) {
+      state.updateStatus = 'success'
+    },
+    updateSpaceFailed (state: SpacesState, action: PayloadAction<ErrorInfo>) {
+      state.updateStatus = { error: action.payload.message }
     },
     deleteSpace (state: SpacesState, _action: PayloadAction<Space>) {
       state.deleteStatus = 'inProgress'
@@ -141,11 +139,14 @@ export type CreateSpaceAction = ReturnType<typeof createSpace>
 export type LoadSpacesAction = ReturnType<typeof loadSpaces>
 export type LoadSpacesSucceededAction = ReturnType<typeof loadSpacesSucceeded>
 export type DeleteSpaceAction = ReturnType<typeof deleteSpace>
+export type UpdateSpaceAction = ReturnType<typeof updateSpace>
 
 export const {
   clearNewSpace,
   createSpace,
   updateSpace,
+  updateSucceeded,
+  updateSpaceFailed,
   deleteSpace,
   deleteSucceeded,
   deleteFailed,

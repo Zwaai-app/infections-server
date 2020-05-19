@@ -12,11 +12,20 @@ import {
   Space,
   SpaceFields,
   deleteSucceeded,
-  deleteFailed
+  deleteFailed,
+  updateSpace,
+  updateSucceeded,
+  updateSpaceFailed
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import { initialStateObservable } from '../testUtils/stateObservable'
-import { storeNewSpaceEpic, loadSpacesEpic, deleteSpaceEpic } from './spaceEpic'
+import {
+  storeNewSpaceEpic,
+  loadSpacesEpic,
+  deleteSpaceEpic,
+  updateSpaceEpic,
+  updateAjaxOptions
+} from './spaceEpic'
 import { of, throwError } from 'rxjs'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
 import { toArray } from 'rxjs/operators'
@@ -122,4 +131,41 @@ it('reports delete space errors', done => {
       ])
       done()
     })
+})
+
+describe('update space', () => {
+  it('creates the right ajax options', () => {
+    const updateAction = updateSpace(space)
+    const options = updateAjaxOptions(updateAction)
+    expect(options.body.autoCheckout).toBe(1800)
+    expect(options.body.createdAt).toBeUndefined()
+    expect(options.body.modifiedAt).toBeUndefined()
+  })
+
+  it('can update a space', done => {
+    const action$ = ActionsObservable.of(updateSpace(space))
+    const state$ = initialStateObservable()
+    const updateSpaceFn = () => of({})
+    updateSpaceEpic(action$, state$, { updateSpaceFn })
+      .pipe(toArray())
+      .subscribe(emittedActions => {
+        expect(emittedActions).toEqual([updateSucceeded(), loadSpaces()])
+        done()
+      })
+  })
+
+  it('reports update space errors', done => {
+    const action$ = ActionsObservable.of(updateSpace(space))
+    const state$ = initialStateObservable()
+    const updateSpaceFn = () => throwError(new MockAjaxError('some error'))
+    updateSpaceEpic(action$, state$, { updateSpaceFn })
+      .pipe(toArray())
+      .subscribe(emittedActions => {
+        expect(emittedActions).toEqual([
+          updateSpaceFailed({ message: 'some error' }),
+          loadSpaces()
+        ])
+        done()
+      })
+  })
 })
