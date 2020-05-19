@@ -4,8 +4,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../rootReducer'
 import { Table, Button, Confirm, Message } from 'semantic-ui-react'
 import { Space, deleteSpace, clearNewSpace, loadSpaces } from './spacesSlice'
+import * as A from 'fp-ts/lib/Array'
 import * as O from 'fp-ts/lib/Option'
 import * as R from 'fp-ts/lib/Record'
+import { ord, ordNumber, getDualOrd } from 'fp-ts/lib/Ord'
 import { constant, flip } from 'fp-ts/lib/function'
 import * as moment from 'moment'
 import 'moment/locale/nl'
@@ -14,10 +16,16 @@ import { pipe } from 'rxjs'
 import { eqString } from 'fp-ts/lib/Eq'
 import { useHistory } from 'react-router-dom'
 import { isError, Failed } from '../utils/syncStatus'
+import { snd } from 'fp-ts/lib/Tuple'
+
+const byCreatedAt = getDualOrd(ord.contramap(ordNumber, ([_id, s]: [string, Space]) => s.createdAt))
+const sortByCreatedAt = A.sortBy([byCreatedAt])
 
 export const SpacesList = () => {
     const [selected, setSelected] = useState(O.none as O.Option<string>)
     let spaces = useSelector((state: RootState) => state.spaces.spaces)
+    const sortedSpaces = A.map(snd)(sortByCreatedAt(R.toArray(spaces)))
+
     return <div id='SpacesList'>
         <h1>{t('spacesList.header', 'Ruimtebeheer')}
             <NewSpaceButton />
@@ -32,22 +40,24 @@ export const SpacesList = () => {
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-                {R.collect((_, s: Space) =>
-                    <Table.Row
-                        key={s._id}
-                        active={O.elem(eqString)(s._id, selected)}
-                        onClick={() => setSelected(O.some(s._id))} >
-                        <Table.Cell>{O.elem(eqString)(s._id, selected) &&
-                            <ActionButtons space={s} />}{s.name}<div>{s.description || '\u00a0'}</div>
+                {
+                    A.map((s: Space) =>
+                        <Table.Row
+                            key={s._id}
+                            active={O.elem(eqString)(s._id, selected)}
+                            onClick={() => setSelected(O.some(s._id))} >
+                            <Table.Cell>{O.elem(eqString)(s._id, selected) &&
+                                <ActionButtons space={s} />}{s.name}<div>{s.description || '\u00a0'}</div>
 
-                        </Table.Cell>
-                        <Table.Cell>{pipe(
-                            O.map(curry(flip(moment.duration))('seconds')),
-                            O.map(d => d.humanize()),
-                            O.getOrElse(constant('—'))
-                        )(s.autoCheckout)}
-                        </Table.Cell>
-                    </Table.Row>)(spaces)}
+                            </Table.Cell>
+                            <Table.Cell>{pipe(
+                                O.map(curry(flip(moment.duration))('seconds')),
+                                O.map(d => d.humanize()),
+                                O.getOrElse(constant('—'))
+                            )(s.autoCheckout)}
+                            </Table.Cell>
+                        </Table.Row>)(sortedSpaces)
+                }
             </Table.Body>
         </Table>
         <NewSpaceButton />
