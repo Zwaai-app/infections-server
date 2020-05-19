@@ -14,6 +14,7 @@ it('creates the right ajax options', () => {
   const loadAction = loadSpaces()
   const options = loadAjaxOptions(loadAction)
   expect(options.method).toEqual('GET')
+  expect(options.url).toMatch(/\/api\/v1\/spaces$/)
   expect(options.body).toBeUndefined()
 })
 
