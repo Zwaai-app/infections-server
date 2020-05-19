@@ -79,7 +79,7 @@ export const spacesSlice = createSlice({
     ) {
       state.updateStatus = 'inProgress'
     },
-    updateSucceeded (state: SpacesState, _action: PayloadAction<void>) {
+    updateSpaceSucceeded (state: SpacesState, _action: PayloadAction<void>) {
       state.updateStatus = 'success'
     },
     updateSpaceFailed (state: SpacesState, action: PayloadAction<ErrorInfo>) {
@@ -144,7 +144,7 @@ export const {
   clearNewSpace,
   createSpace,
   updateSpace,
-  updateSucceeded,
+  updateSpaceSucceeded,
   updateSpaceFailed,
   deleteSpace,
   deleteSucceeded,

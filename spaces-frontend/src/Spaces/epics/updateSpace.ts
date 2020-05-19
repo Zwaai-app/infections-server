@@ -13,7 +13,7 @@ import { flatMap, map, catchError, endWith } from 'rxjs/operators'
 export type Actions = ActionType<
   | typeof A.loadSpaces
   | typeof A.updateSpace
-  | typeof A.updateSucceeded
+  | typeof A.updateSpaceSucceeded
   | typeof A.updateSpaceFailed
 >
 
@@ -34,7 +34,7 @@ export const updateAjaxOptions: OptionsCreator<PayloadType<
 })
 
 const updateSpace = ajaxObservable(updateAjaxOptions)
-const updateSuccess = (_r: AjaxResponse) => A.updateSucceeded()
+const updateSuccess = (_r: AjaxResponse) => A.updateSpaceSucceeded()
 const updateFailed = (e: AjaxError) =>
   of(A.updateSpaceFailed(extractAjaxErrorInfo(e)))
 

@@ -1,7 +1,7 @@
 import { updateSpaceEpic, updateAjaxOptions } from './updateSpace'
 import {
   updateSpace,
-  updateSucceeded,
+  updateSpaceSucceeded,
   loadSpaces,
   updateSpaceFailed,
   SpaceFields,
@@ -42,7 +42,7 @@ describe('update space', () => {
     updateSpaceEpic(action$, state$, { updateSpaceFn })
       .pipe(toArray())
       .subscribe(emittedActions => {
-        expect(emittedActions).toEqual([updateSucceeded(), loadSpaces()])
+        expect(emittedActions).toEqual([updateSpaceSucceeded(), loadSpaces()])
         done()
       })
   })

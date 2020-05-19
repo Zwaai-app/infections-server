@@ -18,7 +18,7 @@ import reducer, {
   loadSpacesReset,
   deleteSucceeded,
   deleteFailed,
-  updateSucceeded,
+  updateSpaceSucceeded,
   updateSpaceFailed
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
@@ -157,7 +157,7 @@ describe('update space', () => {
       spaces: listToRecord([space1, space2, space3]),
       updateStatus: 'inProgress'
     })
-    const newState = reducer(state, updateSucceeded())
+    const newState = reducer(state, updateSpaceSucceeded())
     expect(newState.updateStatus).toEqual('success')
     expect(newState.spaces).toEqual(listToRecord([space1, space2, space3]))
   })
