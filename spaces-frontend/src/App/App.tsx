@@ -21,6 +21,7 @@ import { loadProfile } from '../Profile/profileSlice'
 import { CheckProfile } from '../Profile/CheckProfile'
 import { NetworkError } from './NetworkError'
 import { Preview } from '../Preview/Preview'
+import { loadSpaces } from '../Spaces/spacesSlice'
 
 function App() {
   moment.locale(window.navigator.language)
@@ -29,6 +30,7 @@ function App() {
 
   useEffect(() => {
     dispatch(loadProfile())
+    dispatch(loadSpaces())
   })
 
   return (
