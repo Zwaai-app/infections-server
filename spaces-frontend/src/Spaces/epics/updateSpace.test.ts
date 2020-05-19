@@ -26,39 +26,38 @@ const space: Space = {
   updatedAt: Date.now()
 }
 
-describe('update space', () => {
-  it('creates the right ajax options', () => {
-    const updateAction = updateSpace(space)
-    const options = updateAjaxOptions(updateAction)
-    expect(options.body.autoCheckout).toBe(1800)
-    expect(options.body.createdAt).toBeUndefined()
-    expect(options.body.modifiedAt).toBeUndefined()
-  })
+it('creates the right ajax options', () => {
+  const updateAction = updateSpace(space)
+  const options = updateAjaxOptions(updateAction)
+  expect(options.method).toEqual('PUT')
+  expect(options.body.autoCheckout).toBe(1800)
+  expect(options.body.createdAt).toBeUndefined()
+  expect(options.body.modifiedAt).toBeUndefined()
+})
 
-  it('can update a space', done => {
-    const action$ = ActionsObservable.of(updateSpace(space))
-    const state$ = initialStateObservable()
-    const updateSpaceFn = () => of({})
-    updateSpaceEpic(action$, state$, { updateSpaceFn })
-      .pipe(toArray())
-      .subscribe(emittedActions => {
-        expect(emittedActions).toEqual([updateSpaceSucceeded(), loadSpaces()])
-        done()
-      })
-  })
+it('can update a space', done => {
+  const action$ = ActionsObservable.of(updateSpace(space))
+  const state$ = initialStateObservable()
+  const updateSpaceFn = () => of({})
+  updateSpaceEpic(action$, state$, { updateSpaceFn })
+    .pipe(toArray())
+    .subscribe(emittedActions => {
+      expect(emittedActions).toEqual([updateSpaceSucceeded(), loadSpaces()])
+      done()
+    })
+})
 
-  it('reports update space errors', done => {
-    const action$ = ActionsObservable.of(updateSpace(space))
-    const state$ = initialStateObservable()
-    const updateSpaceFn = () => throwError(new MockAjaxError('some error'))
-    updateSpaceEpic(action$, state$, { updateSpaceFn })
-      .pipe(toArray())
-      .subscribe(emittedActions => {
-        expect(emittedActions).toEqual([
-          updateSpaceFailed({ message: 'some error' }),
-          loadSpaces()
-        ])
-        done()
-      })
-  })
+it('reports update space errors', done => {
+  const action$ = ActionsObservable.of(updateSpace(space))
+  const state$ = initialStateObservable()
+  const updateSpaceFn = () => throwError(new MockAjaxError('some error'))
+  updateSpaceEpic(action$, state$, { updateSpaceFn })
+    .pipe(toArray())
+    .subscribe(emittedActions => {
+      expect(emittedActions).toEqual([
+        updateSpaceFailed({ message: 'some error' }),
+        loadSpaces()
+      ])
+      done()
+    })
 })
