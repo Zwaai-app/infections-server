@@ -15,21 +15,21 @@ import {
 import { extractAjaxErrorInfo } from '../utils/ajaxError'
 import { autoCheckoutToServer } from './conversions'
 import { updateSpaceEpic, Actions as UpdateActions } from './epics/updateSpace'
+import { deleteSpaceEpic, Actions as DeleteActions } from './epics/deleteSpace'
 
-export type Actions = ActionType<
-  | typeof A.createSpace
-  | typeof A.storeNewSpaceStarted
-  | typeof A.storeNewSpaceSucceeded
-  | typeof A.storeNewSpaceFailed
-  | typeof A.loadSpaces
-  | typeof A.loadSpacesSucceeded
-  | typeof A.loadSpacesFailed
-  | typeof A.loadSpacesReset
-  | typeof A.deleteSpace
-  | typeof A.deleteSucceeded
-  | typeof A.deleteFailed
+export type Actions =
+  | ActionType<
+      | typeof A.createSpace
+      | typeof A.storeNewSpaceStarted
+      | typeof A.storeNewSpaceSucceeded
+      | typeof A.storeNewSpaceFailed
+      | typeof A.loadSpaces
+      | typeof A.loadSpacesSucceeded
+      | typeof A.loadSpacesFailed
+      | typeof A.loadSpacesReset
+    >
+  | DeleteActions
   | UpdateActions
->
 
 type StoreNewSpaceFn = (action: A.CreateSpaceAction) => Observable<any>
 
@@ -66,37 +66,6 @@ export const storeNewSpaceEpic: Epic<Actions, Actions, RootState> = (
         map(storeNewSuccess),
         catchError(storeNewFailed),
         startWith(A.storeNewSpaceStarted()),
-        endWith(A.loadSpaces())
-      )
-    )
-  )
-
-type DeleteSpaceFn = (action: A.DeleteSpaceAction) => Observable<any>
-const deleteSpace: DeleteSpaceFn = action =>
-  ajax({
-    url: 'http://localhost:3000/api/v1/space',
-    method: 'DELETE',
-    crossDomain: true,
-    withCredentials: true,
-    responseType: 'json',
-    body: { _id: action.payload._id }
-  })
-
-const deleteSuccess = (_r: AjaxResponse) => A.deleteSucceeded()
-const deleteFailed = (e: AjaxError) =>
-  of(A.deleteFailed(extractAjaxErrorInfo(e)))
-
-export const deleteSpaceEpic: Epic<Actions, Actions, RootState> = (
-  action$,
-  _state$,
-  { deleteSpaceFn = deleteSpace }: { deleteSpaceFn?: DeleteSpaceFn } = {}
-) =>
-  action$.pipe(
-    ofType<Actions, A.DeleteSpaceAction>(A.deleteSpace.type),
-    flatMap(action =>
-      deleteSpaceFn(action).pipe(
-        map(deleteSuccess),
-        catchError(deleteFailed),
         endWith(A.loadSpaces())
       )
     )
