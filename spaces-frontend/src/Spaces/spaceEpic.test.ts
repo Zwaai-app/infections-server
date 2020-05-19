@@ -8,15 +8,11 @@ import {
   loadSpacesSucceeded,
   SpaceFromServer,
   loadSpacesFailed,
-  deleteSpace,
-  Space,
-  SpaceFields,
-  deleteSucceeded,
-  deleteFailed
+  SpaceFields
 } from './spacesSlice'
 import * as O from 'fp-ts/lib/Option'
 import { initialStateObservable } from '../testUtils/stateObservable'
-import { storeNewSpaceEpic, loadSpacesEpic, deleteSpaceEpic } from './spaceEpic'
+import { storeNewSpaceEpic, loadSpacesEpic } from './spaceEpic'
 import { of, throwError } from 'rxjs'
 import { MockAjaxError } from '../testUtils/MockAjaxError'
 import { toArray } from 'rxjs/operators'
@@ -25,12 +21,6 @@ const spaceData: SpaceFields = {
   name: 'foo',
   description: 'bar',
   autoCheckout: O.some(1800)
-}
-const space: Space = {
-  _id: 'foo_id',
-  ...spaceData,
-  createdAt: Date.now(),
-  updatedAt: Date.now()
 }
 
 it('can create a new space', done => {
@@ -95,31 +85,4 @@ it('reports load errors', done => {
     expect(action).toEqual(loadSpacesFailed({ message: 'some error' }))
     done()
   })
-})
-
-it('can delete a space', done => {
-  const action$ = ActionsObservable.of(deleteSpace(space))
-  const state$ = initialStateObservable()
-  const deleteSpaceFn = () => of({})
-  deleteSpaceEpic(action$, state$, { deleteSpaceFn })
-    .pipe(toArray())
-    .subscribe(emittedActions => {
-      expect(emittedActions).toEqual([deleteSucceeded(), loadSpaces()])
-      done()
-    })
-})
-
-it('reports delete space errors', done => {
-  const action$ = ActionsObservable.of(deleteSpace(space))
-  const state$ = initialStateObservable()
-  const deleteSpaceFn = () => throwError(new MockAjaxError('some error'))
-  deleteSpaceEpic(action$, state$, { deleteSpaceFn })
-    .pipe(toArray())
-    .subscribe(emittedActions => {
-      expect(emittedActions).toEqual([
-        deleteFailed({ message: 'some error' }),
-        loadSpaces()
-      ])
-      done()
-    })
 })
