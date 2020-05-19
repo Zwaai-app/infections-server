@@ -26,19 +26,25 @@ const space1: Space = {
   _id: '1',
   name: 'one',
   description: 'one',
-  autoCheckout: O.none
+  autoCheckout: O.none,
+  createdAt: Date.now(),
+  updatedAt: Date.now()
 }
 const space2: Space = {
   _id: '2',
   name: 'two',
   description: 'two',
-  autoCheckout: O.some(3600)
+  autoCheckout: O.some(3600),
+  createdAt: Date.UTC(2020, 5 - 1, 12, 10, 21, 1, 945), // month is zero-based
+  updatedAt: Date.UTC(2020, 5 - 1, 13, 10, 21, 1, 945)
 }
 const space3: Space = {
   _id: '3',
   name: 'three',
   description: 'three',
-  autoCheckout: O.none
+  autoCheckout: O.none,
+  createdAt: Date.UTC(2020, 5 - 1, 12, 10, 21, 18, 545), // month is zero-based
+  updatedAt: Date.UTC(2020, 5 - 1, 13, 10, 21, 18, 545)
 }
 
 it('can create a space', () => {
@@ -82,7 +88,11 @@ it('can update a space', () => {
     _id: '2',
     name: 'updated name',
     description: 'updated description',
-    autoCheckout: O.some(7200)
+    autoCheckout: O.some(7200),
+    createdAt: space2.createdAt,
+    updatedAt: space2.updatedAt
+    // `updatedAt` is incorrect but will be fixed automatically
+    // when update is done on server
   }
   expect(reducer(state, updateSpace(updatedSpace2)).spaces).toEqual(
     listToRecord([space1, updatedSpace2, space3])
@@ -95,7 +105,8 @@ it('ignores nonexisting space', () => {
     _id: '4',
     name: 'updated name',
     description: 'updated description',
-    autoCheckout: O.some(7200)
+    autoCheckout: O.some(7200),
+    createdAt: new Date()
   }
   expect(reducer(state, updateSpace(nonexisting)).spaces).toEqual(
     listToRecord([space1, space2, space3])
@@ -184,11 +195,15 @@ describe('load spaces list', () => {
     })
     const space2ServerRep = {
       ...space2,
-      autoCheckout: 3600
+      autoCheckout: 3600,
+      createdAt: '2020-05-12T10:21:01.945Z',
+      updatedAt: '2020-05-13T10:21:01.945Z'
     }
     const space3ServerRep = {
       ...space3,
-      autoCheckout: -1
+      autoCheckout: -1,
+      createdAt: '2020-05-12T10:21:18.545Z',
+      updatedAt: '2020-05-13T10:21:18.545Z'
     }
     const newState = reducer(
       state,

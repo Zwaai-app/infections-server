@@ -15,16 +15,22 @@ export interface SpaceFields {
   autoCheckout: O.Option<Seconds>
 }
 
+type SpaceId = string
+interface ThingWithId {
+  _id: SpaceId
+}
+export interface Space extends SpaceFields, ThingWithId {
+  createdAt: number
+  updatedAt: number
+}
+
 export interface SpaceFromServer {
   _id: SpaceId
   name: string
   description: string
   autoCheckout: number
-}
-
-type SpaceId = string
-export interface Space extends SpaceFields {
-  _id: SpaceId
+  createdAt: string
+  updatedAt: string
 }
 
 export type SpaceList = Record<SpaceId, Space>
@@ -62,9 +68,18 @@ export const spacesSlice = createSlice({
         state.newSpace = newSpace
       }
     },
-    updateSpace (state: SpacesState, action: PayloadAction<Space>) {
+    updateSpace (
+      state: SpacesState,
+      action: PayloadAction<SpaceFields & ThingWithId>
+    ) {
       state.spaces = flow(
-        R.updateAt(action.payload._id, action.payload),
+        R.modifyAt(action.payload._id, (current: Space) => {
+          let modified = current
+          modified.name = action.payload.name
+          modified.description = action.payload.description
+          modified.autoCheckout = action.payload.autoCheckout
+          return modified
+        }),
         O.getOrElse(constant(state.spaces))
       )(state.spaces)
     },
@@ -102,8 +117,9 @@ export const spacesSlice = createSlice({
       state.loadingStatus = 'success'
       const spaces = action.payload.map(serverRep => ({
         ...serverRep,
-        autoCheckout:
-          serverRep.autoCheckout < 0 ? O.none : O.some(serverRep.autoCheckout)
+        autoCheckout: convertAutoCheckoutFromServer(serverRep.autoCheckout),
+        createdAt: convertDateFromServer(serverRep.createdAt),
+        updatedAt: convertDateFromServer(serverRep.updatedAt)
       }))
       state.spaces = listToRecord(spaces)
     },
@@ -115,6 +131,11 @@ export const spacesSlice = createSlice({
     }
   }
 })
+
+const convertAutoCheckoutFromServer = (serverValue: number) =>
+  serverValue < 0 ? O.none : O.some(serverValue)
+
+const convertDateFromServer = (serverValue: string) => Date.parse(serverValue)
 
 export type CreateSpaceAction = ReturnType<typeof createSpace>
 export type LoadSpacesAction = ReturnType<typeof loadSpaces>
