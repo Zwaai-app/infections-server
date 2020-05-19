@@ -5,6 +5,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getLastSemigroup } from 'fp-ts/lib/Semigroup'
 import { SyncStatus } from '../utils/syncStatus'
 import { ErrorInfo } from '../utils/ajaxError'
+import {
+  convertAutoCheckoutFromServer,
+  convertDateFromServer
+} from './conversions'
 
 type Seconds = number
 
@@ -129,11 +133,6 @@ export const spacesSlice = createSlice({
     }
   }
 })
-
-const convertAutoCheckoutFromServer = (serverValue: number) =>
-  serverValue < 0 ? O.none : O.some(serverValue)
-
-const convertDateFromServer = (serverValue: string) => Date.parse(serverValue)
 
 export type CreateSpaceAction = ReturnType<typeof createSpace>
 export type LoadSpacesAction = ReturnType<typeof loadSpaces>
