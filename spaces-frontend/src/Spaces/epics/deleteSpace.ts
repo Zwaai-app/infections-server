@@ -1,5 +1,5 @@
 import * as A from '../spacesSlice'
-import { Observable, of } from 'rxjs'
+import { of } from 'rxjs'
 import { ActionType } from 'typesafe-actions'
 import { AjaxResponse, AjaxError } from 'rxjs/ajax'
 import { extractAjaxErrorInfo } from '../../utils/ajaxError'
@@ -27,9 +27,7 @@ export const deleteAjaxOptions: OptionsCreator<PayloadType<
   body: { _id: action.payload._id }
 })
 
-type DeleteSpaceFn = (action: A.DeleteSpaceAction) => Observable<any>
 const deleteSpace = ajaxObservable(deleteAjaxOptions)
-
 const deleteSuccess = (_r: AjaxResponse) => A.deleteSucceeded()
 const deleteFailed = (e: AjaxError) =>
   of(A.deleteFailed(extractAjaxErrorInfo(e)))
@@ -37,7 +35,7 @@ const deleteFailed = (e: AjaxError) =>
 export const deleteSpaceEpic: Epic<Actions, Actions, RootState> = (
   action$,
   _state$,
-  { deleteSpaceFn = deleteSpace }: { deleteSpaceFn?: DeleteSpaceFn } = {}
+  { deleteSpaceFn = deleteSpace }: { deleteSpaceFn?: typeof deleteSpace } = {}
 ) =>
   action$.pipe(
     ofType<Actions, A.DeleteSpaceAction>(A.deleteSpace.type),
