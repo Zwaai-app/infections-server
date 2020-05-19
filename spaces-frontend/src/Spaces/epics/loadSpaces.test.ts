@@ -1,4 +1,4 @@
-import { loadSpacesEpic } from './loadSpaces'
+import { loadSpacesEpic, loadAjaxOptions } from './loadSpaces'
 import {
   loadSpaces,
   SpaceFromServer,
@@ -9,6 +9,13 @@ import { ActionsObservable } from 'redux-observable'
 import { initialStateObservable } from '../../testUtils/stateObservable'
 import { of, throwError } from 'rxjs'
 import { MockAjaxError } from '../../testUtils/MockAjaxError'
+
+it('creates the right ajax options', () => {
+  const loadAction = loadSpaces()
+  const options = loadAjaxOptions(loadAction)
+  expect(options.method).toEqual('GET')
+  expect(options.body).toBeUndefined()
+})
 
 it('can load spaces', done => {
   expect.assertions(1)
