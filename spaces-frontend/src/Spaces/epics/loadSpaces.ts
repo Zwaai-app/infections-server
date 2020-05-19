@@ -1,11 +1,13 @@
-import { Observable, of } from 'rxjs'
-import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax'
+import { of } from 'rxjs'
+import { AjaxResponse, AjaxError } from 'rxjs/ajax'
 import { extractAjaxErrorInfo } from '../../utils/ajaxError'
 import * as A from '../spacesSlice'
 import { Epic, ofType } from 'redux-observable'
 import { ActionType } from 'typesafe-actions'
 import { RootState } from '../../rootReducer'
 import { flatMap, catchError, map, delay } from 'rxjs/operators'
+import { OptionsCreator, ajaxObservable } from '../../utils/ajaxEpic'
+import { PayloadType } from '../../utils/utilityTypes'
 
 export type Actions = ActionType<
   | typeof A.loadSpaces
@@ -14,16 +16,17 @@ export type Actions = ActionType<
   | typeof A.loadSpacesReset
 >
 
-type LoadSpacesFn = () => Observable<any>
-const loadSpaces: LoadSpacesFn = () =>
-  ajax({
-    url: 'http://localhost:3000/api/v1/spaces',
-    method: 'GET',
-    crossDomain: true,
-    withCredentials: true,
-    responseType: 'json'
-  })
+export const loadAjaxOptions: OptionsCreator<PayloadType<
+  A.LoadSpacesAction
+>> = _action => ({
+  url: 'http://localhost:3000/api/v1/spaces',
+  method: 'GET',
+  crossDomain: true,
+  withCredentials: true,
+  responseType: 'json'
+})
 
+const loadSpaces = ajaxObservable(loadAjaxOptions)
 const loadSpacesSuccess = (r: AjaxResponse) => A.loadSpacesSucceeded(r.response)
 const loadSpacesFailure = (e: AjaxError) =>
   of(A.loadSpacesFailed(extractAjaxErrorInfo(e)))
@@ -31,12 +34,15 @@ const loadSpacesFailure = (e: AjaxError) =>
 export const loadSpacesEpic: Epic<Actions, Actions, RootState> = (
   action$,
   _state$,
-  { loadSpacesFn = loadSpaces }: { loadSpacesFn?: LoadSpacesFn } = {}
+  { loadSpacesFn = loadSpaces }: { loadSpacesFn?: typeof loadSpaces } = {}
 ) =>
   action$.pipe(
     ofType<Actions, A.LoadSpacesAction>(A.loadSpaces.type),
-    flatMap(() =>
-      loadSpacesFn().pipe(map(loadSpacesSuccess), catchError(loadSpacesFailure))
+    flatMap(action =>
+      loadSpacesFn(action).pipe(
+        map(loadSpacesSuccess),
+        catchError(loadSpacesFailure)
+      )
     )
   )
 
