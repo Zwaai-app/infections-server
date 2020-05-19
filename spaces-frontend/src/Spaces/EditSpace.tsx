@@ -26,13 +26,7 @@ export const EditSpace = (props: Props) => {
     )
 }
 
-interface Props {
-    match: {
-        params: {
-            id: string
-        }
-    }
-}
+interface Props { match: { params: { id: string } } }
 
 const EditSpaceBang = ({ space }: { space: Space }) => {
     const dispatch = useDispatch()
