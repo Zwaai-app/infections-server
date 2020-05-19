@@ -28,7 +28,9 @@ const spaceData: SpaceFields = {
 }
 const space: Space = {
   _id: 'foo_id',
-  ...spaceData
+  ...spaceData,
+  createdAt: Date.now(),
+  updatedAt: Date.now()
 }
 
 it('can create a new space', done => {
@@ -68,7 +70,14 @@ it('can load spaces', done => {
   const action$ = ActionsObservable.of(loadSpaces())
   const state$ = initialStateObservable()
   const spaces: SpaceFromServer[] = [
-    { _id: '1', name: '1', description: '1', autoCheckout: -1 }
+    {
+      _id: '1',
+      name: '1',
+      description: '1',
+      autoCheckout: -1,
+      createdAt: '',
+      updatedAt: ''
+    }
   ]
   const loadSpacesFn = () => of({ response: spaces })
   loadSpacesEpic(action$, state$, { loadSpacesFn }).subscribe(action => {
