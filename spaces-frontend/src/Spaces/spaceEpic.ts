@@ -15,6 +15,8 @@ import {
 import * as O from 'fp-ts/lib/Option'
 import { constant } from 'fp-ts/lib/function'
 import { extractAjaxErrorInfo } from '../utils/ajaxError'
+import { PayloadAction } from '@reduxjs/toolkit'
+import { PayloadType } from '../utils/utilityTypes'
 
 export type Actions = ActionType<
   | typeof A.createSpace
@@ -30,6 +32,9 @@ export type Actions = ActionType<
   | typeof A.deleteFailed
 >
 
+const autoCheckoutToServer = (autoCheckout: O.Option<number>) =>
+  O.getOrElse(constant(-1))(autoCheckout)
+
 type StoreNewSpaceFn = (action: A.CreateSpaceAction) => Observable<any>
 
 const storeNewSpace: StoreNewSpaceFn = action =>
@@ -42,7 +47,7 @@ const storeNewSpace: StoreNewSpaceFn = action =>
     body: {
       name: action.payload.name,
       description: action.payload.description,
-      autoCheckout: O.getOrElse(constant(-1))(action.payload.autoCheckout)
+      autoCheckout: autoCheckoutToServer(action.payload.autoCheckout)
     }
   })
 
@@ -136,8 +141,53 @@ export const resetAfterLoadSuccess: Epic<Actions, Actions, RootState> = (
     flatMap(() => of(A.loadSpacesReset()).pipe(delay(3e3)))
   )
 
+type OptionsCreator<P> = (action: PayloadAction<P>) => any
+const ajaxFunction = <P>(optionsCreator: OptionsCreator<P>) => (
+  action: PayloadAction<P>
+): Observable<any> => ajax(optionsCreator(action))
+
+export const updateAjaxOptions: OptionsCreator<PayloadType<
+  A.UpdateSpaceAction
+>> = action => ({
+  url: 'http://localhost:3000/api/v1/space',
+  method: 'PUT',
+  crossDomain: true,
+  withCredentials: true,
+  responseType: 'json',
+  body: {
+    ...action.payload,
+    autoCheckout: autoCheckoutToServer(action.payload.autoCheckout),
+    createdAt: undefined,
+    modifiedAt: undefined
+  }
+})
+
+type UpdateSpaceFn = (action: A.UpdateSpaceAction) => Observable<any>
+const updateSpace: UpdateSpaceFn = ajaxFunction(updateAjaxOptions)
+
+const updateSuccess = (_r: AjaxResponse) => A.updateSucceeded()
+const updateFailed = (e: AjaxError) =>
+  of(A.updateSpaceFailed(extractAjaxErrorInfo(e)))
+
+export const updateSpaceEpic: Epic<Actions, Actions, RootState> = (
+  action$,
+  _state$,
+  { updateSpaceFn = updateSpace }: { updateSpaceFn?: UpdateSpaceFn } = {}
+) =>
+  action$.pipe(
+    ofType<Actions, A.UpdateSpaceAction>(A.updateSpace.type),
+    flatMap(action =>
+      updateSpaceFn(action).pipe(
+        map(updateSuccess),
+        catchError(updateFailed),
+        endWith(A.loadSpaces())
+      )
+    )
+  )
+
 export const allEpics = [
   storeNewSpaceEpic,
+  updateSpaceEpic,
   deleteSpaceEpic,
   loadSpacesEpic,
   resetAfterLoadSuccess
