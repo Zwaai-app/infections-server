@@ -1,11 +1,13 @@
 import * as A from '../spacesSlice'
 import { Observable, of } from 'rxjs'
 import { ActionType } from 'typesafe-actions'
-import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax'
+import { AjaxResponse, AjaxError } from 'rxjs/ajax'
 import { extractAjaxErrorInfo } from '../../utils/ajaxError'
 import { Epic, ofType } from 'redux-observable'
 import { RootState } from '../../rootReducer'
 import { flatMap, catchError, endWith, map } from 'rxjs/operators'
+import { OptionsCreator, ajaxObservable } from '../../utils/ajaxEpic'
+import { PayloadType } from '../../utils/utilityTypes'
 
 export type Actions = ActionType<
   | typeof A.loadSpaces
@@ -14,16 +16,19 @@ export type Actions = ActionType<
   | typeof A.deleteFailed
 >
 
+export const deleteAjaxOptions: OptionsCreator<PayloadType<
+  A.DeleteSpaceAction
+>> = action => ({
+  url: 'http://localhost:3000/api/v1/space',
+  method: 'DELETE',
+  crossDomain: true,
+  withCredentials: true,
+  responseType: 'json',
+  body: { _id: action.payload._id }
+})
+
 type DeleteSpaceFn = (action: A.DeleteSpaceAction) => Observable<any>
-const deleteSpace: DeleteSpaceFn = action =>
-  ajax({
-    url: 'http://localhost:3000/api/v1/space',
-    method: 'DELETE',
-    crossDomain: true,
-    withCredentials: true,
-    responseType: 'json',
-    body: { _id: action.payload._id }
-  })
+const deleteSpace = ajaxObservable(deleteAjaxOptions)
 
 const deleteSuccess = (_r: AjaxResponse) => A.deleteSucceeded()
 const deleteFailed = (e: AjaxError) =>
