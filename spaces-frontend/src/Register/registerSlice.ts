@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { getStructEq, eqString, eqBoolean } from 'fp-ts/lib/Eq'
 
 export interface RegistrationData {
   email: string
@@ -6,6 +7,13 @@ export interface RegistrationData {
   password: string
   consented: boolean
 }
+
+export const registrationDataEq = getStructEq({
+  email: eqString,
+  phone: eqString,
+  password: eqString,
+  consented: eqBoolean
+})
 
 export enum RegistrationStatus {
   Idle,
