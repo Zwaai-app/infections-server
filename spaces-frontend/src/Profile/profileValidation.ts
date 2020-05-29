@@ -7,7 +7,7 @@ import { curry } from 'rambda'
 import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray'
 import { ProfileData } from './profileSlice'
 import { sequenceS } from 'fp-ts/lib/Apply'
-import { lift } from '../EitherUtils'
+import { lift } from '../utils/lift'
 
 export const tInvalidOrgName = t(
   'profile.invalidOrganizationName',
