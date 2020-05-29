@@ -8,16 +8,16 @@ import emailAddress from 'email-addresses'
 import { RegistrationData } from './registerSlice'
 import { constant } from 'fp-ts/lib/function'
 
-const emailValid = (email: string): Either<string, string> =>
+export const emailValid = (email: string): Either<string, string> =>
   // tslint:disable-next-line: strict-type-predicates
   emailAddress.parseOneAddress(email) !== null
     ? right(email)
     : left(tInvalidEmail)
 
-const phoneValid = (phone: string): Either<string, string> =>
+export const phoneValid = (phone: string): Either<string, string> =>
   /[0-9]{8}/.test(phone) ? right(phone) : left(tInvalidPhone)
 
-const consentValid = (c: boolean): Either<string, boolean> =>
+export const consentValid = (c: boolean): Either<string, boolean> =>
   c ? right(true) : left(tConsentRequired)
 
 export const equalPasswords = (
@@ -25,18 +25,18 @@ export const equalPasswords = (
   p2: string
 ): Either<string, string> => (p1 === p2 ? right(p1) : left(tPasswordsDiffer))
 
-const minLength = (s: string): Either<string, string> =>
+export const minLength = (s: string): Either<string, string> =>
   s.length >= 8 ? right(s) : left(tPasswordLength)
 
-const oneCapital = (s: string): Either<string, string> =>
+export const oneCapital = (s: string): Either<string, string> =>
   /[A-Z]/g.test(s) ? right(s) : left(tPasswordOneCapital)
 
-const oneNumber = (s: string): Either<string, string> =>
+export const oneNumber = (s: string): Either<string, string> =>
   /[0-9]/g.test(s) ? right(s) : left(tPasswordOneNumber)
 
 const applicativeValidation = () => getValidation(getSemigroup<string>())
 
-function passwordValid (
+export function passwordValid (
   p1: string,
   p2: string
 ): Either<NonEmptyArray<string>, string> {
@@ -66,34 +66,37 @@ export function validateRegistrationData (
   })
 }
 
-const tInvalidEmail = t('registration.emailInvalid', 'Geen geldig email adres')
+export const tInvalidEmail = t(
+  'registration.emailInvalid',
+  'Geen geldig email adres'
+)
 
-const tInvalidPhone = t(
+export const tInvalidPhone = t(
   'registration.phoneInvalid',
   'Mobiel nummer is 8 cijfers'
 )
 
-const tPasswordsDiffer = t(
+export const tPasswordsDiffer = t(
   'registration.passwordsDiffer',
   'Wachtwoorden zijn niet hetzelfde'
 )
 
-const tPasswordLength = t(
+export const tPasswordLength = t(
   'registration.passwordMinimalLength',
   'Wachtwoord heeft tenminste 8 karakters'
 )
 
-const tPasswordOneCapital = t(
+export const tPasswordOneCapital = t(
   'registration.passwordOneCapital',
   'Wachtwoord heeft tenminste een hoofdletter'
 )
 
-const tPasswordOneNumber = t(
+export const tPasswordOneNumber = t(
   'registration.passwordOneNumber',
   'Wachtwoord heeft tenminste een cijfer'
 )
 
-const tConsentRequired = t(
+export const tConsentRequired = t(
   'registration.consentRequired',
   'U moet met de voorwaarden akkoord gaan'
 )
