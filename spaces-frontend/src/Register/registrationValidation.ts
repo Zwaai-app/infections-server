@@ -1,6 +1,6 @@
 import { Either, left, right, map, getValidation } from 'fp-ts/lib/Either'
 import { t } from '../i18n'
-import { lift, lift2 } from '../EitherUtils'
+import { lift, lift2 } from '../utils/lift'
 import { sequenceT, sequenceS } from 'fp-ts/lib/Apply'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray'
