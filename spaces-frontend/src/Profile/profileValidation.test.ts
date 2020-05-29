@@ -11,7 +11,8 @@ import {
   validLogo,
   tLogoTooLarge
 } from './profileValidation'
-import * as E from 'fp-ts/lib/Either'
+import { getTupleEq, eqString } from 'fp-ts/lib/Eq'
+import { replicate } from 'fp-ts/lib/Array'
 
 it('validates organization names', () => {
   expect(validOrganizationName('')).toBeLeft()
@@ -44,11 +45,8 @@ it('validates logo', () => {
 })
 
 it('validates profile data', () => {
-  const result = validateProfile('a', 'ftp://example.com', '', '')
-  E.mapLeft(errs => {
-    expect(errs).toContain(tInvalidOrgName)
-    expect(errs).toContain(tInvalidScheme)
-    expect(errs).toContain(tInvalidPhone)
-    expect(errs).toContain(tInvalidLogo)
-  })(result)
+  expect(validateProfile('a', 'ftp://example.com', '', '')).toBeLeft(
+    [tInvalidOrgName, tInvalidScheme, tInvalidPhone, tInvalidLogo],
+    getTupleEq(...replicate(4, eqString))
+  )
 })
