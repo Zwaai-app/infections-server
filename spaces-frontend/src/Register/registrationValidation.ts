@@ -6,6 +6,7 @@ import { pipe } from 'fp-ts/lib/pipeable'
 import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray'
 import emailAddress from 'email-addresses'
 import { RegistrationData } from './registerSlice'
+import { constant } from 'fp-ts/lib/function'
 
 const emailValid = (email: string): Either<string, string> =>
   // tslint:disable-next-line: strict-type-predicates
@@ -33,32 +34,24 @@ const oneCapital = (s: string): Either<string, string> =>
 const oneNumber = (s: string): Either<string, string> =>
   /[0-9]/g.test(s) ? right(s) : left(tPasswordOneNumber)
 
-const emailValidV = lift(emailValid)
-const phoneValidV = lift(phoneValid)
-const minLengthV = lift(minLength)
-const oneCapitalV = lift(oneCapital)
-const oneNumberV = lift(oneNumber)
-const equalPasswordsV = lift2(equalPasswords)
-const consentValidV = lift(consentValid)
-
 const applicativeValidation = () => getValidation(getSemigroup<string>())
 
-function passwordValid(
+function passwordValid (
   p1: string,
   p2: string
 ): Either<NonEmptyArray<string>, string> {
   return pipe(
     sequenceT(applicativeValidation())(
-      minLengthV(p1),
-      oneCapitalV(p1),
-      oneNumberV(p1),
-      equalPasswordsV(p1, p2)
+      lift(minLength)(p1),
+      lift(oneCapital)(p1),
+      lift(oneNumber)(p1),
+      lift2(equalPasswords)(p1, p2)
     ),
-    map(() => p1)
+    map(constant(p1))
   )
 }
 
-export function validateRegistrationData(
+export function validateRegistrationData (
   email: string,
   phone: string,
   p1: string,
@@ -66,10 +59,10 @@ export function validateRegistrationData(
   consent: boolean
 ): Either<NonEmptyArray<string>, RegistrationData> {
   return sequenceS(applicativeValidation())({
-    email: emailValidV(email),
-    phone: phoneValidV(phone),
+    email: lift(emailValid)(email),
+    phone: lift(phoneValid)(phone),
     password: passwordValid(p1, p2),
-    consented: consentValidV(consent)
+    consented: lift(consentValid)(consent)
   })
 }
 
