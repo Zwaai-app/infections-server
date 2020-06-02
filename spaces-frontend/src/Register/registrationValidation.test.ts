@@ -27,18 +27,18 @@ describe('password validation', () => {
   })
 
   it('validates minimum length', () => {
-    expect(V.minLength('1234567')).toBeLeft(V.tPasswordLength)
-    expect(V.minLength('12345678')).toBeRight('12345678')
+    expect(V.minPasswordLengthValidator('1234567')).toBeLeft(V.tPasswordLength)
+    expect(V.minPasswordLengthValidator('12345678')).toBeRight('12345678')
   })
 
   it('validates one capital', () => {
-    expect(V.oneCapital('aa')).toBeLeft(V.tPasswordOneCapital)
-    expect(V.oneCapital('aA')).toBeRight('aA')
+    expect(V.oneCapitalValidator('aa')).toBeLeft(V.tPasswordOneCapital)
+    expect(V.oneCapitalValidator('aA')).toBeRight('aA')
   })
 
   it('validates one number', () => {
-    expect(V.oneNumber('a')).toBeLeft(V.tPasswordOneNumber)
-    expect(V.oneNumber('a1')).toBeRight('a1')
+    expect(V.oneNumberValidator('a')).toBeLeft(V.tPasswordOneNumber)
+    expect(V.oneNumberValidator('a1')).toBeRight('a1')
   })
 })
 
