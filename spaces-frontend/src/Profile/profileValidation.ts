@@ -8,6 +8,7 @@ import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray'
 import { ProfileData } from './profileSlice'
 import { sequenceS } from 'fp-ts/lib/Apply'
 import { lift } from '../utils/lift'
+import { minLength, maxLength } from '../utils/validation'
 
 export const tInvalidOrgName = t(
   'profile.invalidOrganizationName',
@@ -31,11 +32,11 @@ export const tLogoTooLarge = t(
 )
 
 const parseNLPhoneNr = curry(flip(parsePhoneNumberFromString))('NL')
-const minLength = curry((minLength: number, s: string) => s.length >= minLength)
-const maxLength = curry((maxLength: number, s: string) => s.length <= maxLength)
 
-export const validOrganizationName = (name: string): E.Either<string, string> =>
-  E.fromPredicate(minLength(2), constant(tInvalidOrgName))(name)
+export const validOrganizationName = flow(
+  minLength(2),
+  E.fromOption(constant(tInvalidOrgName))
+)
 
 const validScheme = (url: URLRecord): boolean =>
   !!url && (url.scheme === 'http' || url.scheme === 'https')
@@ -55,14 +56,21 @@ export const validPhone: (
 )
 
 const base64factor = 4 / 3
-export const validLogo = (logo: string): E.Either<string, string> =>
-  flow(
-    E.fromPredicate(minLength(5), constant(tInvalidLogo)),
-    E.filterOrElse(
-      maxLength(maxLogoSizeKB * 1e3 * base64factor),
-      constant(tLogoTooLarge)
-    )
-  )(logo)
+
+const minLogoLengthValidator = flow(
+  minLength(5),
+  E.fromOption(constant(tInvalidLogo))
+)
+
+const maxLogoLengthValidator = flow(
+  maxLength(maxLogoSizeKB * 1e3 * base64factor),
+  E.fromOption(constant(tLogoTooLarge))
+)
+
+export const validLogo = flow(
+  minLogoLengthValidator,
+  E.chain(maxLogoLengthValidator)
+)
 
 const applicativeValidation = () => E.getValidation(getSemigroup<string>())
 
