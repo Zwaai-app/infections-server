@@ -1,6 +1,6 @@
 import * as O from 'fp-ts/lib/Option'
 import * as E from 'fp-ts/lib/Either'
-import { flow, constant } from 'fp-ts/lib/function'
+import { constant } from 'fp-ts/lib/function'
 import diff from 'jest-diff'
 import { matcherHint, printExpected, printReceived } from 'jest-matcher-utils'
 import { Eq, eqStrict } from 'fp-ts/lib/Eq'
