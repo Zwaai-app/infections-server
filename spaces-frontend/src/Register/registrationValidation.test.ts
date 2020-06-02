@@ -4,26 +4,25 @@ import { getTupleEq, eqString } from 'fp-ts/lib/Eq'
 import { replicate } from 'fp-ts/lib/Array'
 
 it('validates email addresses', () => {
-  expect(V.emailValid('')).toBeLeft(V.tInvalidEmail)
-  expect(V.emailValid('foo')).toBeLeft(V.tInvalidEmail)
-  expect(V.emailValid('foo@bar.com')).toBeRight('foo@bar.com')
+  expect(V.emailValidator('foo')).toBeLeft(V.tInvalidEmail)
+  expect(V.emailValidator('foo@bar.com')).toBeRight('foo@bar.com')
 })
 
 it('validates phone numbers', () => {
-  expect(V.phoneValid('')).toBeLeft(V.tInvalidPhone)
-  expect(V.phoneValid('123')).toBeLeft(V.tInvalidPhone)
-  expect(V.phoneValid('12345678')).toBeRight('12345678')
+  expect(V.phoneValidator('')).toBeLeft(V.tInvalidPhone)
+  expect(V.phoneValidator('123')).toBeLeft(V.tInvalidPhone)
+  expect(V.phoneValidator('12345678')).toBeRight('12345678')
 })
 
 it('validates consent', () => {
-  expect(V.consentValid(false)).toBeLeft(V.tConsentRequired)
-  expect(V.consentValid(true)).toBeRight(true)
+  expect(V.consentValidator(false)).toBeLeft(V.tConsentRequired)
+  expect(V.consentValidator(true)).toBeRight(true)
 })
 
 describe('password validation', () => {
   it('validates equal passwords', () => {
-    expect(V.equalPasswords('p1', 'p2')).toBeLeft(V.tPasswordsDiffer)
-    expect(V.equalPasswords('abc', 'abc')).toBeRight('abc')
+    expect(V.equalPasswordsValidator('p1', 'p2')).toBeLeft(V.tPasswordsDiffer)
+    expect(V.equalPasswordsValidator('abc', 'abc')).toBeRight('abc')
   })
 
   it('validates minimum length', () => {
@@ -43,7 +42,7 @@ describe('password validation', () => {
 })
 
 it('validates an invalid password', () => {
-  expect(V.passwordValid('', 'a')).toBeLeft(
+  expect(V.passwordValidator('', 'a')).toBeLeft(
     [
       V.tPasswordLength,
       V.tPasswordOneCapital,
@@ -55,7 +54,9 @@ it('validates an invalid password', () => {
 })
 
 it('validates a correct password', () => {
-  expect(V.passwordValid('Welcome123', 'Welcome123')).toBeRight('Welcome123')
+  expect(V.passwordValidator('Welcome123', 'Welcome123')).toBeRight(
+    'Welcome123'
+  )
 })
 
 it('validates incorrect registration data', () => {

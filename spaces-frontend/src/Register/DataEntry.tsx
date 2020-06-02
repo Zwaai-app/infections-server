@@ -4,17 +4,23 @@ import { t } from '../i18n'
 import { useHistory } from 'react-router-dom'
 import { Either, isLeft, map, swap, getOrElse } from 'fp-ts/lib/Either'
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray'
-import { equalPasswords, validateRegistrationData } from './registrationValidation'
-import { RegistrationData, startRegistration, RegistrationStatus, signupStarted } from './registerSlice'
+import {
+  equalPasswordsValidator,
+  validateRegistrationData
+} from './registrationValidation'
+import {
+  RegistrationData,
+  startRegistration,
+  RegistrationStatus,
+  signupStarted
+} from './registerSlice'
 import { constant } from 'fp-ts/lib/function'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../rootReducer'
 
 export const DataEntry = () => {
   const dispatch = useDispatch()
-  const status = useSelector(
-    (state: RootState) => state.register.status
-  )
+  const status = useSelector((state: RootState) => state.register.status)
   const isInProgress = status === RegistrationStatus.InProgress
   const history = useHistory()
   const [email, setEmail] = useState('')
@@ -22,7 +28,7 @@ export const DataEntry = () => {
   const [password1, setPassword1] = useState('')
   const [password2, setPassword2] = useState('')
   const [consented, setConsented] = useState(false)
-  const passwordsSame = equalPasswords(password1, password2)
+  const passwordsSame = equalPasswordsValidator(password1, password2)
   const validationResult: Either<
     NonEmptyArray<string>,
     RegistrationData
@@ -40,8 +46,8 @@ export const DataEntry = () => {
         {t(
           'register.intro',
           'Na het invullen van onderstaand formulier krijgt u een bevestigingsemail' +
-          ' op het opgegeven adres. Klik op de link in de mail om uw account' +
-          ' te activeren.'
+            ' op het opgegeven adres. Klik op de link in de mail om uw account' +
+            ' te activeren.'
         )}
       </p>
       <p>
@@ -54,9 +60,9 @@ export const DataEntry = () => {
         <Form.Field>
           <label>{t('register.email', 'E-mail adres')}</label>
           <Input
-            label="@"
-            name="email"
-            autoComplete="username"
+            label='@'
+            name='email'
+            autoComplete='username'
             placeholder={t('register.email', 'E-mail adres')}
             value={email}
             onChange={(_, { value }) => setEmail(value)}
@@ -65,9 +71,9 @@ export const DataEntry = () => {
         <Form.Field>
           <label>{t('register.phone', 'Mobiel nummer')}</label>
           <Input
-            label="+31 (0)6"
-            name="mobile"
-            autoComplete="tel"
+            label='+31 (0)6'
+            name='mobile'
+            autoComplete='tel'
             placeholder={t('register.phonePlaceholder', '12345678')}
             value={phone}
             onChange={(_, { value }) => setPhone(value)}
@@ -75,25 +81,25 @@ export const DataEntry = () => {
         </Form.Field>
         <Form.Input
           label={t('register.password1', 'Wachtwoord')}
-          type="password"
-          autoComplete="new-password"
+          type='password'
+          autoComplete='new-password'
           placeholder={t('register.password1', 'Wachtwoord')}
           value={password1}
           onChange={(_, { value }) => setPassword1(value)}
           error={isLeft(passwordsSame)}
         >
-          <input autoComplete="new-password" />
+          <input autoComplete='new-password' />
         </Form.Input>
         <Form.Input
           label={t('register.password2', 'Wachtwoord nogmaals')}
-          type="password"
-          autoComplete="new-password"
+          type='password'
+          autoComplete='new-password'
           placeholder={t('register.password2', 'Wachtwoord nogmaals')}
           value={password2}
           onChange={(_, { value }) => setPassword2(value)}
           error={isLeft(passwordsSame)}
         >
-          <input autoComplete="new-password" />
+          <input autoComplete='new-password' />
         </Form.Input>
         <Form.Checkbox
           label={t('register.agree', 'Ik ga akkoord met de voorwaarden')}
@@ -133,5 +139,4 @@ export const DataEntry = () => {
       </Form>
     </div>
   )
-
 }
