@@ -32,7 +32,7 @@ export const tLogoTooLarge = t(
 
 const parseNLPhoneNr = curry(flip(parsePhoneNumberFromString))('NL')
 const minLength = curry((minLength: number, s: string) => s.length >= minLength)
-const maxLength = curry((maxLength: number, s: string) => s.length < maxLength)
+const maxLength = curry((maxLength: number, s: string) => s.length <= maxLength)
 
 export const validOrganizationName = (name: string): E.Either<string, string> =>
   E.fromPredicate(minLength(2), constant(tInvalidOrgName))(name)
