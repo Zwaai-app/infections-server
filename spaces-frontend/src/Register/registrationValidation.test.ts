@@ -12,6 +12,7 @@ it('validates phone numbers', () => {
   expect(V.phoneValidator('')).toBeLeft(V.tInvalidPhone)
   expect(V.phoneValidator('123')).toBeLeft(V.tInvalidPhone)
   expect(V.phoneValidator('12345678')).toBeRight('12345678')
+  expect(V.phoneValidator('123456789')).toBeLeft(V.tInvalidPhone)
 })
 
 it('validates consent', () => {
