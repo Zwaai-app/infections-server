@@ -64,7 +64,7 @@ export const emailValidator = (email: string) =>
   )(email)
 
 export const phoneValidator = (phone: string): Either<string, string> =>
-  /[0-9]{8}/.test(phone) ? right(phone) : left(tInvalidPhone)
+  /^[0-9]{8}$/.test(phone) ? right(phone) : left(tInvalidPhone)
 
 export const consentValidator = (c: boolean): Either<string, boolean> =>
   c ? right(true) : left(tConsentRequired)
