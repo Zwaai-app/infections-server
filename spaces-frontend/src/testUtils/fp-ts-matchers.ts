@@ -16,115 +16,115 @@ declare global {
   }
 }
 
-expect.extend({
-  /**
-   * This matcher allows you to expect that an `Option` is `none`.
-   *
-   * @param received the option that is expected to be `none`
-   *
-   * @see https://gcanti.github.io/fp-ts/modules/Option.ts.html
-   */
-  toBeNone<A> (received: O.Option<A>) {
-    return {
-      pass: O.isNone(received),
-      message: () => 'Option expected to be none, but was some'
-    }
-  },
+/**
+ * This matcher allows you to expect that an `Option` is `none`.
+ *
+ * @param received the option that is expected to be `none`
+ *
+ * @see https://gcanti.github.io/fp-ts/modules/Option.ts.html
+ */
+export const toBeNoneMatcher = <A>(received: O.Option<A>) => {
+  return {
+    pass: O.isNone(received),
+    message: () => 'Option expected to be none, but was some'
+  }
+}
 
-  /**
-   * This matcher allows you to expect that an `Option` is `some`, optionally
-   * with the expected value of the `some` and an `Eq` instance that should be
-   * used for checking the value.
-   *
-   * @param received the option that is expected to be `some`
-   * @param expected optionally, the expected value of the `some`
-   * @param eq optionally, an `Eq` instance for checking the value; if absent,
-   *           `eqStrict` is used, which corresponds to checking with `===`.
-   *
-   * @see https://gcanti.github.io/fp-ts/modules/Option.ts.html
-   * @see https://gcanti.github.io/fp-ts/modules/Eq.ts.html
-   */
-  toBeSome<A> (received: O.Option<A>, expected?: A, eq: Eq<A> = eqStrict) {
-    return {
-      pass: expected ? O.elem(eq)(expected, received) : O.isSome(received),
-      message: () => {
-        if (!expected) {
-          return 'Option expected to be some, but was none'
-        } else {
-          return determineDiff_Option(
-            { expand: !!this.expand },
-            expected
-          )(received)
-        }
-      }
-    }
-  },
-
-  /**
-   * This matcher allows you to expect that an `Either` is a `left`, optionally
-   * with the expected value of the `left` and an `Eq` instance that should be
-   * used for checking the value.
-   *
-   * @param received the either that is expected to be `left`
-   * @param expected optionally, the expected value of the `left`
-   * @param eq optionally, an `Eq` instance for checking the value; if absent,
-   *           `eqStrict` is used, which corresponds to checking with `===`.
-   *
-   * @see https://gcanti.github.io/fp-ts/modules/Either.ts.html
-   * @see https://gcanti.github.io/fp-ts/modules/Eq.ts.html
-   */
-  toBeLeft<E, A> (
-    received: E.Either<E, A>,
-    expected?: E,
-    eq: Eq<E> = eqStrict
-  ) {
-    return {
-      pass: expected
-        ? E.elem(eq)(expected, E.swap(received))
-        : E.isLeft(received),
-      message: () => {
-        if (!expected) {
-          return `Either expected to be left, but was right`
-        } else {
-          return determineDiff_Either(
-            { expand: !!this.expand },
-            expected
-          )(E.swap(received))
-        }
-      }
-    }
-  },
-
-  /**
-   * This matcher allows you to expect that an `Either` is a `right`, optionally
-   * with the expected value of the `right` and an `Eq` instance that should be
-   * used for checking the value.
-   *
-   * @param received the either that is expected to be `right`
-   * @param expected optionally, the expected value of the `right`
-   * @param eq optionally, an `Eq` instance for checking the value; if absent,
-   *           `eqStrict` is used, which corresponds to checking with `===`.
-   *
-   * @see https://gcanti.github.io/fp-ts/modules/Either.ts.html
-   * @see https://gcanti.github.io/fp-ts/modules/Eq.ts.html
-   */
-  toBeRight<E, A> (received: E.Either<E, A>, expected?: A, eq?: Eq<A>) {
-    let equals = eq || eqStrict
-    return {
-      pass: expected ? E.elem(equals)(expected, received) : E.isRight(received),
-      message: () => {
-        if (!expected) {
-          return 'Either expected to be right, but was left'
-        } else {
-          return determineDiff_Either(
-            { expand: !!this.expand },
-            expected
-          )(received)
-        }
+/**
+ * This matcher allows you to expect that an `Option` is `some`, optionally
+ * with the expected value of the `some` and an `Eq` instance that should be
+ * used for checking the value.
+ *
+ * @param received the option that is expected to be `some`
+ * @param expected optionally, the expected value of the `some`
+ * @param eq optionally, an `Eq` instance for checking the value; if absent,
+ *           `eqStrict` is used, which corresponds to checking with `===`.
+ *
+ * @see https://gcanti.github.io/fp-ts/modules/Option.ts.html
+ * @see https://gcanti.github.io/fp-ts/modules/Eq.ts.html
+ */
+export const toBeSomeMetcher = <A>(
+  expand: boolean,
+  received: O.Option<A>,
+  expected?: A,
+  eq: Eq<A> = eqStrict
+) => {
+  return {
+    pass: expected ? O.elem(eq)(expected, received) : O.isSome(received),
+    message: () => {
+      if (!expected) {
+        return 'Option expected to be some, but was none'
+      } else {
+        return determineDiff_Option({ expand }, expected)(received)
       }
     }
   }
-})
+}
+
+/**
+ * This matcher allows you to expect that an `Either` is a `left`, optionally
+ * with the expected value of the `left` and an `Eq` instance that should be
+ * used for checking the value.
+ *
+ * @param received the either that is expected to be `left`
+ * @param expected optionally, the expected value of the `left`
+ * @param eq optionally, an `Eq` instance for checking the value; if absent,
+ *           `eqStrict` is used, which corresponds to checking with `===`.
+ *
+ * @see https://gcanti.github.io/fp-ts/modules/Either.ts.html
+ * @see https://gcanti.github.io/fp-ts/modules/Eq.ts.html
+ */
+export const toBeLeftMatcher = <E, A>(
+  expand: boolean,
+  received: E.Either<E, A>,
+  expected?: E,
+  eq: Eq<E> = eqStrict
+) => {
+  return {
+    pass: expected
+      ? E.elem(eq)(expected, E.swap(received))
+      : E.isLeft(received),
+    message: () => {
+      if (!expected) {
+        return `Either expected to be left, but was right`
+      } else {
+        return determineDiff_Either({ expand }, expected)(E.swap(received))
+      }
+    }
+  }
+}
+
+/**
+ * This matcher allows you to expect that an `Either` is a `right`, optionally
+ * with the expected value of the `right` and an `Eq` instance that should be
+ * used for checking the value.
+ *
+ * @param received the either that is expected to be `right`
+ * @param expected optionally, the expected value of the `right`
+ * @param eq optionally, an `Eq` instance for checking the value; if absent,
+ *           `eqStrict` is used, which corresponds to checking with `===`.
+ *
+ * @see https://gcanti.github.io/fp-ts/modules/Either.ts.html
+ * @see https://gcanti.github.io/fp-ts/modules/Eq.ts.html
+ */
+export const toBeRightMatcher = <E, A>(
+  expand: boolean,
+  received: E.Either<E, A>,
+  expected?: A,
+  eq?: Eq<A>
+) => {
+  let equals = eq || eqStrict
+  return {
+    pass: expected ? E.elem(equals)(expected, received) : E.isRight(received),
+    message: () => {
+      if (!expected) {
+        return 'Either expected to be right, but was left'
+      } else {
+        return determineDiff_Either({ expand }, expected)(received)
+      }
+    }
+  }
+}
 
 function determineDiff_Option<A, B> (options: any, expected: B) {
   return (received: O.Option<A>) =>
@@ -155,3 +155,20 @@ function determineDiff_Either<A, B> (options: any, expected: B) {
       )
     })(received)
 }
+
+expect.extend({
+  toBeNone: toBeNoneMatcher,
+  toBeSome<A> (received: O.Option<A>, expected?: A, eq: Eq<A> = eqStrict) {
+    return toBeSomeMetcher(!!this.expand, received, expected, eq)
+  },
+  toBeLeft<E, A> (
+    received: E.Either<E, A>,
+    expected?: E,
+    eq: Eq<E> = eqStrict
+  ) {
+    return toBeLeftMatcher(!!this.expand, received, expected, eq)
+  },
+  toBeRight<E, A> (received: E.Either<E, A>, expected?: A, eq?: Eq<A>) {
+    return toBeRightMatcher(!!this.expand, received, expected, eq)
+  }
+})
