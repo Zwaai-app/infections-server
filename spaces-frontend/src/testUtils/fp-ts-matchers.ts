@@ -141,24 +141,16 @@ export const toBeRightMatcher = <E, A>(
   }
 }
 
-function determineDiff_Option<A, B> (
+function determineDiff_Option<A> (
   wrongConstructorMessage: string,
   matcherName: string,
   options: any,
-  expected: B
+  expected: A
 ) {
   return (received: O.Option<A>) =>
-    O.fold(constant(wrongConstructorMessage), v => {
-      const diffString = diff(expected, v, options)
-      return (
-        matcherHint(matcherName, undefined, undefined) +
-        '\n\n' +
-        (diffString && diffString.includes('- Expect')
-          ? `Difference:\n\n${diffString}`
-          : `Expected: ${printExpected(expected)}\n` +
-            `Received: ${printReceived(received)}`)
-      )
-    })(received)
+    O.fold(constant(wrongConstructorMessage), v =>
+      formattedDiffString(matcherName, options, expected, v)
+    )(received)
 }
 
 function determineDiff_Either<A, B> (
@@ -168,17 +160,26 @@ function determineDiff_Either<A, B> (
   expected: B
 ) {
   return (received: E.Either<A, B>) =>
-    E.fold(constant(wrongConstructorMessage), v => {
-      const diffString = diff(expected, v, options)
-      return (
-        matcherHint(matcherName, undefined, undefined) +
-        '\n\n' +
-        (diffString && diffString.includes('- Expect')
-          ? `Difference:\n\n${diffString}`
-          : `Expected: ${printExpected(expected)}\n` +
-            `Received: ${printReceived(received)}`)
-      )
-    })(received)
+    E.fold(constant(wrongConstructorMessage), v =>
+      formattedDiffString(matcherName, options, expected, v)
+    )(received)
+}
+
+const formattedDiffString = <A>(
+  matcherName: string,
+  options: any,
+  expected: A,
+  receivedValue: A
+) => {
+  const diffString = diff(expected, receivedValue, options)
+  return (
+    matcherHint(matcherName, undefined, undefined) +
+    '\n\n' +
+    (diffString && diffString.includes('- Expect')
+      ? `Difference:\n\n${diffString}`
+      : `Expected: ${printExpected(expected)}\n` +
+        `Received: ${printReceived(receivedValue)}`)
+  )
 }
 
 expect.extend({
