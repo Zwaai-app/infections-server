@@ -77,11 +77,11 @@ describe('toBeLeft', () => {
     expect(message()).toContain('expected to be left, but was right')
   })
 
-  //   it('fails on right even with correct value', () => {
-  //     const { pass, message } = toBeLeftMatcher(true, E.right('value'), 'value')
-  //     expect(pass).toBeFalsy()
-  //     expect(message()).toContain('expected to be left, but was right')
-  //   })
+  it('fails on right even with correct value', () => {
+    const { pass, message } = toBeLeftMatcher(true, E.right('value'), 'value')
+    expect(pass).toBeFalsy()
+    expect(message()).toContain('expected to be left, but was right')
+  })
 })
 
 describe('toBeRight', () => {

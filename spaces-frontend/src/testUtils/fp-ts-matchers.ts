@@ -88,7 +88,11 @@ export const toBeLeftMatcher = <E, A>(
       if (!expected) {
         return `Either expected to be left, but was right`
       } else {
-        return determineDiff_Either({ expand }, expected)(E.swap(received))
+        return determineDiff_Either(
+          `Either expected to be left, but was right`,
+          { expand },
+          expected
+        )(E.swap(received))
       }
     }
   }
@@ -120,7 +124,11 @@ export const toBeRightMatcher = <E, A>(
       if (!expected) {
         return 'Either expected to be right, but was left'
       } else {
-        return determineDiff_Either({ expand }, expected)(received)
+        return determineDiff_Either(
+          `Either expected to be right, but was left`,
+          { expand },
+          expected
+        )(received)
       }
     }
   }
@@ -135,23 +143,27 @@ function determineDiff_Option<A, B> (options: any, expected: B) {
         '\n\n' +
         (diffString && diffString.includes('- Expect')
           ? `Difference:\n\n${diffString}`
-          : `Expected: some(${printExpected(expected)})\n` +
-            `Received: some(${printReceived(received)})`)
+          : `Expected: ${printExpected(expected)}\n` +
+            `Received: ${printReceived(received)}`)
       )
     })(received)
 }
 
-function determineDiff_Either<A, B> (options: any, expected: B) {
+function determineDiff_Either<A, B> (
+  wrongConstructorMessage: string,
+  options: any,
+  expected: B
+) {
   return (received: E.Either<A, B>) =>
-    E.fold(constant(`Either expected to be right, but was left`), v => {
+    E.fold(constant(wrongConstructorMessage), v => {
       const diffString = diff(expected, v, options)
       return (
         matcherHint('toBeRight', undefined, undefined) +
         '\n\n' +
         (diffString && diffString.includes('- Expect')
           ? `Difference:\n\n${diffString}`
-          : `Expected: right(${printExpected(expected)})\n` +
-            `Received: right(${printReceived(received)})`)
+          : `Expected: ${printExpected(expected)}\n` +
+            `Received: ${printReceived(received)}`)
       )
     })(received)
 }
