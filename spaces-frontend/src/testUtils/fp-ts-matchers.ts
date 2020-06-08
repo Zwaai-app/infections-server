@@ -1,9 +1,10 @@
 import * as O from 'fp-ts/lib/Option'
 import * as E from 'fp-ts/lib/Either'
-import { constant } from 'fp-ts/lib/function'
 import diff from 'jest-diff'
 import { matcherHint, printExpected, printReceived } from 'jest-matcher-utils'
 import { Eq, eqStrict } from 'fp-ts/lib/Eq'
+import { Foldable, Foldable1, Foldable2 } from 'fp-ts/lib/Foldable'
+import { HKT, URIS, Kind, Kind2, URIS2 } from 'fp-ts/lib/HKT'
 
 declare global {
   namespace jest {
@@ -43,7 +44,7 @@ export const toBeNoneMatcher = <A>(received: O.Option<A>) => {
  * @see https://gcanti.github.io/fp-ts/modules/Option.ts.html
  * @see https://gcanti.github.io/fp-ts/modules/Eq.ts.html
  */
-export const toBeSomeMetcher = <A>(
+export const toBeSomeMatcher = <A>(
   expand: boolean,
   received: O.Option<A>,
   expected?: A,
@@ -126,40 +127,72 @@ export const toBeRightMatcher = <E, A>(
   }
 }
 
-function determineDiff_Option<A, B> (options: any, expected: B) {
-  return (received: O.Option<A>) =>
-    O.fold(constant(`Option expected to be some, but was none`), v => {
-      const diffString = diff(expected, v, options)
-      return (
-        matcherHint('toBeSome', undefined, undefined) +
-        '\n\n' +
-        (diffString && diffString.includes('- Expect')
-          ? `Difference:\n\n${diffString}`
-          : `Expected: some(${printExpected(expected)})\n` +
-            `Received: some(${printReceived(received)})`)
-      )
-    })(received)
+function determineDiff_Option<A> (
+  options: any,
+  expected: A
+): (received: O.Option<A>) => string {
+  return determineDiff_HKT(
+    O.option,
+    `Option expected to be some, but was none`,
+    'toBeSome',
+    'some'
+  )(options, expected)
 }
 
-function determineDiff_Either<A, B> (options: any, expected: B) {
-  return (received: E.Either<A, B>) =>
-    E.fold(constant(`Either expected to be right, but was left`), v => {
-      const diffString = diff(expected, v, options)
-      return (
-        matcherHint('toBeRight', undefined, undefined) +
-        '\n\n' +
-        (diffString && diffString.includes('- Expect')
-          ? `Difference:\n\n${diffString}`
-          : `Expected: right(${printExpected(expected)})\n` +
-            `Received: right(${printReceived(received)})`)
-      )
-    })(received)
+function determineDiff_Either<A> (options: any, expected: A) {
+  return determineDiff_HKT(
+    E.either,
+    `Either expected to be right, but was left`,
+    'toBeRight',
+    'right'
+  )(options, expected)
+}
+
+function determineDiff_HKT<F extends URIS> (
+  F: Foldable1<F>,
+  messageWithoutDetails: string,
+  matcherName: string,
+  constructorLabel: string
+): <A>(options: any, expected: A) => (received: Kind<F, A>) => string
+function determineDiff_HKT<F extends URIS2> (
+  F: Foldable2<F>,
+  messageWithoutDetails: string,
+  matcherName: string,
+  constructorLabel: string
+): <E, A>(options: any, expected: A) => (received: Kind2<F, E, A>) => string
+function determineDiff_HKT<F> (
+  F: Foldable<F>,
+  messageWithoutDetails: string,
+  matcherName: string,
+  constructorLabel: string
+): <A>(options: any, expected: A) => (received: HKT<F, A>) => string {
+  return <A>(options: any, expected: A) => (received: HKT<F, A>) =>
+    F.reduce(received, messageWithoutDetails, (_, a) =>
+      formattedDiffMessage(options, matcherName, constructorLabel, expected)(a)
+    )
+}
+
+const formattedDiffMessage = <B>(
+  options: any,
+  hintLabel: string,
+  wrapper: string,
+  expected: B
+) => (received: B) => {
+  const diffString = diff(expected, received, options)
+  return (
+    matcherHint(hintLabel, undefined, undefined) +
+    '\n\n' +
+    (diffString && diffString.includes('- Expect')
+      ? `Difference:\n\n${diffString}`
+      : `Expected: ${wrapper}(${printExpected(expected)})\n` +
+        `Received: ${wrapper}(${printReceived(received)})`)
+  )
 }
 
 expect.extend({
   toBeNone: toBeNoneMatcher,
   toBeSome<A> (received: O.Option<A>, expected?: A, eq: Eq<A> = eqStrict) {
-    return toBeSomeMetcher(!!this.expand, received, expected, eq)
+    return toBeSomeMatcher(!!this.expand, received, expected, eq)
   },
   toBeLeft<E, A> (
     received: E.Either<E, A>,
