@@ -55,7 +55,12 @@ export const toBeSomeMatcher = <A>(
       if (!expected) {
         return 'Option expected to be some, but was none'
       } else {
-        return determineDiff_Option({ expand }, expected)(received)
+        return determineDiff_Option(
+          `Option expected to be some, but was none`,
+          'toBeSome',
+          { expand },
+          expected
+        )(received)
       }
     }
   }
@@ -90,6 +95,7 @@ export const toBeLeftMatcher = <E, A>(
       } else {
         return determineDiff_Either(
           `Either expected to be left, but was right`,
+          'toBeLeft',
           { expand },
           expected
         )(E.swap(received))
@@ -126,6 +132,7 @@ export const toBeRightMatcher = <E, A>(
       } else {
         return determineDiff_Either(
           `Either expected to be right, but was left`,
+          'toBeRight',
           { expand },
           expected
         )(received)
@@ -134,12 +141,17 @@ export const toBeRightMatcher = <E, A>(
   }
 }
 
-function determineDiff_Option<A, B> (options: any, expected: B) {
+function determineDiff_Option<A, B> (
+  wrongConstructorMessage: string,
+  matcherName: string,
+  options: any,
+  expected: B
+) {
   return (received: O.Option<A>) =>
-    O.fold(constant(`Option expected to be some, but was none`), v => {
+    O.fold(constant(wrongConstructorMessage), v => {
       const diffString = diff(expected, v, options)
       return (
-        matcherHint('toBeSome', undefined, undefined) +
+        matcherHint(matcherName, undefined, undefined) +
         '\n\n' +
         (diffString && diffString.includes('- Expect')
           ? `Difference:\n\n${diffString}`
@@ -151,6 +163,7 @@ function determineDiff_Option<A, B> (options: any, expected: B) {
 
 function determineDiff_Either<A, B> (
   wrongConstructorMessage: string,
+  matcherName: string,
   options: any,
   expected: B
 ) {
@@ -158,7 +171,7 @@ function determineDiff_Either<A, B> (
     E.fold(constant(wrongConstructorMessage), v => {
       const diffString = diff(expected, v, options)
       return (
-        matcherHint('toBeRight', undefined, undefined) +
+        matcherHint(matcherName, undefined, undefined) +
         '\n\n' +
         (diffString && diffString.includes('- Expect')
           ? `Difference:\n\n${diffString}`
