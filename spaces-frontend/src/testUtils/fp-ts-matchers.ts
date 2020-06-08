@@ -43,7 +43,7 @@ export const toBeNoneMatcher = <A>(received: O.Option<A>) => {
  * @see https://gcanti.github.io/fp-ts/modules/Option.ts.html
  * @see https://gcanti.github.io/fp-ts/modules/Eq.ts.html
  */
-export const toBeSomeMetcher = <A>(
+export const toBeSomeMatcher = <A>(
   expand: boolean,
   received: O.Option<A>,
   expected?: A,
@@ -159,7 +159,7 @@ function determineDiff_Either<A, B> (options: any, expected: B) {
 expect.extend({
   toBeNone: toBeNoneMatcher,
   toBeSome<A> (received: O.Option<A>, expected?: A, eq: Eq<A> = eqStrict) {
-    return toBeSomeMetcher(!!this.expand, received, expected, eq)
+    return toBeSomeMatcher(!!this.expand, received, expected, eq)
   },
   toBeLeft<E, A> (
     received: E.Either<E, A>,
