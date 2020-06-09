@@ -60,7 +60,7 @@ export const toBeSomeMatcher = <A>(
           { expand },
           expected
         )
-        return determineDiff_Option(
+        return determineDiffOption(
           `Option expected to be some, but was none`,
           diffFormatter
         )(received)
@@ -144,12 +144,10 @@ export const toBeRightMatcher = <E, A>(
   }
 }
 
-function determineDiff_Option<A> (
+const determineDiffOption = <A>(
   wrongConstructorMessage: string,
   diffFormatter: <A>(a: A) => string
-) {
-  return O.fold(constant(wrongConstructorMessage), (v: A) => diffFormatter(v))
-}
+) => O.fold(constant(wrongConstructorMessage), (v: A) => diffFormatter(v))
 
 function determineDiff_Either<A, B> (
   wrongConstructorMessage: string,
