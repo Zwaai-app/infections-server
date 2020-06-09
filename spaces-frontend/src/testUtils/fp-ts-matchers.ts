@@ -148,10 +148,7 @@ function determineDiff_Option<A> (
   wrongConstructorMessage: string,
   diffFormatter: <A>(a: A) => string
 ) {
-  return (received: O.Option<A>) =>
-    O.fold(constant(wrongConstructorMessage), (v: A) => diffFormatter(v))(
-      received
-    )
+  return O.fold(constant(wrongConstructorMessage), (v: A) => diffFormatter(v))
 }
 
 function determineDiff_Either<A, B> (
