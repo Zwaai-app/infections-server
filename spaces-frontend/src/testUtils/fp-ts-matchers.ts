@@ -1,6 +1,6 @@
 import * as O from 'fp-ts/lib/Option'
 import * as E from 'fp-ts/lib/Either'
-import { constant } from 'fp-ts/lib/function'
+import { constant, flow } from 'fp-ts/lib/function'
 import diff from 'jest-diff'
 import { matcherHint, printExpected, printReceived } from 'jest-matcher-utils'
 import { Eq, eqStrict } from 'fp-ts/lib/Eq'
@@ -96,12 +96,18 @@ export const toBeLeftMatcher = <E, A>(
       if (!expected) {
         return `Either expected to be left, but was right`
       } else {
-        return determineDiff_Either(
-          `Either expected to be left, but was right`,
+        const diffFormatter = formattedDiffString(
           'toBeLeft',
           { expand },
           expected
-        )(E.swap(received))
+        )
+        return flow(
+          E.swap,
+          E.fold(
+            constant(`Either expected to be left, but was right`),
+            diffFormatter
+          )
+        )(received)
       }
     }
   }
@@ -133,27 +139,18 @@ export const toBeRightMatcher = <E, A>(
       if (!expected) {
         return 'Either expected to be right, but was left'
       } else {
-        return determineDiff_Either(
-          `Either expected to be right, but was left`,
+        const diffFormatter = formattedDiffString(
           'toBeRight',
           { expand },
           expected
+        )
+        return E.fold(
+          constant(`Either expected to be right, but was left`),
+          diffFormatter
         )(received)
       }
     }
   }
-}
-
-function determineDiff_Either<A, B> (
-  wrongConstructorMessage: string,
-  matcherName: string,
-  options: any,
-  expected: B
-) {
-  return (received: E.Either<A, B>) =>
-    E.fold(constant(wrongConstructorMessage), (v: B) =>
-      formattedDiffString(matcherName, options, expected)(v)
-    )(received)
 }
 
 const formattedDiffString = <A>(
