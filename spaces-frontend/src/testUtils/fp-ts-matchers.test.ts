@@ -6,6 +6,8 @@ import {
 } from './fp-ts-matchers'
 import * as O from 'fp-ts/lib/Option'
 import * as E from 'fp-ts/lib/Either'
+import * as Array from 'fp-ts/lib/Array'
+import { eqString, getTupleEq, getStructEq } from 'fp-ts/lib/Eq'
 
 describe('toBeNone', () => {
   it('passes on none', () => {
@@ -120,5 +122,43 @@ describe('toBeRight', () => {
   it('passes on right with correct value', () => {
     const { pass } = toBeRightMatcher(true, E.right('value'), 'value')
     expect(pass).toBeTruthy()
+  })
+})
+
+describe('with Eq', () => {
+  it('accepts Eq for toBeSome', () => {
+    const v1: string[] = ['x']
+    const v2: string[] = ['x']
+
+    const { pass: passStrict } = toBeSomeMatcher(true, O.some(v1), v2)
+    expect(passStrict).toBeFalsy()
+
+    const eq = Array.getEq(eqString)
+    const { pass: passWithEq } = toBeSomeMatcher(true, O.some(v1), v2, eq)
+    expect(passWithEq).toBeTruthy()
+  })
+
+  it('accepts Eq for toBeLeft', () => {
+    const v1: [string] = ['x']
+    const v2: [string] = ['x']
+
+    const { pass: passStrict } = toBeLeftMatcher(true, E.left(v1), v2)
+    expect(passStrict).toBeFalsy()
+
+    const eq = getTupleEq(eqString)
+    const { pass: passWithEq } = toBeLeftMatcher(true, E.left(v1), v2, eq)
+    expect(passWithEq).toBeTruthy()
+  })
+
+  it('accepts Eq for toBeRight', () => {
+    const v1 = { x: 'y' }
+    const v2 = { x: 'y' }
+
+    const { pass: passStrict } = toBeRightMatcher(true, E.right(v1), v2)
+    expect(passStrict).toBeFalsy()
+
+    const eq = getStructEq({ x: eqString })
+    const { pass: passWithEq } = toBeRightMatcher(true, E.right(v1), v2, eq)
+    expect(passWithEq).toBeTruthy()
   })
 })
