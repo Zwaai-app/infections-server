@@ -55,11 +55,14 @@ export const toBeSomeMatcher = <A>(
       if (!expected) {
         return 'Option expected to be some, but was none'
       } else {
-        return determineDiff_Option(
-          `Option expected to be some, but was none`,
+        const diffFormatter = formattedDiffString(
           'toBeSome',
           { expand },
           expected
+        )
+        return determineDiff_Option(
+          `Option expected to be some, but was none`,
+          diffFormatter
         )(received)
       }
     }
@@ -143,14 +146,12 @@ export const toBeRightMatcher = <E, A>(
 
 function determineDiff_Option<A> (
   wrongConstructorMessage: string,
-  matcherName: string,
-  options: any,
-  expected: A
+  diffFormatter: <A>(a: A) => string
 ) {
   return (received: O.Option<A>) =>
-    O.fold(constant(wrongConstructorMessage), v =>
-      formattedDiffString(matcherName, options, expected, v)
-    )(received)
+    O.fold(constant(wrongConstructorMessage), (v: A) => diffFormatter(v))(
+      received
+    )
 }
 
 function determineDiff_Either<A, B> (
@@ -160,17 +161,16 @@ function determineDiff_Either<A, B> (
   expected: B
 ) {
   return (received: E.Either<A, B>) =>
-    E.fold(constant(wrongConstructorMessage), v =>
-      formattedDiffString(matcherName, options, expected, v)
+    E.fold(constant(wrongConstructorMessage), (v: B) =>
+      formattedDiffString(matcherName, options, expected)(v)
     )(received)
 }
 
 const formattedDiffString = <A>(
   matcherName: string,
   options: any,
-  expected: A,
-  receivedValue: A
-) => {
+  expected: A
+) => <A>(receivedValue: A) => {
   const diffString = diff(expected, receivedValue, options)
   return (
     matcherHint(matcherName, undefined, undefined) +
