@@ -62,7 +62,7 @@ export const toBeSomeMatcher = <A>(
         )
         return O.fold(
           constant(`Option expected to be some, but was none`),
-          (v: A) => diffFormatter(v)
+          diffFormatter
         )(received)
       }
     }
