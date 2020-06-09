@@ -1,7 +1,7 @@
 import * as V from './registrationValidation'
 import { registrationDataEq } from './registerSlice'
-import { getTupleEq, eqString } from 'fp-ts/lib/Eq'
-import { replicate } from 'fp-ts/lib/Array'
+import { eqString } from 'fp-ts/lib/Eq'
+import { getEq } from 'fp-ts/lib/Array'
 
 it('validates email addresses', () => {
   expect(V.emailValidator('foo')).toBeLeft(V.tInvalidEmail)
@@ -50,7 +50,7 @@ it('validates an invalid password', () => {
       V.tPasswordOneNumber,
       V.tPasswordsDiffer
     ],
-    getTupleEq(...replicate(4, eqString))
+    getEq(eqString)
   )
 })
 
@@ -73,7 +73,7 @@ it('validates incorrect registration data', () => {
       V.tPasswordsDiffer,
       V.tConsentRequired
     ],
-    getTupleEq(...replicate(7, eqString))
+    getEq(eqString)
   )
 })
 
