@@ -55,14 +55,10 @@ export const toBeSomeMatcher = <A>(
       if (!expected) {
         return 'Option expected to be some, but was none'
       } else {
-        const diffFormatter = formattedDiffString(
-          'toBeSome',
-          { expand },
-          expected
-        )
+        const formatter = formattedDiffString('toBeSome', { expand }, expected)
         return O.fold(
           constant(`Option expected to be some, but was none`),
-          diffFormatter
+          formatter
         )(received)
       }
     }
@@ -96,16 +92,12 @@ export const toBeLeftMatcher = <E, A>(
       if (!expected) {
         return `Either expected to be left, but was right`
       } else {
-        const diffFormatter = formattedDiffString(
-          'toBeLeft',
-          { expand },
-          expected
-        )
+        const formatter = formattedDiffString('toBeLeft', { expand }, expected)
         return flow(
           E.swap,
           E.fold(
             constant(`Either expected to be left, but was right`),
-            diffFormatter
+            formatter
           )
         )(received)
       }
@@ -139,14 +131,10 @@ export const toBeRightMatcher = <E, A>(
       if (!expected) {
         return 'Either expected to be right, but was left'
       } else {
-        const diffFormatter = formattedDiffString(
-          'toBeRight',
-          { expand },
-          expected
-        )
+        const formatter = formattedDiffString('toBeRight', { expand }, expected)
         return E.fold(
           constant(`Either expected to be right, but was left`),
-          diffFormatter
+          formatter
         )(received)
       }
     }
