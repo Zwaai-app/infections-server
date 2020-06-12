@@ -39,6 +39,7 @@
     "@types/redux-logger": "^3.0.7",
     "@types/webpack-env": "^1.15.1",
     "@types/whatwg-url": "^6.4.0",
+    "fp-ts-jest-matchers": "^1.0.1",
     "jest-matcher-utils": "^25.5.0",
     "prettier": "^2.0.4",
     "tslint": "^6.1.1",

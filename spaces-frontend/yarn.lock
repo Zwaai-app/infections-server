@@ -4701,6 +4701,21 @@ forwarded@~0.1.2:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
   integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
 
+fp-ts-jest-matchers@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/fp-ts-jest-matchers/-/fp-ts-jest-matchers-1.0.1.tgz#536f2512c28ec579a2ef802956abaee248e72360"
+  integrity sha512-McaUZJHXlEQk5c+eEFzEFC8iKZM0wjdxrhIRKHZeOHea/dizJ36Zgs2S5SRYCgV3Vc6/lVucGHY0U5TAOz8muQ==
+  dependencies:
+    expect "^24.9.0"
+    fp-ts "^2.5.0"
+    jest-diff "^24.0.0"
+    jest-matcher-utils "^25.5.0"
+
+fp-ts@^2.5.0:
+  version "2.6.5"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.6.5.tgz#da4c369626ff3f4bb1518f8459b226fc19eb8e3c"
+  integrity sha512-lQNzOMJj98b623+UZLQ+tnN/8qtNXz/vRoR9k7L/9OlUIyYH3qVzSUVZBDXYsAd7nOWzzdQALCX1ZqcF70altQ==
+
 fp-ts@^2.5.3:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.5.3.tgz#7f09cc7f3e09623c6ade303d98a2cccdb2cc861f"
