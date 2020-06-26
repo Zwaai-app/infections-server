@@ -58,7 +58,13 @@ const ShowPreview = (space: Space) => {
     async function generateTheCode () {
       const randomString = bytesToHex(createRandom())
       const autoCheckout = autoCheckoutToNumber(space.autoCheckout)
-      const url = `zwaai-app://?random=${randomString}&type=room&autoCheckout=${autoCheckout}`
+      const url = encodeURI(
+        `zwaai-app://?random=${randomString}` +
+          `&type=room` +
+          `&name=${space.name}` +
+          `&description=${space.description}` +
+          `&autoCheckout=${autoCheckout}`
+      )
       console.debug(url)
       return QRCode.toCanvas(document.getElementById('qr'), url, { scale: 10 })
     }
