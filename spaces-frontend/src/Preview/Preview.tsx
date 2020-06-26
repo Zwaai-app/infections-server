@@ -63,16 +63,23 @@ const ShowPreview = (space: Space) => {
         <div>
             <h1>{space.name}</h1>
             <p className='description'>{space.description}</p>
+      <div className='bottom'>
+        <div className='contact'>
+          {t(
+            'preview.contactText',
+            'Bij vragen of problemen, neem contact op met:'
+          )}
+          <span className='phone'>
+            <Icon name='phone' size='small' />
+            {profile.phone}
+          </span>
         </div>
-        <div className='bottom'>
-            <div className='contact'>{t('preview.contactText',
-                'Bij vragen of problemen, neem contact op met:')}
-                <span className='phone'>
-                    <Icon name='phone' size='small' />{profile.phone}</span></div>
-            <div className='zwaai'>
-                <img src={logo} alt='Zwaai' />
-                {/* <div className='url'><span className='proto'>https://</span>Zwaai.app</div> */}
-            </div>
+        <div className='zwaai'>
+          <img src={logo} alt='Zwaai' />
+          <div className='url'>
+            <span className='proto'>https://</span>Zwaai.app
+          </div>
         </div>
+      </div>
     </>
 }
