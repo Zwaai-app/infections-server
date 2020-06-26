@@ -4,7 +4,7 @@ import { AjaxResponse, AjaxError } from 'rxjs/ajax'
 import { extractAjaxErrorInfo } from '../../utils/ajaxError'
 import { of } from 'rxjs'
 import { PayloadType } from '../../utils/utilityTypes'
-import { autoCheckoutToServer } from '../conversions'
+import { autoCheckoutToNumber } from '../conversions'
 import { Epic, ofType } from 'redux-observable'
 import { RootState } from '../../rootReducer'
 import { ActionType } from 'typesafe-actions'
@@ -27,7 +27,7 @@ export const updateAjaxOptions: OptionsCreator<PayloadType<
   responseType: 'json',
   body: {
     ...action.payload,
-    autoCheckout: autoCheckoutToServer(action.payload.autoCheckout),
+    autoCheckout: autoCheckoutToNumber(action.payload.autoCheckout),
     createdAt: undefined,
     modifiedAt: undefined
   }

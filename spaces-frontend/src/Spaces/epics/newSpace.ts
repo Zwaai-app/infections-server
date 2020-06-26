@@ -4,7 +4,7 @@ import { of } from 'rxjs'
 import { AjaxResponse, AjaxError } from 'rxjs/ajax'
 import { flatMap, map, catchError, startWith, endWith } from 'rxjs/operators'
 import { extractAjaxErrorInfo } from '../../utils/ajaxError'
-import { autoCheckoutToServer } from '../conversions'
+import { autoCheckoutToNumber } from '../conversions'
 import * as A from '../spacesSlice'
 import { ActionType } from 'typesafe-actions'
 import { OptionsCreator, ajaxObservable } from '../../utils/ajaxEpic'
@@ -28,7 +28,7 @@ export const storeAjaxOptions: OptionsCreator<PayloadType<
   body: {
     name: action.payload.name,
     description: action.payload.description,
-    autoCheckout: autoCheckoutToServer(action.payload.autoCheckout)
+    autoCheckout: autoCheckoutToNumber(action.payload.autoCheckout)
   }
 })
 

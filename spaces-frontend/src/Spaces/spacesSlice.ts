@@ -5,10 +5,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getLastSemigroup } from 'fp-ts/lib/Semigroup'
 import { SyncStatus } from '../utils/syncStatus'
 import { ErrorInfo } from '../utils/ajaxError'
-import {
-  convertAutoCheckoutFromServer,
-  convertDateFromServer
-} from './conversions'
+import { autoCheckoutFromNumber, dateFromServer } from './conversions'
 
 type Seconds = number
 
@@ -122,9 +119,9 @@ export const spacesSlice = createSlice({
       state.loadingStatus = 'success'
       const spaces = action.payload.map(serverRep => ({
         ...serverRep,
-        autoCheckout: convertAutoCheckoutFromServer(serverRep.autoCheckout),
-        createdAt: convertDateFromServer(serverRep.createdAt),
-        updatedAt: convertDateFromServer(serverRep.updatedAt)
+        autoCheckout: autoCheckoutFromNumber(serverRep.autoCheckout),
+        createdAt: dateFromServer(serverRep.createdAt),
+        updatedAt: dateFromServer(serverRep.updatedAt)
       }))
       state.spaces = listToRecord(spaces)
     },
