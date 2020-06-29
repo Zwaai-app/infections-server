@@ -60,7 +60,7 @@ const ShowPreview = (space: Space) => {
       const autoCheckout = autoCheckoutToNumber(space.autoCheckout)
       const url = encodeURI(
         `zwaai-app://?random=${randomString}` +
-          `&type=room` +
+          `&type=space` +
           `&name=${space.name}` +
           `&description=${space.description}` +
           `&autoCheckout=${autoCheckout}`
