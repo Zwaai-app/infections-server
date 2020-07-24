@@ -1,7 +1,7 @@
 import { ready, Scalar, GroupElement } from './finiteField'
 
 it('exposes Sodium ready promise', async () => {
-  await expect(ready).resolves.toBe(undefined)
+  await expect(ready).resolves.toBeUndefined()
 })
 
 describe('when ready', () => {
