@@ -1,4 +1,5 @@
 import sodium from 'libsodium-wrappers-sumo'
+import * as O from 'fp-ts/lib/Option'
 
 export class Scalar {
   static get size (): number {
@@ -81,8 +82,12 @@ export class GroupElement {
     return Buffer.from(this.groupElement).toString('hex')
   }
 
-  static fromHexString (hex: string): GroupElement {
-    return new GroupElement(Uint8Array.from(Buffer.from(hex, 'hex')))
+  static fromHexString (hex: string): O.Option<GroupElement> {
+    if (hex.match(/[0-9a-f]{64}/i)) {
+      return O.some(new GroupElement(Uint8Array.from(Buffer.from(hex, 'hex'))))
+    } else {
+      return O.none
+    }
   }
 }
 

@@ -1,4 +1,5 @@
 import { ready, Scalar, GroupElement } from './finiteField'
+import * as O from 'fp-ts/lib/Option'
 
 it('exposes Sodium ready promise', async () => {
   await expect(ready).resolves.toBeUndefined()
@@ -34,7 +35,11 @@ describe('when ready', () => {
   it('can encode a group element as a hex string', () => {
     const g = GroupElement.random()
     const hex = g.toHexString()
-    const gPrime = GroupElement.fromHexString(hex)
+    const gPrime = O.toNullable(GroupElement.fromHexString(hex))
     expect(gPrime).toStrictEqual(g)
+  })
+
+  it('fails to decode invalid hex string', () => {
+    expect(O.toUndefined(GroupElement.fromHexString('invalid'))).toBeUndefined()
   })
 })
