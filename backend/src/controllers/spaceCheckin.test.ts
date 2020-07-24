@@ -8,6 +8,7 @@ import {
 import { GroupElement, Scalar, ready } from '../crypto/finiteField'
 import { Request, Response } from 'express'
 import { ValidationChain } from 'express-validator'
+import * as O from 'fp-ts/lib/Option'
 
 it('has an empty list of time codes', () => {
   expect(getTimeCodes()).toStrictEqual([])
@@ -39,7 +40,7 @@ describe('given an app spy', () => {
       expect(appSpy.postRoutes['/api/v1/space/checkin']).toBeDefined()
     })
 
-    it('sends first time code when calling handler', () => {
+    it('sends 8 hours of time codes when calling handler', () => {
       const handler = appSpy.postRoutes['/api/v1/space/checkin']
       const rl = GroupElement.random()
       const req = { body: { encryptedLocation: rl.toHexString() } }
@@ -48,11 +49,13 @@ describe('given an app spy', () => {
       expect(res.headers['Content-Type']).toEqual('application/json')
       expect(res.sent).toHaveLength(1)
 
-      const t = getTimeCodes()[0]
-      const trl = t.multiply(rl)
-      expect(JSON.parse(res.sent[0]).encryptedLocationTime).toEqual(
-        trl.toHexString()
-      )
+      const response = JSON.parse(res.sent[0])
+      const codes: string[] = response.encryptedLocationTimeCodes
+      codes.forEach((code, index) => {
+        const trl = O.toUndefined(GroupElement.fromHexString(code))
+        const rlPrime = trl?.divide(getTimeCodes()[index])
+        expect(rlPrime).toStrictEqual(rl)
+      })
     })
   })
 })

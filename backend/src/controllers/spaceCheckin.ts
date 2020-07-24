@@ -46,9 +46,10 @@ const postSpaceCheckinApi: RouteHandler = (
       res.status(400).json({ errors: ['invalid encrypted location'] })
     },
     (encryptedLocation: GroupElement) => {
-      const t = getTimeCodes()[0]
-      const trl = t.multiply(encryptedLocation)
-      res.status(200).json({ encryptedLocationTime: trl.toHexString() })
+      const encryptedLocationTimeCodes = getTimeCodes().map(t =>
+        t.multiply(encryptedLocation).toHexString()
+      )
+      res.status(200).json({ encryptedLocationTimeCodes })
     }
   )(encryptedLocation)
 }
