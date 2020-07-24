@@ -14,6 +14,7 @@ export function getTimeCodes (): Scalar[] {
 }
 
 export async function initialize (app: App | Express) {
+  globalTimeCodes = []
   await ready
   for (let i = 0; i < (maxAutoCheckoutHours * 60) / minutesPerTimeCode; i++) {
     globalTimeCodes.push(Scalar.random())
