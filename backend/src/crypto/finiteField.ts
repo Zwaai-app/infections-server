@@ -20,4 +20,24 @@ export class Scalar {
   }
 }
 
+export class GroupElement {
+  static get size (): number {
+    return sodium.crypto_core_ristretto255_BYTES
+  }
+
+  groupElement: Uint8Array
+
+  private constructor (groupElementBytes: Uint8Array) {
+    this.groupElement = groupElementBytes
+  }
+
+  get length (): number {
+    return this.groupElement.length
+  }
+
+  static random (): GroupElement {
+    return new GroupElement(sodium.crypto_core_ristretto255_random())
+  }
+}
+
 export { ready } from 'libsodium-wrappers-sumo'
