@@ -30,4 +30,11 @@ describe('when ready', () => {
     const gPrime = sg.divide(s)
     expect(gPrime).toStrictEqual(g)
   })
+
+  it('can encode a group element as a hex string', () => {
+    const g = GroupElement.random()
+    const hex = g.toHexString()
+    const gPrime = GroupElement.fromHexString(hex)
+    expect(gPrime).toStrictEqual(g)
+  })
 })

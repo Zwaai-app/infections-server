@@ -76,6 +76,14 @@ export class GroupElement {
     )
     return denominatorInverse.multiply(this)
   }
+
+  toHexString (): string {
+    return Buffer.from(this.groupElement).toString('hex')
+  }
+
+  static fromHexString (hex: string): GroupElement {
+    return new GroupElement(Uint8Array.from(Buffer.from(hex, 'hex')))
+  }
 }
 
 export { ready } from 'libsodium-wrappers-sumo'
