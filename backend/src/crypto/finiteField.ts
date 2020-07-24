@@ -5,9 +5,15 @@ export class Scalar {
     return sodium.crypto_core_ristretto255_SCALARBYTES
   }
 
-  scalar: Uint8Array
+  readonly scalar: Uint8Array
 
-  private constructor (scalarBytes: Uint8Array) {
+  /**
+   * Don't use this constructor directly, use `Scalar.random()`
+   * and the arithmetics instead.
+   *
+   * @param scalarBytes Raw bytes representing the scalar
+   */
+  constructor (scalarBytes: Uint8Array) {
     this.scalar = scalarBytes
   }
 
@@ -18,6 +24,20 @@ export class Scalar {
   static random (): Scalar {
     return new Scalar(sodium.crypto_core_ristretto255_scalar_random())
   }
+
+  /**
+   * Performs a multiplication of this scalar by the given group element
+   * in the finite field.
+   *
+   * @param rhs the group element to multiply this scalar with
+   */
+  multiply (rhs: GroupElement): GroupElement {
+    const result = sodium.crypto_scalarmult_ristretto255(
+      this.scalar,
+      rhs.groupElement
+    )
+    return new GroupElement(result)
+  }
 }
 
 export class GroupElement {
@@ -25,9 +45,15 @@ export class GroupElement {
     return sodium.crypto_core_ristretto255_BYTES
   }
 
-  groupElement: Uint8Array
+  readonly groupElement: Uint8Array
 
-  private constructor (groupElementBytes: Uint8Array) {
+  /**
+   * Don't use this constructor directly, use `GroupElement.random()`
+   * and the arithmetics instead.
+   *
+   * @param scalarBytes Raw bytes representing the group element
+   */
+  constructor (groupElementBytes: Uint8Array) {
     this.groupElement = groupElementBytes
   }
 
@@ -37,6 +63,18 @@ export class GroupElement {
 
   static random (): GroupElement {
     return new GroupElement(sodium.crypto_core_ristretto255_random())
+  }
+
+  /**
+   * Performs a division of the group element by a scalar in the finite field.
+   *
+   * @param denominator the denominator (scalar) of the division
+   */
+  divide (denominator: Scalar): GroupElement {
+    const denominatorInverse = new Scalar(
+      sodium.crypto_core_ristretto255_scalar_invert(denominator.scalar)
+    )
+    return denominatorInverse.multiply(this)
   }
 }
 
