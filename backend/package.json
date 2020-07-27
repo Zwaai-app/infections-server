@@ -1,12 +1,12 @@
 {
-  "name": "express-typescript-starter",
+  "name": "zwaai-app-server",
   "version": "0.1.0",
-  "description": "A starting point for Node.js express apps with TypeScript",
+  "description": "Server for Zwaai.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/TypeScript-Node-Starter"
+    "url": "https://github.com/Zwaai-app/infections-server"
   },
-  "author": "Bowden Kelly",
+  "author": "Zwaai",
   "license": "MIT",
   "scripts": {
     "start": "yarn serve",
