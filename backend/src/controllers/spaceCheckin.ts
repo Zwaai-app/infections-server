@@ -1,4 +1,4 @@
-import { Scalar, ready, GroupElement } from '../crypto/finiteField'
+import { ready, Scalar, GroupElement } from '@zwaai/common'
 import { Express } from 'express-serve-static-core'
 import { Request, Response, NextFunction } from 'express'
 import { body, validationResult } from 'express-validator'

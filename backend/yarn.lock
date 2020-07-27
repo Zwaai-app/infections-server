@@ -683,18 +683,6 @@
   dependencies:
     "@types/sizzle" "*"
 
-"@types/libsodium-wrappers-sumo@^0.7.3":
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/@types/libsodium-wrappers-sumo/-/libsodium-wrappers-sumo-0.7.3.tgz#3ce8c613ee1a05ca47bd20dd2e6009ce114a1a04"
-  integrity sha512-GlOjW+o7ekitFi2WgGsD0G3ljXudGqPmSASsxr2CMAaCWiTnUdPt8R1QUzuHZ+TxeV60xd6Y++Do9uguK/QBXQ==
-  dependencies:
-    "@types/libsodium-wrappers" "*"
-
-"@types/libsodium-wrappers@*":
-  version "0.7.7"
-  resolved "https://registry.yarnpkg.com/@types/libsodium-wrappers/-/libsodium-wrappers-0.7.7.tgz#cdb25e85458612ec80f0157c3815fac187d0b6d2"
-  integrity sha512-Li91pVKcLvQJK3ZolwCPo85oxf2gKBCApgnesRxYg4OVYchLXcJB2eivX8S87vfQVv6ZRnyCO1lLDosZGJfpRg==
-
 "@types/lodash@^4.14.141":
   version "4.14.149"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.149.tgz#1342d63d948c6062838fbf961012f74d4e638440"
@@ -883,6 +871,12 @@
   integrity sha512-9T1auFmbPZoxHz0enUFlUuKRy3it01R+hlggyVUMtnCTQRunsQYifnSGb8hET4Xo8yiC0o0r1paW3ud5+rbURg==
   dependencies:
     "@types/yargs-parser" "*"
+
+"@zwaai/common@../common":
+  version "1.0.0"
+  dependencies:
+    fp-ts "^2.7.1"
+    libsodium-wrappers-sumo "^0.7.6"
 
 abab@^2.0.0:
   version "2.0.3"
@@ -3884,7 +3878,7 @@ lodash.sortby@^4.7.0:
   integrity sha1-7dFMgk4sycHgsKG0K7UhBRakJDg=
 
 lodash@^4.0.0, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@~4.17.12:
-  version "4.17.19"
+  version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
 

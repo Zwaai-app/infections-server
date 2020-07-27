@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
+    "@zwaai/common": "../common",
     "async": "^3.1.0",
     "bcrypt": "^4.0.1",
     "bluebird": "^3.5.5",
@@ -44,7 +45,6 @@
     "express-session": "^1.16.2",
     "express-validator": "^6.2.0",
     "fp-ts": "^2.7.1",
-    "libsodium-wrappers-sumo": "^0.7.6",
     "lodash": "^4.17.15",
     "lusca": "^1.6.1",
     "mongoose": "^5.7.5",
@@ -69,7 +69,6 @@
     "@types/express-session": "^1.15.14",
     "@types/jest": "^24.0.23",
     "@types/jquery": "^3.3.31",
-    "@types/libsodium-wrappers-sumo": "^0.7.3",
     "@types/lodash": "^4.14.141",
     "@types/lusca": "^1.6.1",
     "@types/mongoose": "^5.5.18",

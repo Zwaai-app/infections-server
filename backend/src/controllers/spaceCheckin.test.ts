@@ -5,7 +5,7 @@ import {
   RouteHandler,
   postSpaceCheckin
 } from './spaceCheckin'
-import { GroupElement, Scalar, ready } from '../crypto/finiteField'
+import { ready, Scalar, GroupElement } from '@zwaai/common'
 import { Request, Response } from 'express'
 import { ValidationChain } from 'express-validator'
 import * as O from 'fp-ts/lib/Option'

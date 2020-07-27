@@ -1,7 +1,7 @@
 import request from 'supertest'
 import app from '../src/app'
 import { initialize } from '../src/controllers/spaceCheckin'
-import { GroupElement } from '../src/crypto/finiteField'
+import { GroupElement } from '@zwaai/common'
 import { expect } from 'chai'
 
 const server = request.agent(app)
