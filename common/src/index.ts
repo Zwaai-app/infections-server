@@ -1,1 +1,1 @@
-export * as FiniteField from './finiteField'
+export { ready, Scalar, GroupElement } from './finiteField'
