@@ -22,6 +22,7 @@ Starter](https://github.com/Microsoft/TypeScript-Node-Starter))
 
 The backend connects to a MongoDB database. You can either [install it
 locally](https://github.com/Microsoft/TypeScript-Node-Starter#getting-started),
+and start it using something like `mongod --dbpath $PWD/data --bind_ip_all`,
 or if you have docker installed, you can start it in a container by invoking:
 
 ```bash
@@ -62,6 +63,12 @@ Start the server:
 
 ```bash
 yarn start
+```
+
+Or run it in debug mode:
+
+```bash
+yarn debug
 ```
 
 API
