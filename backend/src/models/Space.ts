@@ -4,6 +4,7 @@ import { UserDocument } from './User'
 export type SpaceDocument = mongoose.Document & {
   user: UserDocument
   name: string
+  locationCode: string
   description: string | null
   autoCheckout: number // disabled is represented as -1
 }
@@ -12,6 +13,7 @@ const spaceSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     name: { type: String, required: true },
+    locationCode: { type: String, required: true },
     description: String,
     autoCheckout: Number
   },

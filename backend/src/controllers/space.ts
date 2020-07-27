@@ -4,6 +4,7 @@ import { Space, SpaceDocument } from '../models/Space'
 import { UserDocument } from '../models/User'
 import { WriteError } from 'mongodb'
 import * as R from 'rambda'
+import { GroupElement } from '@zwaai/common'
 
 const idSanitizer = body('_id').matches(/^[a-f0-9]{24}$/)
 const nameSanitizer = body('name')
@@ -49,6 +50,7 @@ const postSpaceApi = (req: Request, res: Response, next: NextFunction) => {
     const space = new Space({
       user: user,
       name: req.body.name,
+      locationCode: GroupElement.random().toHexString(),
       description: req.body.description || '',
       autoCheckout: req.body.autoCheckout
     })

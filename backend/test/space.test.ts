@@ -1,6 +1,7 @@
 import request from 'supertest'
 import app from '../src/app'
 import { expect } from 'chai'
+import { ready, GroupElement } from '@zwaai/common'
 
 const testUser = {
   email: 'test@test.com',
@@ -21,6 +22,7 @@ describe('/api/v1/space', () => {
   beforeAll(async () => {
     await ensureTestUserExists()
     await login()
+    await ready
   })
 
   it('can create a space', done => {
@@ -31,6 +33,8 @@ describe('/api/v1/space', () => {
       .expect(200)
       .end((_err, res) => {
         expect(res.body._id).not.to.be.undefined
+        expect(GroupElement.fromHexString(res.body.locationCode)).not.to.be
+          .undefined
         createdSpaceId = res.body._id
         done()
       })
