@@ -1,5 +1,5 @@
 {
-  "name": "spaces-frontend",
+  "name": "@zwaai/spaces-frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

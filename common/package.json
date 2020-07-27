@@ -1,5 +1,5 @@
 {
-  "name": "common",
+  "name": "@zwaai/common",
   "version": "1.0.0",
   "description": "Zwaai.app infections server common code",
   "main": "dist/index.js",
