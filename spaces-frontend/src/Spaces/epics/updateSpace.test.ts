@@ -4,7 +4,7 @@ import {
   updateSpaceSucceeded,
   loadSpaces,
   updateSpaceFailed,
-  SpaceFields,
+  NewSpaceFields,
   Space
 } from '../spacesSlice'
 import { ActionsObservable } from 'redux-observable'
@@ -14,7 +14,7 @@ import { toArray } from 'rxjs/operators'
 import { MockAjaxError } from '../../testUtils/MockAjaxError'
 import * as O from 'fp-ts/lib/Option'
 
-const spaceData: SpaceFields = {
+const spaceData: NewSpaceFields = {
   name: 'foo',
   description: 'bar',
   autoCheckout: O.some(1800)

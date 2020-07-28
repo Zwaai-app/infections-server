@@ -1,7 +1,7 @@
 import { storeNewSpaceEpic, storeAjaxOptions } from './newSpace'
 import * as O from 'fp-ts/lib/Option'
 import {
-  SpaceFields,
+  NewSpaceFields,
   createSpace,
   storeNewSpaceStarted,
   storeNewSpaceSucceeded,
@@ -14,7 +14,7 @@ import { of, throwError } from 'rxjs'
 import { toArray } from 'rxjs/operators'
 import { MockAjaxError } from '../../testUtils/MockAjaxError'
 
-const spaceData: SpaceFields = {
+const spaceData: NewSpaceFields = {
   name: 'foo',
   description: 'bar',
   autoCheckout: O.some(1800)

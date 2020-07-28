@@ -4,7 +4,7 @@ import reducer, {
   deleteSpace,
   updateSpace,
   listToRecord,
-  SpaceFields,
+  NewSpaceFields,
   createSpace,
   clearNewSpace,
   storeNewSpaceStarted,
@@ -52,7 +52,7 @@ const space3: Space = {
 
 it('can create a space', () => {
   const state = spaceState({ spaces: listToRecord([space1]) })
-  const newSpaceFields: SpaceFields = {
+  const newSpaceFields: NewSpaceFields = {
     name: 'new',
     description: 'also new',
     autoCheckout: O.some(1800)
@@ -65,7 +65,7 @@ it('can create a space', () => {
 
 it('ignores create when already creating one', () => {
   const state = spaceState({ newSpace: { ...space1, status: 'inProgress' } })
-  const newSpaceFields: SpaceFields = {
+  const newSpaceFields: NewSpaceFields = {
     name: 'new',
     description: 'also new',
     autoCheckout: O.some(1800)
@@ -77,7 +77,7 @@ it('ignores create when already creating one', () => {
 
 it('cannot create a space with an existing name', () => {
   const state = spaceState({ spaces: listToRecord([space1]) })
-  const newSpaceFields: SpaceFields = {
+  const newSpaceFields: NewSpaceFields = {
     name: space1.name,
     description: 'also new',
     autoCheckout: O.some(1800)

@@ -9,7 +9,7 @@ import { autoCheckoutFromNumber, dateFromServer } from './conversions'
 
 type Seconds = number
 
-export interface SpaceFields {
+export interface NewSpaceFields {
   name: string
   description: string
   autoCheckout: O.Option<Seconds>
@@ -19,7 +19,7 @@ type SpaceId = string
 interface ThingWithId {
   _id: SpaceId
 }
-export interface Space extends SpaceFields, ThingWithId {
+export interface Space extends NewSpaceFields, ThingWithId {
   createdAt: number
   updatedAt: number
 }
@@ -34,7 +34,7 @@ export interface SpaceFromServer {
 }
 
 export type SpaceList = Record<SpaceId, Space>
-export type NewSpace = SpaceFields & { status: SyncStatus }
+export type NewSpace = NewSpaceFields & { status: SyncStatus }
 export interface SpacesState {
   spaces: SpaceList
   newSpace?: NewSpace
@@ -64,7 +64,7 @@ export const spacesSlice = createSlice({
     clearNewSpace (state: SpacesState, _action: PayloadAction<void>) {
       state.newSpace = undefined
     },
-    createSpace (state: SpacesState, action: PayloadAction<SpaceFields>) {
+    createSpace (state: SpacesState, action: PayloadAction<NewSpaceFields>) {
       if (!state.newSpace && !existingName(state.spaces, action.payload.name)) {
         const newSpace: NewSpace = { ...action.payload, status: 'idle' }
         state.newSpace = newSpace
@@ -75,7 +75,7 @@ export const spacesSlice = createSlice({
     },
     updateSpace (
       state: SpacesState,
-      _action: PayloadAction<SpaceFields & ThingWithId>
+      _action: PayloadAction<NewSpaceFields & ThingWithId>
     ) {
       state.updateStatus = 'inProgress'
     },

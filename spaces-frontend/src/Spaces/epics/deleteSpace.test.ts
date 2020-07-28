@@ -5,7 +5,7 @@ import {
   deleteSucceeded,
   loadSpaces,
   deleteFailed,
-  SpaceFields,
+  NewSpaceFields,
   Space
 } from '../spacesSlice'
 import { initialStateObservable } from '../../testUtils/stateObservable'
@@ -14,7 +14,7 @@ import { MockAjaxError } from '../../testUtils/MockAjaxError'
 import { toArray } from 'rxjs/operators'
 import * as O from 'fp-ts/lib/Option'
 
-const spaceData: SpaceFields = {
+const spaceData: NewSpaceFields = {
   name: 'foo',
   description: 'bar',
   autoCheckout: O.some(1800)
