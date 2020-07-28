@@ -57,7 +57,7 @@ const ShowPreview = (space: Space) => {
     async function generateTheCode () {
       const autoCheckout = autoCheckoutToNumber(space.autoCheckout)
       const url = encodeURI(
-        `zwaai-app://?random=${space.locationCode}` +
+        `zwaai-app://?locationCode=${space.locationCode}` +
           `&type=space` +
           `&name=${space.name}` +
           `&description=${space.description}` +
