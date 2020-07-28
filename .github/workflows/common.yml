@@ -1,5 +1,9 @@
 name: Build and test common code
 
+defaults:
+  run:
+    working-directory: common
+    
 on:
   push:
     branches: [main]
