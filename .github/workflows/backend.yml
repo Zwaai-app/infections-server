@@ -31,6 +31,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: |
+        cd ../common
+        yarn
+        yarn build
+    - run: |
         yarn install --frozen-lockfile
         yarn build
         yarn ci-test
