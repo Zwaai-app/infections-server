@@ -20,6 +20,7 @@ interface ThingWithId {
   _id: SpaceId
 }
 export interface Space extends NewSpaceFields, ThingWithId {
+  locationCode: string
   createdAt: number
   updatedAt: number
 }
@@ -27,6 +28,7 @@ export interface Space extends NewSpaceFields, ThingWithId {
 export interface SpaceFromServer {
   _id: SpaceId
   name: string
+  locationCode: string
   description: string
   autoCheckout: number
   createdAt: string
@@ -43,6 +45,11 @@ export interface SpacesState {
   deleteStatus: SyncStatus
 }
 
+/**
+ * Converts an array of spaces to a record (hashmap).
+ *
+ * @param spaces record (hashmap) of spaces keyed by their id
+ */
 export const listToRecord = (spaces: Space[]): Record<string, Space> =>
   R.fromFoldableMap(getLastSemigroup<Space>(), A.array)(spaces, s => [s._id, s])
 
@@ -117,12 +124,7 @@ export const spacesSlice = createSlice({
       action: PayloadAction<SpaceFromServer[]>
     ) {
       state.loadingStatus = 'success'
-      const spaces = action.payload.map(serverRep => ({
-        ...serverRep,
-        autoCheckout: autoCheckoutFromNumber(serverRep.autoCheckout),
-        createdAt: dateFromServer(serverRep.createdAt),
-        updatedAt: dateFromServer(serverRep.updatedAt)
-      }))
+      const spaces = action.payload.map(spaceFromServerRep)
       state.spaces = listToRecord(spaces)
     },
     loadSpacesFailed (state: SpacesState, action: PayloadAction<ErrorInfo>) {
@@ -133,6 +135,15 @@ export const spacesSlice = createSlice({
     }
   }
 })
+
+function spaceFromServerRep (serverRep: SpaceFromServer): Space {
+  return {
+    ...serverRep,
+    autoCheckout: autoCheckoutFromNumber(serverRep.autoCheckout),
+    createdAt: dateFromServer(serverRep.createdAt),
+    updatedAt: dateFromServer(serverRep.updatedAt)
+  }
+}
 
 export type CreateSpaceAction = ReturnType<typeof createSpace>
 export type LoadSpacesAction = ReturnType<typeof loadSpaces>

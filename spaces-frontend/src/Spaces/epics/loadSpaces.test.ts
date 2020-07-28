@@ -27,6 +27,7 @@ it('can load spaces', done => {
       _id: '1',
       name: '1',
       description: '1',
+      locationCode: '1',
       autoCheckout: -1,
       createdAt: '',
       updatedAt: ''

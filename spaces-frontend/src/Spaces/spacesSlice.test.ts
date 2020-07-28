@@ -28,6 +28,8 @@ import { SyncStatus } from '../utils/syncStatus'
 const space1: Space = {
   _id: '1',
   name: 'one',
+  locationCode:
+    '480da2c53b41abea6467b983647ddf0f5cfd8fb0286ed00be8cee275e01c5d48',
   description: 'one',
   autoCheckout: O.none,
   createdAt: Date.now(),
@@ -36,6 +38,8 @@ const space1: Space = {
 const space2: Space = {
   _id: '2',
   name: 'two',
+  locationCode:
+    '209e398b0d2fd49fe36edf3cf932339642fc766c3c7af632499eb9b809e06747',
   description: 'two',
   autoCheckout: O.some(3600),
   createdAt: Date.UTC(2020, 5 - 1, 12, 10, 21, 1, 945), // month is zero-based
@@ -44,6 +48,8 @@ const space2: Space = {
 const space3: Space = {
   _id: '3',
   name: 'three',
+  locationCode:
+    'f0a3057a6f0627ae2a14e29862d44d69351ae428f2b1c691c975f87fca09c54a',
   description: 'three',
   autoCheckout: O.none,
   createdAt: Date.UTC(2020, 5 - 1, 12, 10, 21, 18, 545), // month is zero-based
@@ -227,12 +233,16 @@ describe('load spaces list', () => {
     })
     const space2ServerRep = {
       ...space2,
+      locationCode:
+        '209e398b0d2fd49fe36edf3cf932339642fc766c3c7af632499eb9b809e06747',
       autoCheckout: 3600,
       createdAt: '2020-05-12T10:21:01.945Z',
       updatedAt: '2020-05-13T10:21:01.945Z'
     }
     const space3ServerRep = {
       ...space3,
+      locationCode:
+        'f0a3057a6f0627ae2a14e29862d44d69351ae428f2b1c691c975f87fca09c54a',
       autoCheckout: -1,
       createdAt: '2020-05-12T10:21:18.545Z',
       updatedAt: '2020-05-13T10:21:18.545Z'

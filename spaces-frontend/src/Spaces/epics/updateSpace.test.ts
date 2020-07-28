@@ -22,6 +22,7 @@ const spaceData: NewSpaceFields = {
 const space: Space = {
   _id: 'foo_id',
   ...spaceData,
+  locationCode: 'some location code',
   createdAt: Date.now(),
   updatedAt: Date.now()
 }
