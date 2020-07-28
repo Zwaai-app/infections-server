@@ -18,6 +18,7 @@ yarn link @zwaai/common
 
 cd ../frontend
 yarn
+yarn link @zwaai/common
 ```
 
 Then follow instructions in [frontend](./spaces-fronten/../spaces-frontend/README.md) and [backend](./backend/README.md).
