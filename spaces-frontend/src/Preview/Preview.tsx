@@ -12,7 +12,6 @@ import QRCode from 'qrcode'
 import logo from '../Home/logo.png'
 import { Icon, Button } from 'semantic-ui-react'
 import { logError } from '../utils'
-import { bytesToHex, createRandom } from './Random'
 import { autoCheckoutToNumber } from '../Spaces/conversions'
 
 export const Preview = (props: Props) => {
@@ -56,10 +55,9 @@ const ShowPreview = (space: Space) => {
 
   useEffect(() => {
     async function generateTheCode () {
-      const randomString = bytesToHex(createRandom())
       const autoCheckout = autoCheckoutToNumber(space.autoCheckout)
       const url = encodeURI(
-        `zwaai-app://?random=${randomString}` +
+        `zwaai-app://?random=${space.locationCode}` +
           `&type=space` +
           `&name=${space.name}` +
           `&description=${space.description}` +
