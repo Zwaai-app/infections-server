@@ -47,6 +47,9 @@ const postSpaceCheckinApi: RouteHandler = (
       res.status(400).json({ errors: ['invalid encrypted location'] })
     },
     (encryptedLocation: GroupElement) => {
+      // This always sends the full 8 hours worth of time codes, regardless
+      // of how many you actually need. This minimizes the information the
+      // server and somebody profiling the communication have about check-ins.
       const encryptedLocationTimeCodes = getTimeCodes().map(t =>
         t.multiply(encryptedLocation).toHexString()
       )
